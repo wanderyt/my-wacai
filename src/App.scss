@@ -70,8 +70,8 @@
           width: 60%;
           border-top-left-radius: 5px;
           border-bottom-left-radius: 5px;
-          &:active {
-            background-color: rgba($color: #aa3d0b, $alpha: 1);
+          &:active, &:focus {
+            background: linear-gradient(to left, #bd5b2e, #bd5b2e);
           }
         }
         .App-CreateFast {
@@ -80,8 +80,8 @@
           border-top-right-radius: 5px;
           border-bottom-right-radius: 5px;
           margin-left: -1px;
-          &:active {
-            background-color: rgba($color: #882e05, $alpha: 1);
+          &:active, &:focus {
+            background: linear-gradient(to left, #bd4913, #bb4c18);
           }
         }
       }

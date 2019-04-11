@@ -29,8 +29,8 @@ const App = (props) => {
         </div>
         <div className='App-Toolbar'>
           <div className='App-Toolbtn'>
-            <span className='App-Btn App-CreateItem'>记一笔</span>
-            <span className='App-Btn App-CreateFast'>速记</span>
+            <div className={`App-Btn App-CreateItem`}>记一笔</div>
+            <div className={`App-Btn App-CreateFast`}>速记</div>
           </div>
         </div>
       </div>
