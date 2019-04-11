@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import Axios from 'axios';
 
 import './App.scss';
 
@@ -7,7 +8,16 @@ const App = (props) => {
 
   // Set monthly total amount
   useEffect(() => {
-    setMonthTotal(100);
+    Axios.get('/api/wacai/getFinList')
+      .then(({data}) => {
+        let total = 0;
+        let finList = data.data || [];
+        finList.forEach(element => {
+          total += element.money;
+        });
+
+        setMonthTotal(total);
+      });
   });
 
   return (

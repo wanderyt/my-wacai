@@ -1,5 +1,8 @@
 const express = require('express');
 
+// Logger configuration
+require('./logger');
+
 // Dotenv configuration
 const dotenv = require('dotenv');
 const {dotenvFiles} = require('./config');
@@ -22,7 +25,8 @@ const port = process.env.API_PORT || 2001;
 app.use(express.json());
 
 // define wacai unique request path
-// const wacaiRouters = require('./wacai/routers/index');
+const wacaiRouters = require('./router/index');
+app.use('/api/wacai/', wacaiRouters.router);
 
 // Add wacai login middleware
 // const wacaiMiddleware = require('./wacai/middlewares/index');
