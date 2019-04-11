@@ -11,6 +11,6 @@ const serverWatchedFiles = [
 module.exports = {
   dotenvFiles,
   serverWatchedFiles,
-  TOKEN_PATH: './server/wacai/token.txt',
+  TOKEN_PATH: './server/token.txt',
   LOG_PATH: './log/wacai/'
 };
