@@ -22,10 +22,10 @@ const port = process.env.API_PORT || 2001;
 app.use(express.json());
 
 // define wacai unique request path
-const wacaiRouters = require('./wacai/routers/index');
+// const wacaiRouters = require('./wacai/routers/index');
 
 // Add wacai login middleware
-const wacaiMiddleware = require('./wacai/middlewares/index');
-app.use('/api/proxy/wacai', [wacaiMiddleware.wacaiLoginMiddleware, ...wacaiRouters.router]);
+// const wacaiMiddleware = require('./wacai/middlewares/index');
+// app.use('/api/proxy/wacai', [wacaiMiddleware.wacaiLoginMiddleware, ...wacaiRouters.router]);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

@@ -1,0 +1,90 @@
+.App {
+  height: 100vh;
+  overflow-x: hidden;
+  .App-Header {
+    height: 50vh;
+    position: relative;
+
+    background-image: url('./fin-l.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position-x: center;
+
+    @media screen and (max-height: 800px) {
+      background-position-y: -46px;
+    }
+
+    .Header-Text {
+      padding-top: 20px;
+      text-align: center;
+      height: 30px;
+      line-height: 30px;
+      font-size: 16px;
+    }
+    .Header-MonthTotal {
+      position: absolute;
+      bottom: 40px;
+      left: 20px;
+      font-size: 17px;
+      color: #FFF;
+      font-weight: bold;
+
+      .Caption {
+        font-size: 14px;
+      }
+      .Amount {
+        font-size: 20px;
+      }
+    }
+    .App-Toolbar {
+      position: absolute;
+      bottom: -30px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      .App-Toolbtn {
+        display: inline-block;
+        height: 60px;
+        width: 90%;
+
+        .App-Btn {
+          display: inline-block;
+          text-align: center;
+          font-size: 25px;
+          font-weight: bold;
+          line-height: 60px;
+          color: #FFF;
+          font-family: 'HelveticaNeue', 'Monaco';
+
+          // Forbid user interaction
+          -webkit-user-select: none;  /* Chrome all / Safari all */
+          -moz-user-select: none;     /* Firefox all */
+          -ms-user-select: none;      /* IE 10+ */
+          user-select: none;          /* Likely future */
+          outline: none;
+        }
+
+        .App-CreateItem {
+          background: linear-gradient(to left, #bd6035, #c28062);
+          width: 60%;
+          border-top-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+          &:active {
+            background-color: rgba($color: #aa3d0b, $alpha: 1);
+          }
+        }
+        .App-CreateFast {
+          background: linear-gradient(to left, #bb4c18, #bd6035);
+          width: 40%;
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+          margin-left: -1px;
+          &:active {
+            background-color: rgba($color: #882e05, $alpha: 1);
+          }
+        }
+      }
+    }
+  }
+}
