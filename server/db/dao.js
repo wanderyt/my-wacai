@@ -16,17 +16,17 @@ const createDBConnection = () => {
 const insertFinData = (db, data, callback) => {
   let sql = '', id = '';
   if (Array.isArray(data)) {
-    data.map(({id, category, subcategory, money, comment, date}) => {
+    data.map(({id, category, subcategory, money, amount, comment, date}) => {
       let tmpSql =
-        `insert into ${TABLE_NAME}(id, category, subcategory, date, comment, money)
-        values ("${id}", "${category}", "${subcategory}", "${date}", "${comment}", "${money}");`;
+        `insert into ${TABLE_NAME}(id, category, subcategory, date, comment, amount)
+        values ("${id}", "${category}", "${subcategory}", "${date}", "${comment}", "${money || amount}");`;
       sql += tmpSql;
     });
   } else {
     id = data.id;
     sql =
-      `insert into ${TABLE_NAME}(id, category, subcategory, date, comment, money)
-      values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment}", "${data.money}");`;
+      `insert into ${TABLE_NAME}(id, category, subcategory, date, comment, amount)
+      values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment}", "${data.money || data.amount}");`;
   }
 
   db.run(sql, (err) => {

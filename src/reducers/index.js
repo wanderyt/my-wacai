@@ -1,3 +1,8 @@
 import {combineReducers} from 'redux';
+import fin from './fin';
 
-export default combineReducers({});
+const reducers = combineReducers({
+  fin
+});
+
+export default reducers;

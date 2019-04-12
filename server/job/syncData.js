@@ -115,7 +115,7 @@ const syncData = async ({
     if (failedRecords.length > 0) {
       logger.error('Failed to write ', failedRecords.length, ' records.');
       failedRecords.forEach((item) => {
-        logger.error('Failed record: ', `${item.id} | ${item.comment} | ${item.category} | ${item.subcategory} | ${item.date} | ${item.money}`);
+        logger.error('Failed record: ', `${item.id} | ${item.comment} | ${item.category} | ${item.subcategory} | ${item.date} | ${item.amount}`);
       });
     }
 

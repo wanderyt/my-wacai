@@ -1,0 +1,32 @@
+.FinItemDetails {
+  background-color: transparent; // test
+  .Fin-Nav {
+    position: relative;
+    height: 30px;
+    .Fin-Nav-Out {
+      line-height: 30px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #FFF;
+      text-align: center;
+    }
+    .Fin-Nav-Arrow {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+
+      border-top: 0px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid #FFF;
+    }
+  }
+  .Fin-WhiteBack {
+    background-color: #FFF;
+  }
+
+  .Fin-Toolbar {
+    height: 100vh;
+  }
+}
