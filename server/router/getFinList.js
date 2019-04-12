@@ -20,15 +20,11 @@ router.get('/getFinList', (req, res) => {
           error: finListResponse.err || finListByMonthResponse.err
         });
       } else {
-        let total = 0;
-        finListByMonthResponse.rows.forEach((item) => {
-          total += item.amount;
-        });
         res.statusCode = 200;
         res.send({
           status: true,
           data: finListResponse.rows,
-          total
+          monthData: finListByMonthResponse.rows
         });
       }
     });

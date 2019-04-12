@@ -12,7 +12,7 @@ const FinItemThin = ({item, onClickHandler = () => void 0}) => {
   };
 
   return (
-    <div className='FinItemThin'
+    <div className='FinItemThin forbid-select'
       onClick={selectItem}>
       <div className='FinItem'>
         <div className='Fin-Left'>
