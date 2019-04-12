@@ -1,5 +1,6 @@
-import {selectItem} from './fin';
+import {selectItem, resetSelectedItem} from './fin';
 
 export {
-  selectItem
+  selectItem,
+  resetSelectedItem
 };
