@@ -1,0 +1,38 @@
+$GREY-COLOR: rgb(141, 140, 140);
+$HOVER-GREY-COLOR: rgb(199, 197, 197);
+
+.FinItemThin {
+  padding: 0 15px;
+  &:active {
+    background-color: $HOVER-GREY-COLOR;
+  }
+  .FinItem {
+    height: 50px;
+    padding: 10px 0;
+    border-bottom: 1px solid $GREY-COLOR;
+    .Fin-Left {
+      float: left;
+      .Fin-SubCat {
+        line-height: 30px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .Fin-Info {
+        line-height: 20px;
+        font-size: 14px;
+        color: $GREY-COLOR;
+
+        .Fin-Comment {
+          margin-left: 5px;
+        }
+      }
+    }
+    .Fin-Right {
+      float: right;
+      line-height: 50px;
+      font-size : 25px;
+      color: red;
+      font-weight: bold;
+    }
+  }
+}

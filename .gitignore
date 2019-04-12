@@ -24,7 +24,12 @@ yarn-error.log*
 
 # db
 wacai.db
-/server/wacai/token.txt
+
+# log
+/log
+
+# wacai
+/server/token.txt
 
 # env
 .env

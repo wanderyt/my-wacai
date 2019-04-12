@@ -1,10 +1,14 @@
 import React, {useEffect, useState} from 'react';
+import {connect} from 'react-redux';
 import Axios from 'axios';
+import FinMain from './modules/fin-main';
+import FinItemDetails from './modules/fin-item-details';
 
 import './App.scss';
 
-const App = (props) => {
+const App = ({selectedItem}) => {
   let [monthTotal, setMonthTotal] = useState(0);
+  let [finList, setFinList] = useState([]);
 
   // Set monthly total amount
   useEffect(() => {
@@ -13,12 +17,15 @@ const App = (props) => {
         let total = 0;
         let finList = data.data || [];
         finList.forEach(element => {
-          total += element.money;
+          total += element.amount;
         });
 
+        setFinList(finList);
         setMonthTotal(total);
       });
-  });
+
+    // setMonthTotal(100);
+  }, []);
 
   return (
     <div className="App">
@@ -27,16 +34,23 @@ const App = (props) => {
           <div className='Caption'>本月总计</div>
           <div className='Amount'>{monthTotal}</div>
         </div>
-        <div className='App-Toolbar'>
-          <div className='App-Toolbtn'>
-            <div className={`App-Btn App-CreateItem`}>记一笔</div>
-            <div className={`App-Btn App-CreateFast`}>速记</div>
-          </div>
-        </div>
       </div>
-      <div className='App-Container'></div>
+      {
+        selectedItem ?
+        <div className='App-FinDetails'>
+          <FinItemDetails item={selectedItem} />
+        </div>
+        :
+        <div className='App-Main'>
+          <FinMain items={finList} />
+        </div>
+      }
     </div>
   );
-}
+};
 
-export default App;
+const mapStateToProps = (state) => ({
+  selectedItem: state.fin ? state.fin.selectedItem : null
+});
+
+export default connect(mapStateToProps)(App);
