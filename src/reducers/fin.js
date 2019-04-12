@@ -5,6 +5,11 @@ const fin = (state = {}, action) => {
         ...state,
         selectedItem: action.item
       }
+    case 'RESET_SELECTED_ITEM':
+      return {
+        ...state,
+        selectedItem: null
+      }
     default:
       return state;
   }

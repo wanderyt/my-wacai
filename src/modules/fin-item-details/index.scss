@@ -1,3 +1,5 @@
+@import '../../colors.scss';
+
 .FinItemDetails {
   background-color: transparent; // test
   .Fin-Nav {
@@ -8,12 +10,12 @@
       font-size: 14px;
       font-weight: bold;
       color: #FFF;
-      text-align: center;
+      text-indent: 25px;
     }
     .Fin-Nav-Arrow {
       position: absolute;
       bottom: 0;
-      left: 50%;
+      left: 39px;
       transform: translateX(-50%);
 
       border-top: 0px;
@@ -23,10 +25,51 @@
     }
   }
   .Fin-WhiteBack {
-    background-color: #FFF;
+    background-color: rgba($color: #FFF, $alpha: 0.98);
+    padding: 0 10px;
+  }
+
+  .Fin-Header {
+    height: 60px;
+    line-height: 60px;
+    .Fin-SubCat {
+      float: left;
+    }
+    .Fin-Amount {
+      float: right;
+    }
+  }
+  .Fin-ComCats {
+    height: 120px;
+    line-height: 120px;
+  }
+  .Fin-Comment {
+    height: 50px;
+    line-height: 50px;
+  }
+  .Fin-Date {
+    height: 30px;
+    line-height: 30px;
   }
 
   .Fin-Toolbar {
     height: 100vh;
+    padding: 10px 0;
+    .Fin-Btns {
+      margin: 0 auto;
+      width: 80%;
+      display: flex;
+      justify-content: space-between;
+      .Fin-Btn {
+        border: 1px solid $GREY-BUTTON-BORDER;
+        border-radius: 5px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+        font-weight: bold;
+        min-width: 80px;
+        text-align: center;
+      }
+    }
   }
 }
