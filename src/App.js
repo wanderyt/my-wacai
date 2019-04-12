@@ -14,12 +14,8 @@ const App = ({selectedItem}) => {
   useEffect(() => {
     Axios.get('/api/wacai/getFinList')
       .then(({data}) => {
-        let total = 0;
+        let total = data.total || 0;
         let finList = data.data || [];
-        finList.forEach(element => {
-          total += element.amount;
-        });
-
         setFinList(finList);
         setMonthTotal(total);
       });

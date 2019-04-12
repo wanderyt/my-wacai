@@ -40,3 +40,5 @@ const FinItemDetails = ({item = {}, dispatch}) => {
 };
 
 export default connect()(FinItemDetails);
+
+// 103707842
