@@ -5,5 +5,5 @@ CREATE TABLE FIN (
   subcategory VARCHAR(100),
   comment VARCHAR(200),
   date TEXT,
-  money DECIMAL(10, 2)
+  amount DECIMAL(10, 2)
 );
