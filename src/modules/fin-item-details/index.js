@@ -19,7 +19,7 @@ const FinItemDetails = ({item = {}, dispatch}) => {
       </div>
       <div className='Fin-Header Fin-WhiteBack'>
         <div className='Fin-SubCat'>{subcategory}</div>
-        <div className='Fin-Amount'>{amount}</div>
+        <div className='Fin-Amount'>{parseFloat(amount).toFixed(2)}</div>
       </div>
       <div className='Fin-ComCats Fin-WhiteBack'>
         <div className='Fin-ComCat'></div>

@@ -28,7 +28,7 @@ const App = ({selectedItem}) => {
       <div className='App-Header'>
         <div className='Header-MonthTotal'>
           <div className='Caption'>本月总计</div>
-          <div className='Amount'>{monthTotal}</div>
+          <div className='Amount'>{parseFloat(monthTotal).toFixed(2)}</div>
         </div>
       </div>
       {

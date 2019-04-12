@@ -23,7 +23,7 @@ const FinItemThin = ({item, onClickHandler = () => void 0}) => {
           </div>
         </div>
         <div className='Fin-Right'>
-          <span className='Fin-Amount'>{amount}</span>
+          <span className='Fin-Amount'>{parseFloat(amount).toFixed(2)}</span>
         </div>
       </div>
     </div>
