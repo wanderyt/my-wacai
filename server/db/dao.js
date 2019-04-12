@@ -92,9 +92,9 @@ const getFinList = (db, options, callback) => {
  * @param {string} options.month query month details, format as 'YYYY-MM'
  * @param {function} callback
  */
-const getFinListByMonth = (db, options, callback) => {
+const getSumByMonth = (db, options, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select * from ${TABLE_NAME} where date like '${options.month}-%';`;
+    let sql = `select sum(amount) as total from (select * from ${TABLE_NAME} where date like '${options.month}-%');`;
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError('getFinListByMonth - Fetch data in FIN table', sql, err);
@@ -120,7 +120,7 @@ module.exports = {
   insertFinData,
   deleteAllData,
   getFinList,
-  getFinListByMonth,
+  getSumByMonth,
   closeDB,
 };
 
