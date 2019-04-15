@@ -53,7 +53,7 @@ const FinItemDetails = ({item = {}, dispatch}) => {
       <div className='Fin-Date Fin-WhiteBack'>
         {/* {latestItem.date} */}
         <DateTime
-          value={new Date(latestItem.date)}
+          value={new Date(latestItem.date.replace(/-/g, '/'))}
           defaultValue={new Date()}
           onChange={handleDateTimeChange} />
       </div>
