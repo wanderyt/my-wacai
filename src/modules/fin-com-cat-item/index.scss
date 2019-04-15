@@ -1,0 +1,12 @@
+@import '../../colors.scss';
+
+.FinComCatItem {
+  padding: 2px;
+  text-align: center;
+  border: 1px solid $GREY-BUTTON-BORDER;
+  border-radius: 5px;
+  min-width: 80px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+}

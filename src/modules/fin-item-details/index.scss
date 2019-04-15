@@ -1,4 +1,5 @@
 @import '../../colors.scss';
+@import '../../../node_modules/react-datetime/css/react-datetime.css';
 
 .FinItemDetails {
   background-color: transparent; // test
@@ -33,23 +34,56 @@
     height: 60px;
     line-height: 60px;
     .Fin-SubCat {
+      text-indent: 40px;
       float: left;
+
+      background-image: url('./category.png');
+      background-size: 30px;
+      background-position-y: center;
+      background-repeat: no-repeat;
     }
     .Fin-Amount {
       float: right;
+      input {
+        text-align: right;
+        font-size: 24px;
+        color: red;
+        font-weight: bold;
+        outline: none;
+      }
     }
   }
   .Fin-ComCats {
-    height: 120px;
-    line-height: 120px;
+    .Fin-ComCat-Container {
+      height: 120px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      border-top: 1px dashed $GREY-BUTTON-BORDER;
+      border-bottom: 1px dashed $GREY-BUTTON-BORDER;
+      .Fin-ComCat {
+        display: inline-block;
+        width: 100px;
+        line-height: 60px;
+        margin: 0 5px;
+      }
+    }
   }
   .Fin-Comment {
     height: 50px;
     line-height: 50px;
+    .CommentInput {
+      width: 100%;
+      outline: none;
+      font-size: 16px;
+    }
   }
   .Fin-Date {
     height: 30px;
     line-height: 30px;
+    input {
+      outline: none;
+    }
   }
 
   .Fin-Toolbar {
