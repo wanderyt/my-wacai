@@ -33,3 +33,6 @@ wacai.db
 
 # env
 .env
+
+# IDE
+.vscode/
