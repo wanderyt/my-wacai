@@ -1,6 +1,6 @@
 {
   "name": "my-wacai",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.2.2",
@@ -71,8 +71,10 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "m": "concurrently --kill-others-on-fail \"node server/index.js\" \"npm run start\"",
     "server": "node server/index.js",
+    "test:server": "DB_TEST=TEST npm run server",
+    "m": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start\"",
+    "test:m": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run start\"",
     "sync": "node server/job/sync.js"
   },
   "eslintConfig": {

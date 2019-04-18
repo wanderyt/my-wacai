@@ -24,6 +24,7 @@ yarn-error.log*
 
 # db
 wacai.db
+test.db
 
 # log
 /log

@@ -1,9 +1,13 @@
 const sqlite3 = require('sqlite3').verbose();
-const {DB_FILE_PATH, TABLE_NAME} = require('./config');
+const {TEST_DB_FILE_PATH, DB_FILE_PATH, TABLE_NAME} = require('./config');
 const {logDBError, logDBSuccess} = require('./util');
 
 const createDBConnection = () => {
-  let db = new sqlite3.Database(DB_FILE_PATH, sqlite3.OPEN_READWRITE, (err) => {
+  console.log('process.env.DB_TEST: ', process.env.DB_TEST);
+  console.log('process.env.NODE_ENV: ', process.env.NODE_ENV);
+  let dbFilePath = process.env.DB_TEST ? TEST_DB_FILE_PATH : DB_FILE_PATH;
+  console.log('dbFilePath: ', dbFilePath);
+  let db = new sqlite3.Database(dbFilePath, sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error(err.message);
     }
