@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Loading from './modules/loading';
 
 import * as serviceWorker from './serviceWorker';
 
@@ -9,14 +10,23 @@ import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import reducer from './reducers';
+
+const initialState = {
+  fin: {
+    pageIndex: 'MAIN'
+  }
+};
+
 const store = createStore(
-  reducer, /* preloadedState, */
+  reducer,
+  initialState, // preloadedState
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
 ReactDOM.render(
   <Provider store={store}>
     <App />
+    {/* <Loading /> */}
   </Provider>,
   document.getElementById('root')
 );

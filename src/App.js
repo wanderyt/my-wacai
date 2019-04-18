@@ -3,10 +3,11 @@ import {connect} from 'react-redux';
 import Axios from 'axios';
 import FinMain from './modules/fin-main';
 import FinItemDetails from './modules/fin-item-details';
+import FinCatSelection from './modules/fin-cat-subcat';
 
 import './App.scss';
 
-const App = ({selectedItem}) => {
+const App = ({pageIndex, selectedItem}) => {
   let [monthTotal, setMonthTotal] = useState(0);
   let [finList, setFinList] = useState([]);
 
@@ -19,26 +20,35 @@ const App = ({selectedItem}) => {
         setFinList(finList);
         setMonthTotal(total);
       });
-
-    // setMonthTotal(100);
   }, []);
 
   return (
     <div className="App">
-      <div className='App-Header'>
-        <div className='Header-MonthTotal'>
-          <div className='Caption'>本月总计</div>
-          <div className='Amount'>{parseFloat(monthTotal).toFixed(2)}</div>
-        </div>
-      </div>
       {
-        selectedItem ?
-        <div className='App-FinDetails'>
-          <FinItemDetails item={selectedItem} />
+        pageIndex === 'CATEGORY_SELECTION' &&
+        <div className='App-Page-Cat-Selection'>
+          <FinCatSelection />
         </div>
-        :
-        <div className='App-Main'>
-          <FinMain items={finList} />
+      }
+      {
+        pageIndex === 'MAIN' &&
+        <div className='App-Page-Main'>
+          <div className='App-Header'>
+            <div className='Header-MonthTotal'>
+              <div className='Caption'>本月总计</div>
+              <div className='Amount'>{parseFloat(monthTotal).toFixed(2)}</div>
+            </div>
+          </div>
+          {
+            selectedItem ?
+            <div className='App-FinDetails'>
+              <FinItemDetails item={selectedItem} />
+            </div>
+            :
+            <div className='App-Main'>
+              <FinMain items={finList} />
+            </div>
+          }
         </div>
       }
     </div>
@@ -46,7 +56,8 @@ const App = ({selectedItem}) => {
 };
 
 const mapStateToProps = (state) => ({
-  selectedItem: state.fin ? state.fin.selectedItem : null
+  selectedItem: state.fin ? state.fin.selectedItem : null,
+  pageIndex: state.fin ? state.fin.pageIndex : 'MAIN'
 });
 
 export default connect(mapStateToProps)(App);
