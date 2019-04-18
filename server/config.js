@@ -3,6 +3,10 @@ const dotenvFiles = [
   './.env.ins'
 ];
 
+if (process.env.DB_TEST) {
+  dotenvFiles.push('./.env.test');
+}
+
 const serverWatchedFiles = [
   'server/**/*.js',
   ...dotenvFiles

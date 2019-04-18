@@ -1,0 +1,23 @@
+.Loading {
+  font-size: 10px;
+  position: relative;
+  &:after {
+    position: absolute;
+    border: 0.25em solid rgb(141, 140, 140);;
+    border-top-color: #1AC7C7;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    content: ' ';
+    left: 0;
+    box-sizing: border-box;
+    animation: animate-loading 2.5s steps(4, end) infinite;
+    border-radius: 50%;
+  }
+}
+@keyframes animate-loading {
+  100% {
+    border-top-color: #CFEB34;
+    transform: rotateZ(360deg);
+  }
+}

@@ -1,18 +1,25 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import FinComCatItem from '../fin-com-cat-item';
 import DateTime from 'react-datetime';
 import {connect} from 'react-redux';
-import {resetSelectedItem} from '../../actions';
 
 import {comCatItems} from './config';
 
 import './index.scss';
 
-const FinItemDetails = ({item = {}, dispatch}) => {
-  const [latestItem, setLatestItem] = useState({...item});
+const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
+  const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
+
+  useEffect(() => {
+    dispatch({
+      type: 'RESET_UPDATED_CAT_GROUP'
+    })
+  }, []);
 
   const handleBackBtn = () => {
-    dispatch(resetSelectedItem());
+    dispatch({
+      type: 'RESET_SELECTED_ITEM',
+    });
   }
 
   const handleCommonCatClick = (category, subcategory) => {
@@ -30,6 +37,16 @@ const FinItemDetails = ({item = {}, dispatch}) => {
 
   const handleAmountFocus = (evt) => {
     evt.target.value = latestItem.amount;
+  }
+
+  const handleCatSelection = () => {
+    dispatch({
+      type: 'CHANGE_TO_CATEGORY_SELECTION',
+      selectedCatGroup: {
+        category: latestItem.category,
+        subcategory: latestItem.subcategory
+      }
+    });
   }
 
   const handleAmountChange = (evt) => {
@@ -58,7 +75,11 @@ const FinItemDetails = ({item = {}, dispatch}) => {
           onChange={handleDateTimeChange} />
       </div>
       <div className='Fin-Header Fin-WhiteBack'>
-        <div className='Fin-SubCat'>{latestItem.subcategory}</div>
+        <div
+          className='Fin-SubCat'
+          onClick={handleCatSelection}>
+          {latestItem.subcategory}
+        </div>
         <div className='Fin-Amount'>
           <input
             onFocus={handleAmountFocus}
@@ -83,7 +104,7 @@ const FinItemDetails = ({item = {}, dispatch}) => {
         </div>
       </div>
       <div className='Fin-Comment Fin-WhiteBack'>
-        <input className='CommentInput' type='input' onChange={handleCommentChange} value={latestItem.comment} />
+        <input className='CommentInput' placeholder='备注' type='input' onChange={handleCommentChange} value={latestItem.comment} />
       </div>
       <div className='Fin-Toolbar Fin-WhiteBack'>
         <div className='Fin-Btns'>
@@ -102,4 +123,12 @@ const FinItemDetails = ({item = {}, dispatch}) => {
   )
 };
 
-export default connect()(FinItemDetails);
+const mapStateToProps = (state) => {
+  let fin = state.fin || {};
+  let updatedCatGroup = fin.updatedCatGroup || {};
+  return {
+    updatedCatGroup
+  }
+};
+
+export default connect(mapStateToProps)(FinItemDetails);

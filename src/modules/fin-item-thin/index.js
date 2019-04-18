@@ -1,14 +1,16 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {selectItem} from '../../actions';
 
 import './index.scss';
 
-const FinItemThin = ({item, onClickHandler = () => void 0}) => {
+const FinItemThin = ({item, dispatch}) => {
   const {subcategory, date, amount, comment} = item;
 
   const selectItem = () => {
-    onClickHandler(item);
+    dispatch({
+      type: 'SELECT_ITEM',
+      item
+    });
   };
 
   return (
@@ -30,8 +32,4 @@ const FinItemThin = ({item, onClickHandler = () => void 0}) => {
   )
 };
 
-const mapDispatchToProps = {
-  onClickHandler: selectItem
-};
-
-export default connect(null, mapDispatchToProps)(FinItemThin);
+export default connect()(FinItemThin);

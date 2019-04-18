@@ -1,0 +1,77 @@
+@import '../../colors.scss';
+
+.FinCatSubCat {
+  height: 100vh;
+  background-color: $LIGHT-GREY;
+  .FinCatSubCat-Header {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #FFF;
+    padding-bottom: 10px;
+    .Header-Border {
+      border-bottom: 1px solid #c7c5c5;
+      .Header-BackBtn {
+        transform: rotate(-180deg);
+        background-image: url('./arrow.svg');
+        background-position: left center;
+        background-repeat: no-repeat;
+        height: 40px;
+        cursor: pointer;
+        position: absolute;
+      }
+    }
+    .Header-BackBtn {
+      transform: rotate(-180deg);
+      background-image: url('./arrow.svg');
+      background-position: left center;
+      background-repeat: no-repeat;
+      width: 18px;
+      height: 30px;
+      cursor: pointer;
+      position: absolute;
+    }
+  }
+  .FinCatSubCat-Container {
+    display: flex;
+    .Cats {
+      flex-grow: 1;
+      .CatItem {
+        height: 60px;
+        position: relative;
+        .CatItem-Border {
+          line-height: 60px;
+          font-size: 20px;
+          text-align: center;
+        }
+        .CatItem-Border-Selected {
+          color: red;
+          &::after {
+            content: '';
+            border-left: 0;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-right: 7px solid #FFF;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+          }
+        }
+      }
+    }
+    .SubCats {
+      flex-grow: 3;
+      background-color: #FFF;
+      .SubCatItem {
+        height: 50px;
+        line-height: 50px;
+        font-size: 18px;
+        padding: 0 10px;
+        .SubCat-Border {
+          border-bottom: 1px solid $HOVER-GREY-COLOR;
+        }
+      }
+    }
+  }
+}
