@@ -1,6 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
-const {TEST_DB_FILE_PATH, DB_FILE_PATH, TABLE_NAME} = require('./config');
+const {TEST_DB_FILE_PATH, DB_FILE_PATH, FIN_TABLE_NAME, CATEGORY_TABLE_NAME} = require('./config');
 const {logDBError, logDBSuccess} = require('./util');
+const log4js = require('log4js');
+const logger = log4js.getLogger('wacai');
 
 const createDBConnection = () => {
   console.log('process.env.DB_TEST: ', process.env.DB_TEST);
@@ -10,8 +12,11 @@ const createDBConnection = () => {
   let db = new sqlite3.Database(dbFilePath, sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error(err.message);
+      logger.error(`Failed to connect to the chinook database: ${dbFilePath}`);
+      logger.error(err.message);
     }
     console.log('Connected to the chinook database.');
+    logger.info(`Connected to the chinook database: ${dbFilePath}`);
   });
 
   return db;
@@ -22,14 +27,14 @@ const insertFinData = (db, data, callback) => {
   if (Array.isArray(data)) {
     data.map(({id, category, subcategory, money, amount, comment, date}) => {
       let tmpSql =
-        `insert into ${TABLE_NAME}(id, category, subcategory, date, comment, amount)
+        `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount)
         values ("${id}", "${category}", "${subcategory}", "${date}", "${comment}", "${money || amount}");`;
       sql += tmpSql;
     });
   } else {
     id = data.id;
     sql =
-      `insert into ${TABLE_NAME}(id, category, subcategory, date, comment, amount)
+      `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount)
       values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment}", "${data.money || data.amount}");`;
   }
 
@@ -45,7 +50,7 @@ const insertFinData = (db, data, callback) => {
 };
 
 const deleteAllData = (db, callback) => {
-  let sql = `delete from ${TABLE_NAME};`;
+  let sql = `delete from ${FIN_TABLE_NAME};`;
   db.run(sql, (err) => {
     if (err) {
       logDBError('Delete all data in FIN table', sql, err);
@@ -66,7 +71,7 @@ const deleteAllData = (db, callback) => {
  */
 const getFinList = (db, options, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select * from ${TABLE_NAME} order by date desc`;
+    let sql = `select * from ${FIN_TABLE_NAME} order by date desc`;
     if (options) {
       if (options.top) {
         sql += ' limit ' + options.top;
@@ -98,12 +103,37 @@ const getFinList = (db, options, callback) => {
  */
 const getSumByMonth = (db, options, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select sum(amount) as total from (select * from ${TABLE_NAME} where date like '${options.month}-%');`;
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date like '${options.month}-%');`;
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError('getFinListByMonth - Fetch data in FIN table', sql, err);
       } else {
         logDBSuccess('getFinListByMonth - Fetch data in FIN table', sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all category groups
+ * @param {Object} db DB connection object
+ * @param {Object} options options for sql
+ * @param {function} callback
+ */
+const getCategoryGroup = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select category, subcategory, is_common from ${CATEGORY_TABLE_NAME};`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError('getCategoryGroup - Fetch data in CATEGORY table', sql, err);
+      } else {
+        logDBSuccess('getCategoryGroup - Fetch data in CATEGORY table', sql);
       }
 
       callback && callback(err, rows);
@@ -125,6 +155,7 @@ module.exports = {
   deleteAllData,
   getFinList,
   getSumByMonth,
+  getCategoryGroup,
   closeDB,
 };
 

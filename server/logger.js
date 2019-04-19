@@ -18,7 +18,7 @@ const formatDate = (date = new Date()) => {
 
 const now = formatDate(new Date());
 const LOG_PATH = './log/wacai/';
-const logName = LOG_PATH + 'server-debug-' + now + '.log';
+const logName = LOG_PATH + `${process.env.DB_TEST ? 'test-' : ''}server-debug-` + now + '.log';
 console.log('logName: ', logName);
 
 log4js.configure({
