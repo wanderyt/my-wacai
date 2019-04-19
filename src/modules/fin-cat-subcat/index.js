@@ -1,10 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
+import Axios from 'axios';
 
 import './index.scss';
 
 const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
   const [selectedCat, setSelectedCat] = useState(selectedCatGroup.category || '');
+  const [categoryGroups, setCategoryGroups] = useState({});
+
+  useEffect(() => {
+    Axios.get('/api/wacai/getCategoryGroup')
+      .then(({data}) => {
+        let categoryGroupData = data.data || {};
+        setCategoryGroups(categoryGroupData);
+      });
+  }, [])
 
   const handleCatClick = (cat) => {
     setSelectedCat(cat);
@@ -38,17 +48,29 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
       </div>
       <div className='FinCatSubCat-Container'>
         <div className='Cats'>
-          <div
+          {/* <div
             className='CatItem'
             onClick={() => handleCatClick('周中')}>
             <div
               className={`CatItem-Border ${selectedCat === '周中' ? 'CatItem-Border-Selected' : ''}`}>
               周中
             </div>
-          </div>
+          </div> */}
+          {
+            Object.keys(categoryGroups).map((cat) => (
+              <div
+                className='CatItem'
+                onClick={() => handleCatClick(cat)}>
+                <div
+                  className={`CatItem-Border ${selectedCat === cat ? 'CatItem-Border-Selected' : ''}`}>
+                  {cat}
+                </div>
+              </div>
+            ))
+          }
         </div>
         <div className='SubCats'>
-          <div
+          {/* <div
             className='SubCatItem'
             onClick={() => handleSubCatSelected('午餐')}>
             <div className='SubCat-Border'>
@@ -65,7 +87,20 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
                 晚餐
               </div>
             </div>
-          </div>
+          </div> */}
+          {
+            selectedCat && categoryGroups[selectedCat] && categoryGroups[selectedCat].map(({subcategory, isCommon}, index) => (
+              <div
+                className='SubCatItem'
+                onClick={() => handleSubCatSelected(subcategory)}>
+                <div className={`${index !== categoryGroups[selectedCat].length - 1 ? 'SubCat-Border' : ''}`}>
+                  <div className='SubCat-Text'>
+                    {subcategory}
+                  </div>
+                </div>
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>
