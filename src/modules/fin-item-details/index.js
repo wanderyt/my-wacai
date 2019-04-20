@@ -93,6 +93,11 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
       });
   }
 
+  /*
+    Format change from '2019-04-20 19:20:00' to '2019/04/20 19:20:00'
+    Required on mobile browser difference
+    latestItem.date.replace(/-/g, '/')
+  */
   return (
     <div className='FinItemDetails'>
       <div className='Fin-Nav'>
@@ -101,8 +106,6 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
       </div>
       <div className='Fin-Date Fin-WhiteBack'>
         <DateTime
-          // Format change from '2019-04-20 19:20:00' to '2019/04/20 19:20:00'
-          // Required on mobile browser difference
           value={new Date(latestItem.date.replace(/-/g, '/'))}
           defaultValue={new Date()}
           onChange={handleDateTimeChange} />
