@@ -1,4 +1,4 @@
-import {formatDate} from '../utils/helper';
+import {formatDateTime} from '../utils/helper';
 
 const fin = (state = {}, action) => {
   switch (action.type) {
@@ -18,7 +18,7 @@ const fin = (state = {}, action) => {
         selectedItem: {
           category: '周末',
           subcategory: '晚餐',
-          date: formatDate(),
+          date: formatDateTime(),
           amount: 0
         }
       };

@@ -2,8 +2,10 @@ import React, {useState, useEffect} from 'react';
 import FinComCatItem from '../fin-com-cat-item';
 import DateTime from 'react-datetime';
 import {connect} from 'react-redux';
+import Axios from 'axios';
 
 import {comCatItems} from './config';
+import {uuid} from '../../utils/helper';
 
 import './index.scss';
 
@@ -35,10 +37,6 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     setLatestItem(Object.assign({}, latestItem, {date: newDateString}));
   }
 
-  const handleAmountFocus = (evt) => {
-    evt.target.value = latestItem.amount;
-  }
-
   const handleCatSelection = () => {
     dispatch({
       type: 'CHANGE_TO_CATEGORY_SELECTION',
@@ -47,6 +45,14 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         subcategory: latestItem.subcategory
       }
     });
+  }
+
+  const handleAmountFocus = (evt) => {
+    if (latestItem.amount) {
+      evt.target.value = latestItem.amount;
+    } else {
+      evt.target.value = '';
+    }
   }
 
   const handleAmountChange = (evt) => {
@@ -61,6 +67,32 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     evt.target.value = parseFloat(latestItem.amount).toFixed(2);
   }
 
+  const handleSaveButton = () => {
+    let requestUrl = '', data = {};
+    if (latestItem.id) {
+      requestUrl = '/api/wacai/updateFinItem';
+      data = {...latestItem};
+    } else {
+      requestUrl = '/api/wacai/createFinItem';
+      data = {...latestItem, id: uuid()};
+    }
+    Axios.post(requestUrl, {data})
+      .then(() => {
+        dispatch({
+          type: 'RESET_SELECTED_ITEM'
+        });
+      });
+  }
+
+  const handleDeleteButton = () => {
+    Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`)
+      .then(() => {
+        dispatch({
+          type: 'RESET_SELECTED_ITEM'
+        });
+      });
+  }
+
   return (
     <div className='FinItemDetails'>
       <div className='Fin-Nav'>
@@ -68,9 +100,8 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         <div className='Fin-Nav-Arrow' />
       </div>
       <div className='Fin-Date Fin-WhiteBack'>
-        {/* {latestItem.date} */}
         <DateTime
-          value={new Date(latestItem.date.replace(/-/g, '/'))}
+          value={new Date(latestItem.date)}
           defaultValue={new Date()}
           onChange={handleDateTimeChange} />
       </div>
@@ -82,6 +113,7 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         </div>
         <div className='Fin-Amount'>
           <input
+            type='number'
             onFocus={handleAmountFocus}
             onBlur={handleAmountBlur}
             onChange={handleAmountChange}
@@ -114,9 +146,18 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
             返回
           </div>
           {
-            latestItem.id && <div className='Fin-Btn Fin-DeleteBtn'>删除</div>
+            latestItem.id &&
+            <div
+              className='Fin-Btn Fin-DeleteBtn'
+              onClick={handleDeleteButton}>
+              删除
+            </div>
           }
-          <div className='Fin-Btn Fin-SaveBtn'>保存</div>
+          <div
+            className='Fin-Btn Fin-SaveBtn'
+            onClick={handleSaveButton}>
+            保存
+          </div>
         </div>
       </div>
     </div>
