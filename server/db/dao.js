@@ -145,6 +145,106 @@ const getCategoryGroup = (db, options, callback) => {
   return promise;
 }
 
+/**
+ * Create fin item record
+ * @param {object} db
+ * @param {object} data target fin item
+ * @param {string} data.id target fin item id
+ * @param {string} data.category target fin item category
+ * @param {string} data.subcategory target fin item subcategory
+ * @param {string} data.date target fin item date
+ * @param {string} data.comment target fin item comment
+ * @param {number} data.amount target fin item amount
+ * @param {function} callback
+ */
+const createFinItem = (db, data, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql =
+      `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount)
+      values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment}", ${data.amount});`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql, err);
+      } else {
+        logDBSuccess(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql);
+      }
+
+      callback && callback(err);
+
+      resolve({err});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Update existing fin item
+ * @param {object} db
+ * @param {object} data target fin item
+ * @param {string} data.id target fin item id
+ * @param {string} data.category target fin item category
+ * @param {string} data.subcategory target fin item subcategory
+ * @param {string} data.date target fin item date
+ * @param {string} data.comment target fin item comment
+ * @param {number} data.amount target fin item amount
+ * @param {function} callback
+ */
+const updateFinItem = (db, data, callback) => {
+  let promise = new Promise((resolve) => {
+    let updateOptions = '';
+    for (const key in data) {
+      if (key !== 'id') {
+        const value = data[key];
+        updateOptions += `${key}="${value}", `;
+      }
+    }
+    updateOptions = updateOptions.slice(0, updateOptions.length - 2);
+
+    let sql = `update ${FIN_TABLE_NAME} set ${updateOptions} where id = "${data.id}";`;
+
+    console.log('david sql: ', sql);
+    db.run(sql, (err) => {
+      if (err) {
+        logDBError(`updateFinItem - Update fin data in ${FIN_TABLE_NAME} table`, sql, err);
+      } else {
+        logDBSuccess(`updateFinItem - Update fin data in ${FIN_TABLE_NAME} table`, sql);
+      }
+
+      callback && callback(err);
+
+      resolve({err});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Delete specific fin item
+ * @param {object} db
+ * @param {string} id target fin item data id
+ * @param {function} callback
+ */
+const deleteFinItem = (db, id, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `delete from ${FIN_TABLE_NAME} where id = "${id}";`;
+    db.run(sql, (err) => {
+      if (err) {
+        logDBError('Delete fin data in FIN table', sql, err);
+      } else {
+        logDBSuccess('Delete fin data in FIN table', sql);
+      }
+
+      callback && callback(err);
+
+      resolve({err});
+    });
+  });
+
+  return promise;
+}
+
 const closeDB = (db) => {
   db.close();
 };
@@ -156,6 +256,9 @@ module.exports = {
   getFinList,
   getSumByMonth,
   getCategoryGroup,
+  createFinItem,
+  updateFinItem,
+  deleteFinItem,
   closeDB,
 };
 
