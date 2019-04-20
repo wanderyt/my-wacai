@@ -20,7 +20,7 @@ const App = ({pageIndex, selectedItem}) => {
         setFinList(finList);
         setMonthTotal(total);
       });
-  }, []);
+  }, [selectedItem]);
 
   return (
     <div className="App">
