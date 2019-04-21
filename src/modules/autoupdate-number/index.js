@@ -34,7 +34,7 @@ const AutoUpdateNumber = ({total, start = 0, duration = 200}) => {
       }
       setCurrentVal(currentStep);
     }, 1);
-  }, []);
+  }, [total]);
 
   return (
     <div className='AutoUpdateNumber'>
