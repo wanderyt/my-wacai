@@ -4,6 +4,7 @@ import Axios from 'axios';
 import FinMain from './modules/fin-main';
 import FinItemDetails from './modules/fin-item-details';
 import FinCatSelection from './modules/fin-cat-subcat';
+import AutoUpdateNumber from './modules/autoupdate-number';
 
 import './App.scss';
 
@@ -36,7 +37,11 @@ const App = ({pageIndex, selectedItem}) => {
           <div className='App-Header'>
             <div className='Header-MonthTotal'>
               <div className='Caption'>本月总计</div>
-              <div className='Amount'>{parseFloat(monthTotal).toFixed(2)}</div>
+              <div className='Amount'>
+                {/* {parseFloat(monthTotal).toFixed(2)} */}
+                <AutoUpdateNumber
+                  total={monthTotal} />
+              </div>
             </div>
           </div>
           {
