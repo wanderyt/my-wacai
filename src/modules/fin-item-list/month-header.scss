@@ -1,0 +1,61 @@
+@import '../../colors.scss';
+
+.MonthHeader {
+  background-color: $LIGHT-GREY;
+  height: 34px;
+  .MonthHeader-Container {
+    display: flex;
+    flex-wrap: nowrap;
+    .MonthTitle {
+      max-width: 50px;
+      padding: 0 5px;
+      text-align: center;
+      .Month {
+        color: $GREY-COLOR;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 16px;
+        padding: 2px 0;
+        letter-spacing: 1px;
+      }
+      .Year {
+        color: $DARK-GREY-COLOR;
+        font-size: 10px;
+        line-height: 10px;
+        padding: 2px 0;
+      }
+    }
+    .MonthExpense {
+      flex-grow: 10;
+      padding: 0 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      .ExpenseTitle {
+        padding: 2px 0;
+        color: $EXPENSE-FONT;
+        font-size: 12px;
+        line-height: 12px;
+      }
+      .ExpenseAmount {
+        padding: 3px 0;
+        .AmountBar {
+          height: 2px;
+          background-color: $EXPENSE-FONT;
+          vertical-align: middle;
+        }
+      }
+    }
+    .MonthHeader-Dropdown {
+      width: 30px;
+      background-image: url('./arrow.svg');
+      background-position: center;
+      background-size: 10px;
+      background-repeat: no-repeat;
+      transition: 0.2s linear;
+      &.MonthHeader-Expanded {
+        transform: rotate(90deg);
+      }
+    }
+  }
+}
