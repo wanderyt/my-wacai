@@ -75,7 +75,8 @@
     "test:server": "DB_TEST=TEST npm run server",
     "m": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start\"",
     "test:m": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run start\"",
-    "sync": "node server/job/sync.js"
+    "sync": "node server/job/sync.js",
+    "storybook": "node .story/index.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -138,6 +139,8 @@
   },
   "proxy": "http://localhost:2001",
   "devDependencies": {
+    "@storybook/addon-actions": "^5.0.10",
+    "@storybook/react": "^5.0.10",
     "gulp": "^4.0.0",
     "gulp-nodemon": "^2.4.2"
   }
