@@ -162,7 +162,7 @@ const createFinItem = (db, data, callback) => {
     let sql =
       `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount)
       values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment}", ${data.amount});`;
-    db.all(sql, (err, rows) => {
+    db.all(sql, (err) => {
       if (err) {
         logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql, err);
       } else {
@@ -202,8 +202,6 @@ const updateFinItem = (db, data, callback) => {
     updateOptions = updateOptions.slice(0, updateOptions.length - 2);
 
     let sql = `update ${FIN_TABLE_NAME} set ${updateOptions} where id = "${data.id}";`;
-
-    console.log('david sql: ', sql);
     db.run(sql, (err) => {
       if (err) {
         logDBError(`updateFinItem - Update fin data in ${FIN_TABLE_NAME} table`, sql, err);
@@ -245,6 +243,84 @@ const deleteFinItem = (db, id, callback) => {
   return promise;
 }
 
+/**
+ * Get all monthly total data.
+ * @param {object} db
+ * @param {function} callback
+ */
+const getMonthlyTotal = (db, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select sum(amount) as total, year_month from (select amount, substr(date, 1, 7) as year_month from ${FIN_TABLE_NAME}) group by year_month order by year_month desc;`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError('Fetch monthly total data in FIN table', sql, err);
+      } else {
+        logDBSuccess('Fetch monthly total data in FIN table', sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all daily total data.
+ * @param {object} db
+ * @param {object} options
+ * @param {string} options.year target year, format 'YYYY'
+ * @param {string} options.month target month, format 'MM'
+ * @param {function} callback
+ */
+const getDailyTotal = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select sum(amount) as total, year_month_date from (select amount, substr(date, 1, 10) as year_month_date from ${FIN_TABLE_NAME} where date like '${options.year}-${options.month}%') group by year_month_date order by year_month_date desc;`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError('Fetch monthly total data in FIN table', sql, err);
+      } else {
+        logDBSuccess('Fetch monthly total data in FIN table', sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get fin items by month
+ * @param {object} db
+ * @param {object} options
+ * @param {string} options.year target year, format 'YYYY'
+ * @param {string} options.month target month, format 'MM'
+ * @param {function} callback
+ */
+const getFinItemsByMonth = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${FIN_TABLE_NAME} where date like '${options.year}-${options.month}%' order by date desc;`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch month (${options.year}-${options.month}) details in FIN table`, sql, err);
+      } else {
+        logDBSuccess(`Fetch month (${options.year}-${options.month}) details in FIN table`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
 const closeDB = (db) => {
   db.close();
 };
@@ -259,6 +335,9 @@ module.exports = {
   createFinItem,
   updateFinItem,
   deleteFinItem,
+  getMonthlyTotal,
+  getDailyTotal,
+  getFinItemsByMonth,
   closeDB,
 };
 

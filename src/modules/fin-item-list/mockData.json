@@ -1,0 +1,169 @@
+{
+  "highestMonthAmount": 18092,
+  "items": [{
+    "month": "04",
+    "year": "2019",
+    "amount": 11092,
+    "items": [{
+      "date": "2019-04-20",
+      "amount": 1201,
+      "items": [{
+        "id": "893E5F3263FB4FF89A00464B87630A261",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-04-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A262",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-04-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A263",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-04-10 19:34:02"
+      }]
+    }, {
+      "date": "2019-04-19",
+      "amount": 1201,
+      "items": [{
+        "id": "893E5F3263FB4FF89A00464B87630A261",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-04-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A262",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-04-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A263",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-04-10 19:34:02"
+      }]
+    }]
+  }, {
+    "month": "03",
+    "year": "2019",
+    "amount": 18092,
+    "items": [{
+      "date": "2019-03-20",
+      "amount": 1201,
+      "items": [{
+        "id": "893E5F3263FB4FF89A00464B87630A261",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-03-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A262",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-03-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A263",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-03-10 19:34:02"
+      }]
+    }, {
+      "date": "2019-03-21",
+      "amount": 1201,
+      "items": [{
+        "id": "893E5F3263FB4FF89A00464B87630A261",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-03-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A262",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-03-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A263",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-03-10 19:34:02"
+      }]
+    }]
+  }, {
+    "month": "02",
+    "year": "2019",
+    "amount": 13092,
+    "items": [{
+      "date": "2019-02-20",
+      "amount": 1201,
+      "items": [{
+        "id": "893E5F3263FB4FF89A00464B87630A261",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-02-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A262",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-02-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A263",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-02-10 19:34:02"
+      }]
+    }, {
+      "date": "2019-02-24",
+      "amount": 1201,
+      "items": [{
+        "id": "893E5F3263FB4FF89A00464B87630A261",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-02-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A262",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-02-10 19:34:02"
+      }, {
+        "id": "893E5F3263FB4FF89A00464B87630A263",
+        "category": "周中",
+        "subcategory": "晚餐",
+        "amount": 103.6,
+        "comment": "紫燕百味鸡",
+        "date": "2019-02-10 19:34:02"
+      }]
+    }]
+  }]
+}

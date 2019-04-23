@@ -1,0 +1,21 @@
+.ListToolbar {
+  .ListToolbar-Container {
+    display: flex;
+    height: 40px;
+    padding-right: 10px;
+    .CloseBtn {
+      flex-grow: 1;
+      background-image: url('./close.png');
+      background-position: left center;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .SearchBtn {
+      flex-grow: 1;
+      background-image: url('./search.svg');
+      background-position: right center;
+      background-size: 30px;
+      background-repeat: no-repeat;
+    }
+  }
+}

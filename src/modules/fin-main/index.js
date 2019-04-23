@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import FinItemThin from '../fin-item-thin';
+import FinItem from '../fin-item';
 
 import './index.scss';
 
@@ -24,11 +24,15 @@ const FinMain = ({items, dispatch}) => {
         </div>
       </div>
       <div className='App-Container'>
-        {
-          items.map((item) => (
-            <FinItemThin item={item} />
-          ))
-        }
+        <div className='App-FinList'>
+          {
+            items.map((item, index) => (
+              <div key={index}>
+                <FinItem item={item} />
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   );

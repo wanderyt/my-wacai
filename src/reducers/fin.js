@@ -5,6 +5,7 @@ const fin = (state = {}, action) => {
     case 'SELECT_ITEM':
       return {
         ...state,
+        pageIndex: 'MAIN',
         selectedItem: action.item
       };
     case 'RESET_SELECTED_ITEM':
@@ -33,6 +34,11 @@ const fin = (state = {}, action) => {
         ...state,
         pageIndex: 'MAIN',
         updatedCatGroup: action.updatedCatGroup || {}
+      };
+    case 'CHANGE_TO_FIN_HISTORY':
+      return {
+        ...state,
+        pageIndex: 'FIN_HISTORY'
       };
     case 'RESET_UPDATED_CAT_GROUP':
       return {

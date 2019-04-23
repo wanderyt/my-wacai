@@ -4,11 +4,12 @@ import Axios from 'axios';
 import FinMain from './modules/fin-main';
 import FinItemDetails from './modules/fin-item-details';
 import FinCatSelection from './modules/fin-cat-subcat';
+import FinItemList from './modules/fin-item-list';
 import AutoUpdateNumber from './modules/autoupdate-number';
 
 import './App.scss';
 
-const App = ({pageIndex, selectedItem}) => {
+const App = ({pageIndex, selectedItem, dispatch}) => {
   let [monthTotal, setMonthTotal] = useState(0);
   let [finList, setFinList] = useState([]);
 
@@ -23,6 +24,12 @@ const App = ({pageIndex, selectedItem}) => {
       });
   }, [selectedItem]);
 
+  const handleTotalAmountClick = () => {
+    dispatch({
+      type: 'CHANGE_TO_FIN_HISTORY'
+    });
+  }
+
   return (
     <div className="App">
       {
@@ -32,15 +39,24 @@ const App = ({pageIndex, selectedItem}) => {
         </div>
       }
       {
+        pageIndex === 'FIN_HISTORY' &&
+        <div className='App-Page-Fin-History'>
+          <FinItemList />
+        </div>
+      }
+      {
         pageIndex === 'MAIN' &&
         <div className='App-Page-Main'>
           <div className='App-Header'>
             <div className='Header-MonthTotal'>
               <div className='Caption'>本月总计</div>
-              <div className='Amount'>
+              <div
+                className='Amount'
+                onClick={handleTotalAmountClick}>
                 {/* {parseFloat(monthTotal).toFixed(2)} */}
                 <AutoUpdateNumber
-                  total={monthTotal} />
+                  total={monthTotal}
+                  duration={100} />
               </div>
             </div>
           </div>

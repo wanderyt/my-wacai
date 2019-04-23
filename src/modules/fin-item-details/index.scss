@@ -62,8 +62,8 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      border-top: 1px dashed $GREY-BUTTON-BORDER;
-      border-bottom: 1px dashed $GREY-BUTTON-BORDER;
+      border-top: 1px dashed $GREY-LIGHT-II;
+      border-bottom: 1px dashed $GREY-LIGHT-II;
       .Fin-ComCat {
         display: inline-block;
         width: 100px;
@@ -97,7 +97,6 @@
   }
 
   .Fin-Toolbar {
-    height: 100vh;
     padding: 10px 0;
     .Fin-Btns {
       margin: 0 auto;
@@ -105,7 +104,7 @@
       display: flex;
       justify-content: space-between;
       .Fin-Btn {
-        border: 1px solid $GREY-BUTTON-BORDER;
+        border: 1px solid $GREY-LIGHT-II;
         border-radius: 5px;
         height: 30px;
         line-height: 30px;

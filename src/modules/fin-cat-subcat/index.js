@@ -57,9 +57,10 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
             </div>
           </div> */}
           {
-            Object.keys(categoryGroups).map((cat) => (
+            Object.keys(categoryGroups).map((cat, index) => (
               <div
                 className='CatItem'
+                key={index}
                 onClick={() => handleCatClick(cat)}>
                 <div
                   className={`CatItem-Border ${selectedCat === cat ? 'CatItem-Border-Selected' : ''}`}>
@@ -92,7 +93,8 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
             selectedCat && categoryGroups[selectedCat] && categoryGroups[selectedCat].map(({subcategory, isCommon}, index) => (
               <div
                 className='SubCatItem'
-                onClick={() => handleSubCatSelected(subcategory)}>
+                onClick={() => handleSubCatSelected(subcategory)}
+                key={index}>
                 <div className={`${index !== categoryGroups[selectedCat].length - 1 ? 'SubCat-Border' : ''}`}>
                   <div className='SubCat-Text'>
                     {subcategory}

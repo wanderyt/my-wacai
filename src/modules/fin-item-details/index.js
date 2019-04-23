@@ -129,9 +129,10 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         <div className='Fin-ComCat-Container'>
           {
             comCatItems.map((comItem, index) => (
-              <div className='Fin-ComCat'>
+              <div
+                className='Fin-ComCat'
+                key={index}>
                 <FinComCatItem
-                  key={index}
                   category={comItem.category}
                   subcategory={comItem.subcategory}
                   onClickHandler={handleCommonCatClick} />
