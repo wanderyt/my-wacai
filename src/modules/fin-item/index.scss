@@ -1,14 +1,15 @@
 @import '../../colors.scss';
 
-.FinItemThin {
-  padding: 0 15px;
+.FinItemPanel {
   &:active {
-    background-color: $HOVER-GREY-COLOR;
+    background-color: $GREY-LIGHT-III;
   }
   .FinItem {
     height: 50px;
     padding: 10px 0;
-    border-bottom: 1px solid $GREY-COLOR;
+    &.FinItem-Border {
+      border-bottom: 1px solid $GREY-REGULAR;
+    }
     .Fin-Left {
       float: left;
       .Fin-SubCat {
@@ -19,7 +20,7 @@
       .Fin-Info {
         line-height: 20px;
         font-size: 14px;
-        color: $GREY-COLOR;
+        color: $GREY-REGULAR;
 
         .Fin-Comment {
           margin-left: 5px;
