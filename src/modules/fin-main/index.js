@@ -26,8 +26,10 @@ const FinMain = ({items, dispatch}) => {
       <div className='App-Container'>
         <div className='App-FinList'>
           {
-            items.map((item) => (
-              <FinItem item={item} />
+            items.map((item, index) => (
+              <div key={index}>
+                <FinItem item={item} />
+              </div>
             ))
           }
         </div>
