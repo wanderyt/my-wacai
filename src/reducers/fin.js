@@ -34,6 +34,11 @@ const fin = (state = {}, action) => {
         pageIndex: 'MAIN',
         updatedCatGroup: action.updatedCatGroup || {}
       };
+    case 'CHANGE_TO_FIN_HISTORY':
+      return {
+        ...state,
+        pageIndex: 'FIN_HISTORY'
+      };
     case 'RESET_UPDATED_CAT_GROUP':
       return {
         ...state,
