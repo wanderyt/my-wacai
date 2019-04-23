@@ -5,6 +5,7 @@ const fin = (state = {}, action) => {
     case 'SELECT_ITEM':
       return {
         ...state,
+        pageIndex: 'MAIN',
         selectedItem: action.item
       };
     case 'RESET_SELECTED_ITEM':

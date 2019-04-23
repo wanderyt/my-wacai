@@ -1,10 +1,7 @@
 @import '../../colors.scss';
 
 .DayExpense {
-  border-top: 1px solid $GREY-LIGHT-II;
-  &.DayExpense-Last {
-    border-bottom: 1px solid $GREY-LIGHT-II;
-  }
+  border-bottom: 1px solid $GREY-LIGHT-II;
   .DayExpense-Container {
     padding-top: 5px;
     display: flex;

@@ -11,10 +11,10 @@ const weekdayMapping = (date = '2019-04-22') => {
   return mapping[day];
 };
 
-const DayExpense = ({date = '2019-04-22', isLast = false, amount = 1203, items = []}) => {
+const DayExpense = ({date = '2019-04-22', amount = 1203, items = []}) => {
   const day = date.substring(date.length - 2);
   return (
-    <div className={`DayExpense ${isLast ? 'DayExpense-Last' : ''}`}>
+    <div className='DayExpense'>
       <div className='DayExpense-Container'>
         <div className='DayInfo'>
           {day}
@@ -46,7 +46,6 @@ const DayExpense = ({date = '2019-04-22', isLast = false, amount = 1203, items =
 
 DayExpense.propTypes = {
   date: PropTypes.string,
-  isLast: PropTypes.bool,
   amount: PropTypes.number,
   items: PropTypes.arrayOf(PropTypes.object)
 };

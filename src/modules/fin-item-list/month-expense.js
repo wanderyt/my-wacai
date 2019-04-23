@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import Axios from 'axios';
 import DayExpense from './day-expense';
 
 import './month-expense.scss';
@@ -12,9 +13,21 @@ const BAR_WIDTH_BASE_PERC = 1;
 
 const MonthExpense = ({month = '04', year = '2019', amount = 11086.00, barWidthRatio = 1, dayItems = []}) => {
   const [expanded, setExpanded] = useState(false);
+  const [dailyDetails, setDailyDetails] = useState(dayItems);
 
   const handleExpansion = () => {
-    setExpanded(!expanded);
+    if (!expanded) {
+      setExpanded(!expanded);
+      if (dailyDetails.length <= 0) {
+        Axios.get(`/api/wacai/getFinItemsByMonth?month=${month}&year=${year}`)
+          .then(({data}) => {
+            let responseData = data.data || [];
+            setDailyDetails(responseData);
+          });
+      }
+    } else {
+      setExpanded(!expanded);
+    }
   }
 
   // Dynamically compute bar width
@@ -22,7 +35,9 @@ const MonthExpense = ({month = '04', year = '2019', amount = 11086.00, barWidthR
 
   return (
     <div className='MonthExpense'>
-      <div className={`MonthExpense-Container ${expanded ? '' : 'MonthExpenseBorder'}`}>
+      <div
+        className={`MonthExpense-Container ${expanded ? '' : 'MonthExpenseBorder'}`}
+        onClick={handleExpansion}>
         <div className='MonthTitle'>
           <div className='Month'>{month}</div>
           <div className='Year'>{year}</div>
@@ -38,17 +53,14 @@ const MonthExpense = ({month = '04', year = '2019', amount = 11086.00, barWidthR
               style={{width: barWidth}} />
           </div>
         </div>
-        <div
-          className={`MonthExpense-Dropdown ${expanded ? 'MonthExpense-Expanded' : ''}`}
-          onClick={handleExpansion} />
+        <div className={`MonthExpense-Dropdown ${expanded ? 'MonthExpense-Expanded' : ''}`} />
       </div>
       {
-        expanded && dayItems.map((dayItem, index) => (
+        expanded && dailyDetails.map((dayItem, index) => (
           <div
             key={index}>
             <DayExpense
               date={dayItem.date}
-              isLast={index === dayItems.length}
               amount={dayItem.amount}
               items={dayItem.items} />
           </div>
