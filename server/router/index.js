@@ -5,6 +5,8 @@ const updateFinItemRouter = require('./updateFinItem');
 const deleteFinItemRouter = require('./deleteFinItem');
 const getHistoryExpenseRouter = require('./getHistoryExpense');
 const getFinItemsByMonthRouter = require('./getFinItemsByMonth');
+const getFinTemplatesRouter = require('./getFinTemplates');
+const createFinTemplateRouter = require('./createFinTemplate');
 
 module.exports = {
   router: [
@@ -15,5 +17,7 @@ module.exports = {
     deleteFinItemRouter.router,
     getHistoryExpenseRouter.router,
     getFinItemsByMonthRouter.router,
+    getFinTemplatesRouter.router,
+    createFinTemplateRouter.router,
   ]
 };
