@@ -45,6 +45,16 @@
     }
   }
 
+  .App-Page-Fin-Template-List {
+    position: relative;
+    opacity: 1;
+
+    animation-name: fadeInLeftOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-duration: 0.2s;
+  }
+
   .App-Page-Main{
     .App-Header {
       height: 50vh;

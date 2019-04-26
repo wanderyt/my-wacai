@@ -5,6 +5,7 @@ import FinMain from './modules/fin-main';
 import FinItemDetails from './modules/fin-item-details';
 import FinCatSelection from './modules/fin-cat-subcat';
 import FinItemList from './modules/fin-item-list';
+import FinTemplateList from './modules/fin-template-list';
 import AutoUpdateNumber from './modules/autoupdate-number';
 
 import './App.scss';
@@ -42,6 +43,12 @@ const App = ({pageIndex, selectedItem, dispatch}) => {
         pageIndex === 'FIN_HISTORY' &&
         <div className='App-Page-Fin-History'>
           <FinItemList />
+        </div>
+      }
+      {
+        pageIndex === 'FIN_TEMPLATE_LIST' &&
+        <div className='App-Page-Fin-Template-List'>
+          <FinTemplateList />
         </div>
       }
       {

@@ -8,6 +8,9 @@ const FinMain = ({items, dispatch}) => {
   const handleCreateItem = () => {
     dispatch({type: 'CREATE_ITEM'});
   }
+  const handleCreateByTemplate = () => {
+    dispatch({type: 'CHANGE_TO_FIN_TEMPLATE_LIST'});
+  }
   return (
     <div className='FinMain'>
       <div className='App-Toolbar'>
@@ -18,7 +21,8 @@ const FinMain = ({items, dispatch}) => {
             记一笔
           </div>
           <div
-            className={`App-Btn forbid-select App-CreateFast`}>
+            className={`App-Btn forbid-select App-CreateFast`}
+            onClick={handleCreateByTemplate}>
             速记
           </div>
         </div>

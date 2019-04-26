@@ -1,0 +1,11 @@
+@import '../../colors.scss';
+
+.FinTemplateList {
+  .Templates {
+    border-top: 1px solid $GREY-LIGHT-IIII;
+    border-bottom: 1px solid $GREY-LIGHT-IIII;
+    .Template {
+      padding: 0 10px;
+    }
+  }
+}

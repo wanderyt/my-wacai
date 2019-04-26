@@ -15,7 +15,7 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   useEffect(() => {
     dispatch({
       type: 'RESET_UPDATED_CAT_GROUP'
-    })
+    });
   }, []);
 
   const handleBackBtn = () => {
@@ -67,7 +67,15 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     evt.target.value = parseFloat(latestItem.amount).toFixed(2);
   }
 
+  const validateFinItem = ({category, subcategory, comment, amount}) => {
+    return category && subcategory && comment && amount;
+  }
+
   const handleSaveButton = () => {
+    if (!validateFinItem(latestItem)) {
+      return;
+    }
+
     let requestUrl = '', data = {};
     if (latestItem.id) {
       requestUrl = '/api/wacai/updateFinItem';
@@ -114,7 +122,12 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         <div
           className='Fin-SubCat'
           onClick={handleCatSelection}>
-          {latestItem.subcategory}
+          <div className='Category'>
+            {latestItem.category}
+          </div>
+          <div className='SubCategory'>
+            {latestItem.subcategory}
+          </div>
         </div>
         <div className='Fin-Amount'>
           <input
