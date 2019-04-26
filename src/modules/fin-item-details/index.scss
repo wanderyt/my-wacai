@@ -36,11 +36,19 @@
     .Fin-SubCat {
       text-indent: 40px;
       float: left;
-
+      padding: 5px 0;
       background-image: url('./category.png');
       background-size: 30px;
       background-position-y: center;
       background-repeat: no-repeat;
+      .Category {
+        font-size: 12px;
+        line-height: 25px;
+      }
+      .SubCategory {
+        font-size: 16px;
+        line-height: 25px;
+      }
     }
     .Fin-Amount {
       float: right;
