@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Axios from 'axios';
 import MonthExpense from './month-expense';
-import ListToolbar from './list-toolbar';
+import HeaderToolbar from '../header-toolbar';
 
 import historyExpense from './mockData.json';
 
@@ -18,7 +18,7 @@ const FinItemList = () => {
 
   return (
     <div className='FinItemList'>
-      <ListToolbar />
+      <HeaderToolbar />
       {
         historyExpense.items && historyExpense.items.map((monthItem, index) => (
           <div key={index}>
