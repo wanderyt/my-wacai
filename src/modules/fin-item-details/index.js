@@ -68,11 +68,26 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   }
 
   const validateFinItem = ({category, subcategory, comment, amount}) => {
-    return category && subcategory && comment && amount;
+    if (!category || !subcategory) {
+      return {
+        errorMsg: '请选择类别！'
+      }
+    } else if (!amount) {
+      return {
+        errorMsg: '请输入有效金额！'
+      }
+    }
+
+    return null;
   }
 
   const handleSaveButton = () => {
-    if (!validateFinItem(latestItem)) {
+    let isInvalid = validateFinItem(latestItem);
+    if (isInvalid) {
+      dispatch({
+        type: 'SET_ERROR_MESSAGE',
+        message: isInvalid.errorMsg
+      });
       return;
     }
 
