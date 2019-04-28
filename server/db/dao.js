@@ -395,6 +395,30 @@ const createFinTemplate = (db, data, callback) => {
   return promise;
 }
 
+/**
+ * Get all valid comments
+ * @param {object} db
+ * @param {function} callback
+ */
+const getAllComments = (db, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select distinct comment from ${FIN_TABLE_NAME} where comment != '';`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch all non empty comments in fin table`, sql, err);
+      } else {
+        logDBSuccess(`Fetch all non empty comments in fin table`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
 const closeDB = (db) => {
   db.close();
 };
@@ -414,6 +438,7 @@ module.exports = {
   getFinItemsByMonth,
   getFinTemplates,
   createFinTemplate,
+  getAllComments,
   closeDB,
 };
 

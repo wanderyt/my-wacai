@@ -7,6 +7,7 @@ const getHistoryExpenseRouter = require('./getHistoryExpense');
 const getFinItemsByMonthRouter = require('./getFinItemsByMonth');
 const getFinTemplatesRouter = require('./getFinTemplates');
 const createFinTemplateRouter = require('./createFinTemplate');
+const getAllCommentRouter = require('./getAllComment');
 
 module.exports = {
   router: [
@@ -19,5 +20,6 @@ module.exports = {
     getFinItemsByMonthRouter.router,
     getFinTemplatesRouter.router,
     createFinTemplateRouter.router,
+    getAllCommentRouter.router,
   ]
 };
