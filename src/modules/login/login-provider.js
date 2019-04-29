@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
+import Axios from 'axios';
 
 import Login from './index';
 
@@ -12,7 +13,25 @@ const LoginProvider = ({loginStatus, dispatch, children}) => {
     });
   }
 
+  useEffect(() => {
+    if (loginStatus === undefined) {
+      Axios.get('/api/user/validateToken')
+        .then(() => {
+          handleLoginSuccess();
+        }, () => {
+          dispatch({
+            type: 'TOKEN_INVALID'
+          });
+        });
+    }
+  }, [])
+
   return (
+    // Do not render login panel at first time
+    // Until token validation is complete
+    loginStatus === undefined ?
+    null
+    :
     <div className='LoginProvider'>
       {
         loginStatus ?
@@ -20,7 +39,7 @@ const LoginProvider = ({loginStatus, dispatch, children}) => {
         :
         <div className='App-Login'>
           <Login
-            loginSuccess={handleLoginSuccess} />
+            loginSuccessCallback={handleLoginSuccess} />
         </div>
       }
     </div>

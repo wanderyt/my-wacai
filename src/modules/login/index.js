@@ -1,24 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Axios from 'axios';
 
 import './index.scss';
 
-const Login = ({loginSuccess}) => {
+const Login = ({loginSuccessCallback}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  useEffect(() => {
-    Axios.get('/api/user/validateToken')
-      .then(() => {
-        loginSuccess && loginSuccess();
-        setUsername('');
-        setPassword('');
-      });
-
-    return () => {
-      alert('login unmounted!');
-    }
-  })
 
   const handleUserNameChange = (evt) => {
     setUsername(evt.target.value);
@@ -40,9 +27,7 @@ const Login = ({loginSuccess}) => {
 
     Axios.post('/api/user/login', {data: {username, password}})
       .then(() => {
-        loginSuccess && loginSuccess();
-        setUsername('');
-        setPassword('');
+        loginSuccessCallback && loginSuccessCallback();
       });
   }
 
