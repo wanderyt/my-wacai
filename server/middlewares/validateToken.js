@@ -26,7 +26,7 @@ const validateTokenMiddleware = (req, res, next) => {
     const token = tokenCookie.split('=')[1].trim();
     if (token) {
       let {username, password} = getUserAccount(token);
-      if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+      if (username === process.env.REACT_APP_USERNAME && password === process.env.REACT_APP_PASSWORD) {
         logger.info('token validation success');
         next();
       } else {
