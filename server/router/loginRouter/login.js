@@ -9,7 +9,7 @@ router.post('/login', (req, res) => {
   let {data} = req.body;
   logger.info('Login user details: ');
   logger.info(JSON.stringify(data));
-  if (data.username === process.env.USERNAME && data.password === process.env.PASSWORD) {
+  if (data.username === process.env.REACT_APP_USERNAME && data.password === process.env.REACT_APP_PASSWORD) {
     logger.info('api /login success');
     res.cookie(process.env.REACT_APP_COOKIE_NAME, generateToken(data.username, data.password));
     res.statusCode = 200;

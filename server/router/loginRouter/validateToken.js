@@ -22,7 +22,7 @@ router.get('/validateToken', (req, res) => {
     const token = tokenCookie.split('=')[1].trim();
     if (token) {
       let {username, password} = getUserAccount(token);
-      if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+      if (username === process.env.REACT_APP_USERNAME && password === process.env.REACT_APP_PASSWORD) {
         logger.info('api token validation success');
         res.statusCode = 200;
         res.send({
