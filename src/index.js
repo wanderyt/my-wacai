@@ -11,6 +11,9 @@ import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import reducer from './reducers';
 
+// Login Provider
+import LoginProvider from './modules/login/login-provider';
+
 const initialState = {
   fin: {
     pageIndex: 'MAIN'
@@ -25,7 +28,9 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <LoginProvider>
+      <App />
+    </LoginProvider>
     {/* <Loading /> */}
   </Provider>,
   document.getElementById('root')
