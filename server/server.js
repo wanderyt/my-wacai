@@ -24,9 +24,14 @@ const port = process.env.API_PORT || 2001;
  */
 app.use(express.json());
 
-// define wacai unique request path
-const wacaiRouters = require('./router/index');
-app.use('/api/wacai/', wacaiRouters.router);
+// define fin operation request path
+const {validateTokenMiddleware} = require('./middlewares');
+const finRouters = require('./router/finRouter/index');
+app.use('/api/wacai/', [validateTokenMiddleware, ...finRouters.router]);
+
+// define user request path
+const loginRouters = require('./router/loginRouter/index');
+app.use('/api/user', loginRouters.router);
 
 // Add wacai login middleware
 // const wacaiMiddleware = require('./wacai/middlewares/index');

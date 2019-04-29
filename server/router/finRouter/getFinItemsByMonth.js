@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, getDailyTotal, getFinItemsByMonth} = require('../db/dao');
+const {createDBConnection, closeDB, getDailyTotal, getFinItemsByMonth} = require('../../db/dao');
 
 router.get('/getFinItemsByMonth', (req, res) => {
   logger.info('api /getFinItemsByMonth');

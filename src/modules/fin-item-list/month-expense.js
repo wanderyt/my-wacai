@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 import Axios from 'axios';
 import DayExpense from './day-expense';
 
@@ -11,7 +12,7 @@ import './month-expense.scss';
 // In percentage
 const BAR_WIDTH_BASE_PERC = 1;
 
-const MonthExpense = ({month = '04', year = '2019', amount = 11086.00, barWidthRatio = 1, dayItems = []}) => {
+const MonthExpense = ({month = '04', year = '2019', amount = 11086.00, barWidthRatio = 1, dayItems = [], dispatch}) => {
   const [expanded, setExpanded] = useState(false);
   const [dailyDetails, setDailyDetails] = useState(dayItems);
 
@@ -23,6 +24,12 @@ const MonthExpense = ({month = '04', year = '2019', amount = 11086.00, barWidthR
           .then(({data}) => {
             let responseData = data.data || [];
             setDailyDetails(responseData);
+          }, ({response}) => {
+            if (response.status === 401) {
+              dispatch({
+                type: 'TOKEN_INVALID'
+              });
+            }
           });
       }
     } else {
@@ -78,4 +85,4 @@ MonthExpense.propTypes = {
   expansionCallback: PropTypes.func,
 };
 
-export default MonthExpense;
+export default connect()(MonthExpense);

@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux';
 import Axios from 'axios';
 import MonthExpense from './month-expense';
 import HeaderToolbar from '../header-toolbar';
 
 import historyExpense from './mockData.json';
 
-const FinItemList = () => {
+const FinItemList = ({dispatch}) => {
   const [historyExpense, setHistoryExpense] = useState({});
 
   useEffect(() => {
@@ -13,6 +14,12 @@ const FinItemList = () => {
       .then(({data}) => {
         let responseData = data.data || {};
         setHistoryExpense(responseData);
+      }, ({response}) => {
+        if (response.status === 401) {
+          dispatch({
+            type: 'TOKEN_INVALID'
+          });
+        }
       });
   }, []);
 
@@ -34,4 +41,4 @@ const FinItemList = () => {
   );
 };
 
-export default FinItemList;
+export default connect()(FinItemList);

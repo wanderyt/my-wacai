@@ -11,7 +11,7 @@ import CreateTemplate from './create-template';
 
 import './index.scss';
 
-const FinTemplateList = ({isCreatingTemplate}) => {
+const FinTemplateList = ({isCreatingTemplate, dispatch}) => {
   const [templates, setTemplates] = useState([]);
 
   useEffect(() => {
@@ -19,6 +19,12 @@ const FinTemplateList = ({isCreatingTemplate}) => {
       .then(({data}) => {
         let templates = data.data || [];
         setTemplates(templates);
+      }, ({response}) => {
+        if (response.status === 401) {
+          dispatch({
+            type: 'TOKEN_INVALID'
+          });
+        }
       })
   }, [isCreatingTemplate]);
 

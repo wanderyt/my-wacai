@@ -1,10 +1,12 @@
 import {combineReducers} from 'redux';
 import fin from './fin';
 import errorMsg from './errorMsg';
+import login from './login';
 
 const reducers = combineReducers({
   fin,
-  errorMsg
+  errorMsg,
+  login,
 });
 
 export default reducers;

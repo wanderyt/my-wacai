@@ -70,4 +70,12 @@ const SearchDropdown = ({optionList = options, placeholder = '', onChangeCallbac
   );
 };
 
+SearchDropdown.propTypes = {
+  optionList: PropTypes.array,
+  placeholder: PropTypes.string,
+  onChangeCallback: PropTypes.func,
+  defaultValue: PropTypes.string,
+  searchOptions: PropTypes.number,
+};
+
 export default SearchDropdown;
