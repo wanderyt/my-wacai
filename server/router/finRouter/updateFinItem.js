@@ -2,20 +2,21 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, deleteFinItem} = require('../db/dao');
+const {createDBConnection, closeDB, updateFinItem} = require('../../db/dao');
 
-router.delete('/deleteFinItem', (req, res) => {
-  logger.info('api /deleteFinItem');
-  let {id} = req.query;
-  logger.info(`delete fin item data: ${id}`);
+router.post('/updateFinItem', (req, res) => {
+  logger.info('api /updateFinItem');
+  let {data} = req.body;
+  logger.info('update fin item data: ');
+  logger.info(JSON.stringify(data));
 
   let db = createDBConnection();
-  let deleteFinItemPromise = deleteFinItem(db, id);
+  let updateFinItemPromise = updateFinItem(db, data);
 
-  deleteFinItemPromise.then((data) => {
+  updateFinItemPromise.then((data) => {
     closeDB(db);
     if (data.err) {
-      logger.error('api /deleteFinItem failed with error');
+      logger.error('api /updateFinItem failed with error');
       logger.error(data.err);
       res.statusCode = 500;
       res.send({
@@ -23,7 +24,7 @@ router.delete('/deleteFinItem', (req, res) => {
         error: data.err
       });
     } else {
-      logger.info('api /deleteFinItem success');
+      logger.info('api /updateFinItem success');
       res.statusCode = 200;
       res.send({
         status: true

@@ -1,7 +1,7 @@
-const {createDBConnection, getFinList, getSumByMonth, closeDB} = require('../db/dao');
+const {createDBConnection, getFinList, getSumByMonth, closeDB} = require('../../db/dao');
 const express = require('express');
 const router = express.Router();
-const {formatMonth} = require('../helper');
+const {formatMonth} = require('../../helper');
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, getMonthlyTotal} = require('../db/dao');
+const {createDBConnection, closeDB, getMonthlyTotal} = require('../../db/dao');
 
 router.get('/getHistoryExpense', (req, res) => {
   logger.info('api /getHistoryExpense');
