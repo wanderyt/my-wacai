@@ -1,0 +1,30 @@
+@import '../../colors.scss';
+
+.TemplateToolbar {
+  .ToolbarContainer {
+    height: 40px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    .ToolbarInfo {
+      flex-grow: 1;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .ToolbarBtns {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row-reverse;
+      .CreateBtn {
+        border: 1px solid $GREY-LIGHT-II;
+        border-radius: 5px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+        font-weight: bold;
+        width: 80px;
+        text-align: center;
+      }
+    }
+  }
+}

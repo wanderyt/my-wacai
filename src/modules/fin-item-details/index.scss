@@ -36,11 +36,20 @@
     .Fin-SubCat {
       text-indent: 40px;
       float: left;
-
+      padding: 5px 0;
       background-image: url('./category.png');
       background-size: 30px;
       background-position-y: center;
       background-repeat: no-repeat;
+      .Category {
+        font-size: 12px;
+        line-height: 25px;
+      }
+      .SubCategory {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 25px;
+      }
     }
     .Fin-Amount {
       float: right;
@@ -62,8 +71,8 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      border-top: 1px dashed $GREY-LIGHT-II;
-      border-bottom: 1px dashed $GREY-LIGHT-II;
+      // border-top: 1px dashed $GREY-LIGHT-II;
+      // border-bottom: 1px dashed $GREY-LIGHT-II;
       .Fin-ComCat {
         display: inline-block;
         width: 100px;
@@ -78,13 +87,6 @@
   .Fin-Comment {
     height: 50px;
     line-height: 50px;
-    .CommentInput {
-      width: 100%;
-      outline: none;
-      font-size: 16px;
-      border: 0;
-      background: transparent;
-    }
   }
   .Fin-Date {
     height: 30px;
@@ -97,7 +99,7 @@
   }
 
   .Fin-Toolbar {
-    padding: 10px 0;
+    padding: 20px 0;
     .Fin-Btns {
       margin: 0 auto;
       width: 80%;

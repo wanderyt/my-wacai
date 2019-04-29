@@ -3,6 +3,15 @@
   overflow-x: hidden;
   position: relative;
 
+  .App-Page-Error-Notification {
+    width: 80%;
+    position: absolute;
+    z-index: 1000;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   .App-Page-Cat-Selection {
     position: relative;
     opacity: 1;
@@ -43,6 +52,16 @@
         top: 0px;
       }
     }
+  }
+
+  .App-Page-Fin-Template-List {
+    position: relative;
+    opacity: 1;
+
+    animation-name: fadeInLeftOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-duration: 0.2s;
   }
 
   .App-Page-Main{

@@ -3,6 +3,9 @@ import {formatDateTime} from '../utils/helper';
 const fin = (state = {}, action) => {
   switch (action.type) {
     case 'SELECT_ITEM':
+      if (!action.item.date) {
+        action.item.date = formatDateTime();
+      }
       return {
         ...state,
         pageIndex: 'MAIN',
@@ -35,6 +38,20 @@ const fin = (state = {}, action) => {
         pageIndex: 'MAIN',
         updatedCatGroup: action.updatedCatGroup || {}
       };
+    case 'CATEGORY_SELECTION_DONE':
+      // Handle category group selection done case
+      // Need to return to template page when there is no selected item.
+      let targetPage = '';
+      if (state.selectedItem) {
+        targetPage = 'MAIN';
+      } else {
+        targetPage = 'FIN_TEMPLATE_LIST'
+      }
+      return {
+        ...state,
+        pageIndex: targetPage,
+        updatedCatGroup: action.updatedCatGroup || {}
+      };
     case 'CHANGE_TO_FIN_HISTORY':
       return {
         ...state,
@@ -44,6 +61,17 @@ const fin = (state = {}, action) => {
       return {
         ...state,
         updatedCatGroup: {}
+      };
+    case 'CHANGE_TO_FIN_TEMPLATE_LIST':
+      return {
+        ...state,
+        pageIndex: 'FIN_TEMPLATE_LIST',
+        isCreatingTemplate: false
+      };
+    case 'CREATE_TEMPLATE':
+      return {
+        ...state,
+        isCreatingTemplate: true
       };
     default:
       return state;

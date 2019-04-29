@@ -1,0 +1,34 @@
+@import '../../colors.scss';
+
+.ErrorNotification {
+  &.fadeOutAnimation {
+    opacity: 0;
+    animation-name: fadeOutOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+
+    @keyframes fadeOutOpacity {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+  }
+  .ErrorMessage-Container {
+    margin: 0 auto;
+    border: 2px solid #544742;
+    border-radius: 5px;
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    .ErrorMessage {
+      font-size: 16px;
+      font-weight: bold;
+      color: red;
+    }
+  }
+}

@@ -14,6 +14,12 @@ CREATE TABLE CATEGORY (
   is_common NUMBER
 );
 
+CREATE TABLE FIN_TEMPLATE (
+  category VARCHAR(100),
+  subcategory VARCHAR(100),
+  comment VARCHAR(200)
+);
+
 INSERT INTO CATEGORY(category, subcategory, is_common)
 VALUES('周中', '早餐', 0);
 INSERT INTO CATEGORY(category, subcategory, is_common)
@@ -154,3 +160,21 @@ INSERT INTO CATEGORY(category, subcategory, is_common)
 VALUES('节假日', '住宿', 0);
 INSERT INTO CATEGORY(category, subcategory, is_common)
 VALUES('节假日', '杂项', 0);
+
+-- Fin templates
+INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
+VALUES('周中', '午餐', '周中午餐');
+INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
+VALUES('生活', '买菜原料', '盒马');
+INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
+VALUES('汽车周边', '停车费', '长泰');
+INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
+VALUES('周中', '晚餐', '周中晚餐');
+INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
+VALUES('生活', '衣服', '大人');
+INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
+VALUES('骐骐', '衣服', '骐骐');
+INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
+VALUES('生活', '零食', '来伊份');
+INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
+VALUES('生活', '通讯', '话费充值');

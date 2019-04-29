@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-const {TEST_DB_FILE_PATH, DB_FILE_PATH, FIN_TABLE_NAME, CATEGORY_TABLE_NAME} = require('./config');
+const {TEST_DB_FILE_PATH, DB_FILE_PATH, FIN_TABLE_NAME, CATEGORY_TABLE_NAME, TEMPLATE_TABLE_NAME} = require('./config');
 const {logDBError, logDBSuccess} = require('./util');
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
@@ -321,6 +321,104 @@ const getFinItemsByMonth = (db, options, callback) => {
   return promise;
 }
 
+/**
+ * Get all fin templates
+ * @param {object} db
+ * @param {function} callback
+ */
+const getFinTemplates = (db, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${TEMPLATE_TABLE_NAME};`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch fin templates in template table`, sql, err);
+      } else {
+        logDBSuccess(`Fetch fin templates in template table`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Add new fin template
+ * @param {object} db
+ * @param {object} data Target new template data.
+ * @param {string} data.category Target new template category data.
+ * @param {string} data.subcategory Target new template subcategory data.
+ * @param {string} data.comment Target new template comment data.
+ * @param {function} callback
+ */
+const createFinTemplate = (db, data, callback) => {
+  let promise = new Promise((resolve) => {
+    if (data) {
+      let {category, subcategory, comment} = data;
+      let querySQL = `select * from ${TEMPLATE_TABLE_NAME} where category = '${category}' and subcategory = '${subcategory}' and comment = '${comment}';`;
+      db.all(querySQL, (err, rows) => {
+        if (err) {
+          logDBError(`Query if target template is already existed`, querySQL, err);
+        } else {
+          logDBSuccess(`Query if target template is already existed`, querySQL);
+          if (rows.length > 0) {
+            logDBError(`Target new template is already existed`, querySQL, err);
+            resolve({err: 'Target new template is already existed'});
+          } else {
+            let insertSQL = `insert into ${TEMPLATE_TABLE_NAME}(category, subcategory, comment) values('${category}', '${subcategory}', '${comment}');`;
+            db.run(insertSQL, (err) => {
+              if (err) {
+                logDBError(`Insert new template in template table`, insertSQL, err);
+              } else {
+                logDBSuccess(`Insert new template in template table`, insertSQL);
+              }
+
+              callback && callback(err);
+
+              resolve({err});
+            });
+          }
+        }
+      })
+    } else {
+      let err = {
+        err: 'Data is not set.'
+      };
+      callback && callback(err, []);
+      resolve({err, rows: []});
+    }
+  });
+
+  return promise;
+}
+
+/**
+ * Get all valid comments
+ * @param {object} db
+ * @param {function} callback
+ */
+const getAllComments = (db, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select distinct comment from ${FIN_TABLE_NAME} where comment != '';`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch all non empty comments in fin table`, sql, err);
+      } else {
+        logDBSuccess(`Fetch all non empty comments in fin table`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
 const closeDB = (db) => {
   db.close();
 };
@@ -338,6 +436,9 @@ module.exports = {
   getMonthlyTotal,
   getDailyTotal,
   getFinItemsByMonth,
+  getFinTemplates,
+  createFinTemplate,
+  getAllComments,
   closeDB,
 };
 

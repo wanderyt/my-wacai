@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import Axios from 'axios';
+import HeaderToolbar from '../header-toolbar';
 
 import './index.scss';
 
@@ -22,7 +23,7 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
 
   const handleSubCatSelected = (subcat) => {
     dispatch({
-      type: 'CHANGE_TO_MAIN',
+      type: 'CATEGORY_SELECTION_DONE',
       updatedCatGroup: {
         category: selectedCat,
         subcategory: subcat
@@ -30,32 +31,12 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
     });
   }
 
-  const handleBackClick = () => {
-    dispatch({
-      type: 'CHANGE_TO_MAIN'
-    });
-  }
-
   return (
     <div className='FinCatSubCat'>
-      <div className='FinCatSubCat-Header'>
-        <div className='Header-Border'>
-          <div
-            className='Header-BackBtn'
-            onClick={handleBackClick} />
-          支出类别
-        </div>
-      </div>
+      <HeaderToolbar
+        barTitle='支出类别' />
       <div className='FinCatSubCat-Container'>
         <div className='Cats'>
-          {/* <div
-            className='CatItem'
-            onClick={() => handleCatClick('周中')}>
-            <div
-              className={`CatItem-Border ${selectedCat === '周中' ? 'CatItem-Border-Selected' : ''}`}>
-              周中
-            </div>
-          </div> */}
           {
             Object.keys(categoryGroups).map((cat, index) => (
               <div
@@ -71,24 +52,6 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
           }
         </div>
         <div className='SubCats'>
-          {/* <div
-            className='SubCatItem'
-            onClick={() => handleSubCatSelected('午餐')}>
-            <div className='SubCat-Border'>
-              <div className='SubCat-Text'>
-                午餐
-              </div>
-            </div>
-          </div>
-          <div
-            className='SubCatItem'
-            onClick={() => handleSubCatSelected('晚餐')}>
-            <div className=''>
-              <div className='SubCat-Text'>
-                晚餐
-              </div>
-            </div>
-          </div> */}
           {
             selectedCat && categoryGroups[selectedCat] && categoryGroups[selectedCat].map(({subcategory, isCommon}, index) => (
               <div

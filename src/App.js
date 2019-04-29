@@ -5,11 +5,13 @@ import FinMain from './modules/fin-main';
 import FinItemDetails from './modules/fin-item-details';
 import FinCatSelection from './modules/fin-cat-subcat';
 import FinItemList from './modules/fin-item-list';
+import FinTemplateList from './modules/fin-template-list';
 import AutoUpdateNumber from './modules/autoupdate-number';
+import ErrorNotification from './modules/error-notification';
 
 import './App.scss';
 
-const App = ({pageIndex, selectedItem, dispatch}) => {
+const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
   let [monthTotal, setMonthTotal] = useState(0);
   let [finList, setFinList] = useState([]);
 
@@ -33,6 +35,13 @@ const App = ({pageIndex, selectedItem, dispatch}) => {
   return (
     <div className="App">
       {
+        errorMsg &&
+        <div className='App-Page-Error-Notification'>
+          <ErrorNotification
+            errorMsg={errorMsg} />
+        </div>
+      }
+      {
         pageIndex === 'CATEGORY_SELECTION' &&
         <div className='App-Page-Cat-Selection'>
           <FinCatSelection />
@@ -42,6 +51,12 @@ const App = ({pageIndex, selectedItem, dispatch}) => {
         pageIndex === 'FIN_HISTORY' &&
         <div className='App-Page-Fin-History'>
           <FinItemList />
+        </div>
+      }
+      {
+        pageIndex === 'FIN_TEMPLATE_LIST' &&
+        <div className='App-Page-Fin-Template-List'>
+          <FinTemplateList />
         </div>
       }
       {
@@ -78,7 +93,8 @@ const App = ({pageIndex, selectedItem, dispatch}) => {
 
 const mapStateToProps = (state) => ({
   selectedItem: state.fin ? state.fin.selectedItem : null,
-  pageIndex: state.fin ? state.fin.pageIndex : 'MAIN'
+  pageIndex: state.fin ? state.fin.pageIndex : 'MAIN',
+  errorMsg: state.errorMsg ? state.errorMsg.message : ''
 });
 
 export default connect(mapStateToProps)(App);

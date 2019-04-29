@@ -1,0 +1,69 @@
+@import '../../colors.scss';
+
+.SearchDropdown {
+  position: relative;
+  &.SearchDropdown-Focused {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+  }
+  .Dropdown-Input {
+    border: 1px solid $GREY-LIGHT-II;
+    border-radius: 40px;
+    background-color: $GREY-LIGHT-IIII;
+    &:focus-within {
+      background-color: #FFF;
+    }
+    .Dropdown-SearchImage {
+      background-image: url('./search.svg');
+      background-size: 30px;
+      background-repeat: no-repeat;
+      background-position: 10px center;
+      padding-left: 40px;
+      .InputField {
+        height: 50px;
+        line-height: 50px;
+        width: 100%;
+        outline: none;
+        border: none;
+        font-size: 16px;
+        background: transparent;
+        text-indent: 10px;
+      }
+    }
+  }
+  .OptionList {
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    background-color: #FFF;
+
+    transition: all 0.2s linear;
+    .OptionContainer {
+      border: 1px solid $GREY-LIGHT-II;
+      border-top: none;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      height: 40px;
+      line-height: 40px;
+
+      animation-name: expandDown;
+      animation-iteration-count: 1;
+      animation-timing-function: linear;
+      animation-duration: 0.2s;
+
+      @keyframes expandDown {
+        0% {
+          opacity: 0;
+          height: 0px;
+        }
+        100% {
+          opacity: 1;
+          height: 40px;
+        }
+      }
+      .Option {
+        padding-left: 10px;
+        font-size: 16px;
+      }
+    }
+  }
+}

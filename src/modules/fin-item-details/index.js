@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import FinComCatItem from '../fin-com-cat-item';
+import SearchDropdown from '../search-dropdown';
 import DateTime from 'react-datetime';
 import {connect} from 'react-redux';
 import Axios from 'axios';
@@ -11,11 +12,22 @@ import './index.scss';
 
 const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
+  const [commentOptions, setCommentOptions] = useState([]);
 
   useEffect(() => {
+    Axios.get('/api/wacai/getAllComment')
+      .then(({data}) => {
+        let responseData = data.data || [];
+        let options = [];
+        responseData.forEach((option) => {
+          options.push(option.comment);
+        });
+        setCommentOptions(options);
+      })
+
     dispatch({
       type: 'RESET_UPDATED_CAT_GROUP'
-    })
+    });
   }, []);
 
   const handleBackBtn = () => {
@@ -28,8 +40,8 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     setLatestItem(Object.assign({}, latestItem, {category, subcategory}));
   }
 
-  const handleCommentChange = (evt) => {
-    setLatestItem(Object.assign({}, latestItem, {comment: evt.target.value}));
+  const handleCommentChange = (newValue) => {
+    setLatestItem(Object.assign({}, latestItem, {comment: newValue}));
   }
 
   const handleDateTimeChange = (newDate) => {
@@ -67,7 +79,30 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     evt.target.value = parseFloat(latestItem.amount).toFixed(2);
   }
 
+  const validateFinItem = ({category, subcategory, comment, amount}) => {
+    if (!category || !subcategory) {
+      return {
+        errorMsg: '请选择类别！'
+      }
+    } else if (!amount) {
+      return {
+        errorMsg: '请输入有效金额！'
+      }
+    }
+
+    return null;
+  }
+
   const handleSaveButton = () => {
+    let isInvalid = validateFinItem(latestItem);
+    if (isInvalid) {
+      dispatch({
+        type: 'SET_ERROR_MESSAGE',
+        message: isInvalid.errorMsg
+      });
+      return;
+    }
+
     let requestUrl = '', data = {};
     if (latestItem.id) {
       requestUrl = '/api/wacai/updateFinItem';
@@ -114,7 +149,12 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         <div
           className='Fin-SubCat'
           onClick={handleCatSelection}>
-          {latestItem.subcategory}
+          <div className='Category'>
+            {latestItem.category}
+          </div>
+          <div className='SubCategory'>
+            {latestItem.subcategory}
+          </div>
         </div>
         <div className='Fin-Amount'>
           <input
@@ -142,7 +182,11 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         </div>
       </div>
       <div className='Fin-Comment Fin-WhiteBack'>
-        <input className='CommentInput' placeholder='备注' type='input' onChange={handleCommentChange} value={latestItem.comment} />
+        <SearchDropdown
+          optionList={commentOptions}
+          placeholder='备注'
+          onChangeCallback={handleCommentChange}
+          defaultValue={latestItem.comment} />
       </div>
       <div className='Fin-Toolbar Fin-WhiteBack'>
         <div className='Fin-Btns'>
