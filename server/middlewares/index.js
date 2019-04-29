@@ -1,5 +1,6 @@
 const request = require('request');
 const qs = require('querystring');
+const {validateTokenMiddleware} = require('./validateToken');
 
 // middleware implementation
 
@@ -54,4 +55,5 @@ const getToken = (cookies = []) => {
 module.exports = {
   wacaiLoginMiddleware,
   getSessionToken,
+  validateTokenMiddleware,
 };
