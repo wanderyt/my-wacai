@@ -125,6 +125,12 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         dispatch({
           type: 'RESET_SELECTED_ITEM'
         });
+      }, ({response}) => {
+        if (response.status === 401) {
+          dispatch({
+            type: 'TOKEN_INVALID'
+          });
+        }
       });
   }
 

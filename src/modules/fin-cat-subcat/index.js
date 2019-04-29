@@ -14,6 +14,12 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
       .then(({data}) => {
         let categoryGroupData = data.data || {};
         setCategoryGroups(categoryGroupData);
+      }, ({response}) => {
+        if (response.status === 401) {
+          dispatch({
+            type: 'TOKEN_INVALID'
+          });
+        }
       });
   }, [])
 

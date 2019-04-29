@@ -23,6 +23,12 @@ const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
         let finList = data.data || [];
         setFinList(finList);
         setMonthTotal(total);
+      }, ({response}) => {
+        if (response.status === 401) {
+          dispatch({
+            type: 'TOKEN_INVALID'
+          });
+        }
       });
   }, [selectedItem]);
 

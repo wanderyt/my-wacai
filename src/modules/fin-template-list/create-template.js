@@ -27,8 +27,11 @@ const CreateTemplate = ({updatedCatGroup = {}, isCreatingTemplate, dispatch}) =>
             type: 'CHANGE_TO_FIN_TEMPLATE_LIST'
           });
         }, ({response}) => {
-          const {error} = response.data;
-          alert(error);
+          if (response.status === 401) {
+            dispatch({
+              type: 'TOKEN_INVALID'
+            });
+          }
         });
     }
   };
