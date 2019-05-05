@@ -11,7 +11,7 @@ const SearchDropdown = ({optionList = options, placeholder = '', onChangeCallbac
 
   useEffect(() => {
     const dropdownClickHandler = (evt) => {
-      const classes = evt.target.getAttribute('class');
+      const classes = evt.target.getAttribute('class') || '';
       if (classes.indexOf('InputField') < 0 && classes.indexOf('OptionContainer') < 0) {
         setIsFocused(false);
         setValidOptions([]);
