@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import './index.scss';
 
-const HeaderToolbar = ({closeHandler, hasSearch = true, barTitle = '', searchHandler, dispatch}) => {
+const HeaderToolbar = ({closeHandler, hasSearch = true, barTitle = '', searchHandler, children, dispatch}) => {
   const handleClose = () => {
     if (closeHandler) {
       closeHandler();
@@ -26,19 +26,33 @@ const HeaderToolbar = ({closeHandler, hasSearch = true, barTitle = '', searchHan
         <div
           className='CloseBtn'
           onClick={handleClose} />
-        <div
-          className='BarInfo'>
-          {barTitle}
-        </div>
-        <div
-          className='ToolBtns'>
-          {
-            hasSearch &&
+        {
+          barTitle &&
+          <div
+            className='BarInfo'>
+            {barTitle}
+          </div>
+        }
+        {
+          children && typeof children === 'function' &&
+          <div
+            className='BarContent'>
+            {children()}
+          </div>
+        }
+        {
+          !barTitle && !children &&
+          <div className='BarHeader' />
+        }
+        {
+          hasSearch &&
+          <div
+            className='ToolBtns'>
             <div
               className='SearchBtn'
               onClick={handleSearch} />
-          }
-        </div>
+          </div>
+        }
       </div>
     </div>
   );
