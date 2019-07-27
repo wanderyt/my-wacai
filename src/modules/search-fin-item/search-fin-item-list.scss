@@ -1,0 +1,29 @@
+@import '../../colors.scss';
+
+.SearchFinItemList {
+  .SearchResultContainer {
+    border-top: 1px solid $GREY-LIGHT-IIII;
+    .SearchResult-Summary {
+      text-align: center;
+      font-weight: bold;
+      color: $RED;
+      .SummaryAmount {
+        height: 40px;
+        line-height: 40px;
+        font-size: 16px;
+      }
+      .SummaryCaption {
+        margin-top: -10px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+      }
+    }
+  }
+  .ListContainer {
+    background-color: $GREY-LIGHT-IIII;
+    .ListItemContainer {
+      padding: 0 10px;
+    }
+  }
+}

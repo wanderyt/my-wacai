@@ -73,6 +73,11 @@ const fin = (state = {}, action) => {
         ...state,
         isCreatingTemplate: true
       };
+    case 'OPEN_SEARCH_FIN_MODE':
+      return {
+        ...state,
+        pageIndex: 'SEARCH_FIN_ITEM',
+      }
     default:
       return state;
   }

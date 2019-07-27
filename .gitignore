@@ -41,3 +41,6 @@ test.db
 
 # storybook
 .story
+
+# test comps
+*test*

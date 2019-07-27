@@ -25,7 +25,9 @@ const Login = ({loginSuccessCallback}) => {
       return;
     }
 
-    Axios.post('/api/user/login', {data: {username, password}})
+    const API_HOST = process.env.REACT_SERVER_API_HOST || '';
+
+    Axios.post(`${API_HOST}/api/user/login`, {data: {username, password}})
       .then(() => {
         loginSuccessCallback && loginSuccessCallback();
       });

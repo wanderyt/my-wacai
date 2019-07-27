@@ -5,8 +5,8 @@
     background-color: $GREY-LIGHT-III;
   }
   .FinItem {
-    height: 50px;
-    padding: 10px 0;
+    height: 75px;
+    padding: 5px 0;
     &.FinItem-Border {
       border-bottom: 1px solid $GREY-REGULAR;
     }
@@ -21,10 +21,9 @@
         line-height: 20px;
         font-size: 14px;
         color: $GREY-REGULAR;
-
-        .Fin-Comment {
-          margin-left: 5px;
-        }
+      }
+      .Fin-Comment {
+        margin-top: 5px;
       }
     }
     .Fin-Right {

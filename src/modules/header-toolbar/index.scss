@@ -2,12 +2,11 @@
   .HeaderToolbar-Container {
     display: flex;
     height: 40px;
-    padding-right: 10px;
     .CloseBtn {
-      flex-grow: 1;
+      width: 30px;
       background-image: url('./close.png');
-      background-position: left center;
-      background-size: contain;
+      background-position: center;
+      background-size: 30px;
       background-repeat: no-repeat;
     }
     .BarInfo {
@@ -17,8 +16,11 @@
       font-weight: bold;
       line-height: 40px;
     }
-    .ToolBtns {
+    .BarContent, .BarHeader {
       flex-grow: 1;
+    }
+    .ToolBtns {
+      width: 30px;
       display: flex;
       flex-direction: row-reverse;
       .SearchBtn {

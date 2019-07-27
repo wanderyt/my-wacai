@@ -1,0 +1,25 @@
+@import '../../colors.scss';
+
+.AdvanceSearchItem {
+  border-bottom: 1px solid $GREY-LIGHT-IIII;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  justify-content: space-between;
+  .ItemName {
+    span {
+
+    }
+  }
+  .ItemOption {
+    text-align: right;
+    .ItemOption-Container {
+      .ItemSelectedValue {
+        padding-right: 5px;
+      }
+      .ItemSelectionButton {
+
+      }
+    }
+  }
+}

@@ -20,11 +20,13 @@ const FinItem = ({item, dayMode = false, isLast = false, dispatch}) => {
       <div className={`FinItem ${isLast ? '' : 'FinItem-Border'}`}>
         <div className='Fin-Left'>
           <div className='Fin-SubCat'>{category} - {subcategory}</div>
-          <div className='Fin-Info'>
-            <span className='Fin-Date'>
+          <div className='Fin-Info Fin-Date'>
+            <span>
               {dayMode ? date.substring(11) : date}
             </span>
-            <span className='Fin-Comment'>{comment}</span>
+          </div>
+          <div className='Fin-Info Fin-Comment'>
+            <span>{comment}</span>
           </div>
         </div>
         <div className='Fin-Right'>

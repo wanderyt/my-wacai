@@ -40,7 +40,8 @@ const FinCatSubCat = ({selectedCatGroup = {}, dispatch}) => {
   return (
     <div className='FinCatSubCat'>
       <HeaderToolbar
-        barTitle='支出类别' />
+        barTitle='支出类别'
+        hasSearch={false} />
       <div className='FinCatSubCat-Container'>
         <div className='Cats'>
           {
