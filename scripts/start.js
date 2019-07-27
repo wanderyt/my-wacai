@@ -33,7 +33,7 @@ const configFactory = require('../config/webpack.config');
 const createDevServerConfig = require('../config/webpackDevServer.config');
 
 const useYarn = fs.existsSync(paths.yarnLockFile);
-const isInteractive = process.stdout.isTTY;
+const isInteractive = false && process.stdout.isTTY;
 
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
@@ -75,7 +75,8 @@ checkBrowsers(paths.appPath, isInteractive)
       // We have not found a port.
       return;
     }
-    const config = configFactory('development');
+    // const config = configFactory('development');
+    const config = configFactory(process.env.DEV_MODE || 'development');
     const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
     const appName = require(paths.appPackageJson).name;
     const useTypeScript = fs.existsSync(paths.appTsConfig);

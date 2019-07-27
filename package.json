@@ -1,6 +1,6 @@
 {
   "name": "my-wacai",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.2.2",
@@ -35,6 +35,7 @@
     "jest-pnp-resolver": "1.0.2",
     "jest-resolve": "23.6.0",
     "jest-watch-typeahead": "^0.2.1",
+    "lodash": "^4.17.11",
     "log4js": "^4.1.0",
     "mini-css-extract-plugin": "0.5.0",
     "mkdirp": "^0.5.1",
@@ -69,12 +70,14 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "prod": "DEV_MODE=production node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "server": "node server/index.js",
     "test:server": "DB_TEST=TEST npm run server",
     "m": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start\"",
     "test:m": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run start\"",
+    "test:prod": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run prod\"",
     "sync": "node server/job/sync.js",
     "test:sync": "DB_TEST=TEST node server/job/sync.js",
     "storybook": "node .story/index.js"
