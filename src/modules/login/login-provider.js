@@ -14,8 +14,9 @@ const LoginProvider = ({loginStatus, dispatch, children}) => {
   }
 
   useEffect(() => {
+    const API_HOST = process.env.REACT_SERVER_API_HOST || '';
     if (loginStatus === undefined) {
-      Axios.get('/api/user/validateToken')
+      Axios.get(`${API_HOST}/api/user/validateToken`)
         .then(() => {
           handleLoginSuccess();
         }, () => {

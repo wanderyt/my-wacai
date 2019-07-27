@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const {TEST_DB_FILE_PATH, DB_FILE_PATH, FIN_TABLE_NAME, CATEGORY_TABLE_NAME, TEMPLATE_TABLE_NAME} = require('./config');
-const {logDBError, logDBSuccess} = require('./util');
+const {logDBError, logDBSuccess, mapSearchParamsToDBSearch} = require('./util');
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 
@@ -419,6 +419,57 @@ const getAllComments = (db, callback) => {
   return promise;
 }
 
+/**
+ * Search all fin items by specific search string
+ * @param {object} db
+ * @param {string} searchString
+ * @param {function} callback
+ */
+const getFinItemsBySearchString = (db, searchString, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${FIN_TABLE_NAME} where category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%';`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Search all fin items in fin table with search string: ${searchString}`, sql, err);
+      } else {
+        logDBSuccess(`Search all fin items in fin table with search string: ${searchString}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Search all fin items by search params
+ * @param {object} db
+ * @param {object} searchOptions
+ * @param {function} callback
+ */
+const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
+  let searchString = mapSearchParamsToDBSearch(searchOptions);
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${FIN_TABLE_NAME} where ${searchString};`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Search all fin items in fin table with search string: ${searchString}`, sql, err);
+      } else {
+        logDBSuccess(`Search all fin items in fin table with search string: ${searchString}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
 const closeDB = (db) => {
   db.close();
 };
@@ -439,6 +490,8 @@ module.exports = {
   getFinTemplates,
   createFinTemplate,
   getAllComments,
+  getFinItemsBySearchString,
+  getFinItemsBySearchOptions,
   closeDB,
 };
 

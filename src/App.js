@@ -8,6 +8,7 @@ import FinItemList from './modules/fin-item-list';
 import FinTemplateList from './modules/fin-template-list';
 import AutoUpdateNumber from './modules/autoupdate-number';
 import ErrorNotification from './modules/error-notification';
+import SearchFinItem from './modules/search-fin-item';
 
 import './App.scss';
 
@@ -45,6 +46,12 @@ const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
         <div className='App-Page-Error-Notification'>
           <ErrorNotification
             errorMsg={errorMsg} />
+        </div>
+      }
+      {
+        pageIndex === 'SEARCH_FIN_ITEM' &&
+        <div className='App-Page-Fin-Search'>
+          <SearchFinItem />
         </div>
       }
       {
@@ -100,7 +107,7 @@ const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
 const mapStateToProps = (state) => ({
   selectedItem: state.fin ? state.fin.selectedItem : null,
   pageIndex: state.fin ? state.fin.pageIndex : 'MAIN',
-  errorMsg: state.errorMsg ? state.errorMsg.message : ''
+  errorMsg: state.errorMsg ? state.errorMsg.message : '',
 });
 
 export default connect(mapStateToProps)(App);

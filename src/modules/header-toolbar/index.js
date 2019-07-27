@@ -17,6 +17,10 @@ const HeaderToolbar = ({closeHandler, hasSearch = true, barTitle = '', searchHan
   const handleSearch = () => {
     if (searchHandler) {
       searchHandler();
+    } else {
+      dispatch({
+        type: 'OPEN_SEARCH_FIN_MODE'
+      });
     }
   }
 
@@ -34,7 +38,7 @@ const HeaderToolbar = ({closeHandler, hasSearch = true, barTitle = '', searchHan
           </div>
         }
         {
-          children && typeof children === 'function' &&
+          !barTitle && children && typeof children === 'function' &&
           <div
             className='BarContent'>
             {children()}
