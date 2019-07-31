@@ -7,7 +7,7 @@ const logger = log4js.getLogger('wacai');
 router.get('/validateToken', (req, res) => {
   logger.info('api - /validateToken');
   const cookies = req.headers.cookie;
-  const cookiesList = cookies.split(';');
+  const cookiesList = cookies ? cookies.split(';') : [];
   let tokenCookie = cookiesList.find((cookie) => cookie.indexOf(process.env.REACT_APP_COOKIE_NAME) > -1);
   logger.info('current cookie: ');
   logger.info(tokenCookie ? tokenCookie.trim() : '');
