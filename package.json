@@ -1,6 +1,6 @@
 {
   "name": "my-wacai",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.2.2",
@@ -30,6 +30,7 @@
     "file-loader": "2.0.0",
     "fs-extra": "7.0.1",
     "html-webpack-plugin": "4.0.0-alpha.2",
+    "http-proxy-middleware": "^0.19.1",
     "identity-obj-proxy": "3.0.0",
     "jest": "23.6.0",
     "jest-pnp-resolver": "1.0.2",
@@ -71,6 +72,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "prod": "DEV_MODE=production node scripts/start.js",
+    "devclient": "DEV_MODE=production node index.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "server": "node server/index.js",
@@ -78,6 +80,7 @@
     "m": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start\"",
     "test:m": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run start\"",
     "test:prod": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run prod\"",
+    "test:devclient": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run devclient\"",
     "sync": "node server/job/sync.js",
     "test:sync": "DB_TEST=TEST node server/job/sync.js",
     "storybook": "node .story/index.js"
