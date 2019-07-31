@@ -3,14 +3,14 @@ import fin from './fin';
 import errorMsg from './errorMsg';
 import login from './login';
 import search from './search';
-import test from './test';
+// import test from './test';
 
 const reducers = combineReducers({
   fin,
   errorMsg,
   login,
   search,
-  test,
+  // test,
 });
 
 export default reducers;
