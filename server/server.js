@@ -34,8 +34,8 @@ const loginRouters = require('./router/loginRouter/index');
 app.use('/api/user', loginRouters.router);
 
 // define test request path
-const testRouters = require('./router/testRouter/index');
-app.use('/api/test', testRouters.router);
+// const testRouters = require('./router/testRouter/index');
+// app.use('/api/test', testRouters.router);
 
 // Add wacai login middleware
 // const wacaiMiddleware = require('./wacai/middlewares/index');
