@@ -9,6 +9,7 @@ const getFinTemplatesRouter = require('./getFinTemplates');
 const createFinTemplateRouter = require('./createFinTemplate');
 const getAllCommentRouter = require('./getAllComment');
 const searchFinItemsRouter = require('./searchFinItems');
+const deepSearchFinItemsRouter = require('./deepSearchFinItems');
 
 module.exports = {
   router: [
@@ -23,5 +24,6 @@ module.exports = {
     createFinTemplateRouter.router,
     getAllCommentRouter.router,
     searchFinItemsRouter.router,
+    deepSearchFinItemsRouter.router,
   ]
 };

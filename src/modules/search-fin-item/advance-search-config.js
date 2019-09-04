@@ -15,5 +15,8 @@ export const ADVANCE_SEARCH_ITEMS = [{
 }, {
   type: 'keyword',
   name: '关键字',
-  comp: KeywordsSelectionPanel
+  comp: KeywordsSelectionPanel,
+  formatter: (value) => {
+    return value;
+  }
 }];

@@ -26,8 +26,12 @@ const SearchFinItem = ({finItems = [], dispatch}) => {
   }
 
   const openAdvancedSearchPanel = () => {
-    // setAdvancedSearchStatus(true);
+    setAdvancedSearchStatus(true);
   };
+
+  const submitHandler = () => {
+    setAdvancedSearchStatus(false);
+  }
 
   return (
     <div className='SearchFinItem'>
@@ -53,7 +57,7 @@ const SearchFinItem = ({finItems = [], dispatch}) => {
       {
         advancedSearchStatus &&
         <div className='AdvancedSearch-Container'>
-          <AdvancedSearch />
+          <AdvancedSearch submitHandler={submitHandler} />
         </div>
       }
     </div>

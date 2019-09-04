@@ -6,17 +6,18 @@ import Axios from 'axios';
 
 import './advance-search.scss';
 
-const AdvancedSearch = ({searchParams, dispatch}) => {
+const AdvancedSearch = ({searchParams, dispatch, submitHandler = void 0}) => {
   const handleSubmit = () => {
     let params = [];
     Object.keys(searchParams).map((key) => {
       params.push(`${key}=${searchParams[key]}`);
     });
-    // Axios.get(`/api/wacai/deepSearchFinItems?${params.join('&')}`)
-    //   .then(({data}) => {
-    //     let finItems = data.data || [];
-    //     dispatch({type: 'SEARCH_FIN_RESULTS_LOADED', finItems});
-    //   });
+    Axios.get(`/api/wacai/deepSearchFinItems?${params.join('&')}`)
+      .then(({data}) => {
+        submitHandler();
+        let finItems = data.data || [];
+        dispatch({type: 'SEARCH_FIN_RESULTS_LOADED', finItems});
+      });
   }
   return (
     <div className='AdvancedSearch'>
