@@ -12,14 +12,26 @@
     }
   }
   .ItemOption {
+    max-width: 50%;
     text-align: right;
     .ItemOption-Container {
+      display: flex;
       .ItemSelectedValue {
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        max-width: 95%;
         padding-right: 5px;
+        color: $GREY-LIGHT-I;
       }
       .ItemSelectionButton {
 
       }
     }
+  }
+
+  &.AdvanceSearchItem-NoBottomBorder {
+    border-bottom: 0px;
   }
 }

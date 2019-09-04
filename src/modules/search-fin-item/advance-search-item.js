@@ -14,34 +14,40 @@ const AdvanceSearchItem = ({type, name, Comp, searchParams, dispatch}) => {
     });
   }
 
-  const openSelectionDetailPanel = () => {
-    // TODO
-    setIsSelectionPanelOpen(true);
-    setSelectionValue('选中');
+  const toggleSelectionDetailPanel = () => {
+    setIsSelectionPanelOpen(!isSelectionPanelOpen);
   }
 
   const formatValue = (value) => {
-    // TODO
     return value;
+  }
+
+  const submitHandler = (value) => {
+    setSelectionValue(value);
+    setIsSelectionPanelOpen(false);
+  }
+
+  const cancelHandler = () => {
+    setIsSelectionPanelOpen(false);
   }
 
   return (
     <Fragment>
-      <div className='AdvanceSearchItem'>
+      <div className={`AdvanceSearchItem ${isSelectionPanelOpen && Comp ? 'AdvanceSearchItem-NoBottomBorder' : ''}`}>
         <div className='ItemName'>
           <span>{name}</span>
         </div>
         <div className='ItemOption'>
           <div
             className='ItemOption-Container'
-            onClick={openSelectionDetailPanel}>
-            <span className='ItemSelectedValue'>{searchParams[type] ? formatValue(searchParams[type]) : '全部'}</span>
-            <span className='ItemSelectionButton'>></span>
+            onClick={toggleSelectionDetailPanel}>
+            <div className='ItemSelectedValue'>{searchParams[type] ? formatValue(searchParams[type]) : '全部'}</div>
+            <div className='ItemSelectionButton'>></div>
           </div>
         </div>
       </div>
       {
-        isSelectionPanelOpen && Comp && <Comp />
+        isSelectionPanelOpen && Comp && <Comp currentValue={searchParams[type]} submitHandler={submitHandler} cancelHandler={cancelHandler} />
       }
     </Fragment>
   )

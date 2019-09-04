@@ -1,6 +1,6 @@
 {
   "name": "my-wacai",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.2.2",
@@ -71,16 +71,14 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "prod": "DEV_MODE=production node scripts/start.js",
-    "devclient": "DEV_MODE=production node index.js",
+    "dev": "DEV_MODE=development node scripts/start.js",
+    "prod": "DEV_MODE=production node index.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "server": "node server/index.js",
     "test:server": "DB_TEST=TEST npm run server",
-    "m": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start\"",
-    "test:m": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run start\"",
+    "test:dev": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run dev\"",
     "test:prod": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run prod\"",
-    "test:devclient": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run devclient\"",
     "sync": "node server/job/sync.js",
     "test:sync": "DB_TEST=TEST node server/job/sync.js",
     "storybook": "node .story/index.js"

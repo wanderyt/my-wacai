@@ -1,0 +1,21 @@
+@import '../../colors.scss';
+@import '../../common.scss';
+
+.Selection__ButtonGroups {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  .SubmitButton, .CancelButton {
+    @extend .MyWacai-Button;
+  }
+}
+
+
+.KeywordsSelectionPanel {
+  margin: 5px;
+
+  input {
+    @extend .MyWacai-Input;
+    inline-size: calc(100% - 1px);
+  }
+}

@@ -1,0 +1,23 @@
+@import './colors.scss';
+
+.MyWacai-Button {
+  width: 80px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 12px;
+  margin: 5px 0;
+  border: 1px solid $GREY-LIGHT-IIII;
+  border-radius: 5px;
+}
+
+.MyWacai-Input {
+  padding: 0px;
+  inline-size: 100%;
+  text-indent: 10px;
+  font-size: 16px;
+  line-height: 30px;
+  outline: none;
+  border-radius: 10px;
+  border: 1px $GREY-LIGHT-IIII solid;
+}
