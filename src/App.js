@@ -12,19 +12,30 @@ import SearchFinItem from './modules/search-fin-item';
 
 import './App.scss';
 
+const API_LOADING_DELAY = 1500;
+
 const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
   let [monthTotal, setMonthTotal] = useState(0);
-  let [finList, setFinList] = useState([]);
+  let [finList, setFinList] = useState(new Array(5).fill({}));
+  let [isLoading, setIsLoading] = useState(true);
 
   // Set monthly total amount
   useEffect(() => {
+    setIsLoading(true);
+
     Axios.get('/api/wacai/getFinList')
       .then(({data}) => {
-        let total = data.total || 0;
-        let finList = data.data || [];
-        setFinList(finList);
-        setMonthTotal(total);
+        setTimeout(() => {
+          setIsLoading(false);
+
+          let total = data.total || 0;
+          let finList = data.data || [];
+          setFinList(finList);
+          setMonthTotal(total);
+        }, API_LOADING_DELAY);
       }, ({response}) => {
+        setIsLoading(false);
+
         if (response.status === 401) {
           dispatch({
             type: 'TOKEN_INVALID'
@@ -95,7 +106,7 @@ const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
             </div>
             :
             <div className='App-Main'>
-              <FinMain items={finList} />
+              <FinMain isLoading={isLoading} items={finList} />
             </div>
           }
         </div>
