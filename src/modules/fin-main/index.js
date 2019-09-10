@@ -4,7 +4,7 @@ import FinItem from '../fin-item';
 
 import './index.scss';
 
-const FinMain = ({items, dispatch}) => {
+const FinMain = ({isLoading, items, dispatch}) => {
   const handleCreateItem = () => {
     dispatch({type: 'CREATE_ITEM'});
   }
@@ -30,11 +30,15 @@ const FinMain = ({items, dispatch}) => {
       <div className='App-Container'>
         <div className='App-FinList'>
           {
-            items.map((item, index) => (
-              <div key={index}>
-                <FinItem item={item} />
-              </div>
-            ))
+            items.map((item, index) => {
+              return (
+                <div key={index}>
+                  {
+                    <FinItem isLoading={isLoading} item={item} />
+                  }
+                </div>
+              );
+            })
           }
         </div>
       </div>

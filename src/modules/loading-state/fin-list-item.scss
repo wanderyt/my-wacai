@@ -1,0 +1,42 @@
+@import './loading-state.scss';
+
+.FinListItem--LoadingState {
+  .LoadingState {
+    @include nameAnimated();
+    border-radius: 3px;
+    height: 100%;
+  }
+
+  .FinListItem--Left {
+    float: left;
+    width: 150px;
+
+    .FinListItem__Cat {
+      width: 75%;
+      height: 30px;
+      padding: 6px 0;
+      box-sizing: border-box;
+    }
+
+    .FinListItem__Date, .FinListItem__Comment {
+      height: 20px;
+      padding: 3px 0;
+      box-sizing: border-box;
+    }
+
+    .FinListItem__Comment {
+      margin-top: 5px;
+    }
+  }
+
+  .FinListItem--Right {
+    float: right;
+    width: 80px;
+
+    .FinListItem--Amount {
+      height: 50px;
+      padding: 15px 0;
+      box-sizing: border-box;
+    }
+  }
+}
