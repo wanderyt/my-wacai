@@ -29,7 +29,7 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-const InnerCompWithRouter = ({location = {pathname: ''}}) => {
+const InnerComp = ({location = {pathname: ''}}) => {
   return (
     <React.Fragment>
       {
@@ -42,20 +42,24 @@ const InnerCompWithRouter = ({location = {pathname: ''}}) => {
   )
 }
 
+const InnerCompWithRouter = withRouter(InnerComp);
+
 const Routers = () => {
   return (
-    <Router>
+    <React.Fragment>
       <Route exact path={'' || '/'} component={App} key='App'/>
       <Route path='/fileUploader' component={FileUploader} key="FileUploader"/>
-    </Router>
+    </React.Fragment>
   )
 }
 
 ReactDOM.render(
   <Provider store={store}>
     <LoginProvider>
-      {/* {withRouter(InnerComp)} */}
-      <Routers />
+      <Router>
+        {/* <InnerCompWithRouter /> */}
+        <Routers />
+      </Router>
     </LoginProvider>
     {/* <Loading /> */}
   </Provider>,
