@@ -33,6 +33,10 @@ app.use('/api/wacai/', [validateTokenMiddleware, ...finRouters.router]);
 const loginRouters = require('./router/loginRouter/index');
 app.use('/api/user', loginRouters.router);
 
+// define file operation request path
+const fileRouters = require('./router/fileRouter/index');
+app.use('/api/file', fileRouters.router);
+
 // define test request path
 // const testRouters = require('./router/testRouter/index');
 // app.use('/api/test', testRouters.router);

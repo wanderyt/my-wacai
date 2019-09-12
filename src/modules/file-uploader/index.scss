@@ -1,0 +1,56 @@
+@import '../../colors.scss';
+@import '../../common.scss';
+
+.FileUploader {
+  min-width: 700px;
+  width: 700px;
+  border: 1px solid $GREY-LIGHT-IIII;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1);
+  border-radius: 5px;
+
+  .NameInput {
+    padding: 5px 10px;
+    input {
+      @extend .MyWacai-Input;
+    }
+  }
+
+  .ImageUploader {
+    padding: 0px 10px;
+    .ImageUploadSpace {
+      padding: 5px 0px;
+      border-top: 1px solid $GREY-LIGHT-IIII;
+      display: flex;
+      justify-content: space-between;
+      .ImageUploadFrame {
+        position: relative;
+        .FileUpload--Transparent {
+          opacity: .2;
+        }
+        .FileUpload__Name {
+          @include File--Uploaded();
+          position: absolute;
+          top: 0;
+          background: rgba(40, 219, 37, .5); // Green with Opacity
+          div {
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+  }
+
+  .ButtonGroup {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+    .Button {
+      @extend .MyWacai-Button;
+      font-size: 16px;
+      cursor: pointer;
+      border-color: $GRAY;
+      border-width: 2px;
+    }
+  }
+}
