@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import App from './App';
 import Loading from './modules/loading';
+import FileUploader from './modules/file-uploader';
+import {withRouter} from 'react-router';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
 
@@ -26,10 +29,33 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
+const InnerCompWithRouter = ({location = {pathname: ''}}) => {
+  return (
+    <React.Fragment>
+      {
+        location.pathname.indexOf('fileUploader') > -1 ?
+          <FileUploader />
+          :
+          <App />
+      }
+    </React.Fragment>
+  )
+}
+
+const Routers = () => {
+  return (
+    <Router>
+      <Route exact path={'' || '/'} component={App} key='App'/>
+      <Route path='/fileUploader' component={FileUploader} key="FileUploader"/>
+    </Router>
+  )
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <LoginProvider>
-      <App />
+      {/* {withRouter(InnerComp)} */}
+      <Routers />
     </LoginProvider>
     {/* <Loading /> */}
   </Provider>,
