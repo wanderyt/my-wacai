@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const {TEST_DB_FILE_PATH, DB_FILE_PATH, FIN_TABLE_NAME, CATEGORY_TABLE_NAME, TEMPLATE_TABLE_NAME} = require('./config');
-const {logDBError, logDBSuccess, mapSearchParamsToDBSearch} = require('./util');
+const {logDBError, logDBSuccess, mapSearchParamsToDBSearch, uuid} = require('./util');
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 
@@ -152,7 +152,7 @@ const getCategoryGroup = (db, options, callback) => {
  * @param {string} data.id target fin item id
  * @param {string} data.category target fin item category
  * @param {string} data.subcategory target fin item subcategory
- * @param {string} data.date target fin item date
+ * @param {string} data.date target fin item date - 2019-04-20 19:20:00
  * @param {string} data.comment target fin item comment
  * @param {number} data.amount target fin item amount
  * @param {function} callback
@@ -167,6 +167,74 @@ const createFinItem = (db, data, callback) => {
         logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql, err);
       } else {
         logDBSuccess(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql);
+      }
+
+      callback && callback(err);
+
+      resolve({err});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Config schedule sql settings
+ * const SCHEDULE_DAY = 1;
+ * const SCHEDULE_WEEK = 2;
+ * const SCHEDULE_MONTH = 3;
+ * const SCHEDULE_YEAR = 4;
+ * @param {*} sqlTemplate
+ * @param {*} scheduleMode
+ * @returns {*} list of insert sql statement
+ */
+const formatSchedule = (sqlTemplate, datetime, scheduleMode) => {
+  const scheduleModeMapping = {
+    1: ['+{{number}} day', 100 * 365],
+    2: ['+{{number}} week', 100 * 52],
+    3: ['+{{number}} month', 100 * 12],
+    4: ['+{{number}} year', 100]
+  };
+  let sqls = [];
+  const currentScheduleId = uuid();
+  // Default setting will be added within 100 years
+  const [datetimeTemplate, loopTimes] = scheduleModeMapping(scheduleMode);
+  for (let index = 1; index <= loopTimes; index++) {
+    let datetimeFn = datetimeTemplate.replace('{{number}}', index);
+    let datetimeSql = `datetime('${datetime}',${datetimeFn});`
+    let id = uuid();
+    sqls.push(sqlTemplate.repalce('{{datetimeFn}}', datetimeSql).replace('{{id}}', id).replace('{{scheduleId}}', currentScheduleId));
+  }
+
+  return sqls;
+}
+
+/**
+ * Create scheduled fin item record
+ * @param {object} db
+ * @param {object} data target fin item
+ * @param {string} data.id target fin item id
+ * @param {string} data.category target fin item category
+ * @param {string} data.subcategory target fin item subcategory
+ * @param {string} data.date target fin item date
+ * @param {string} data.comment target fin item comment
+ * @param {number} data.amount target fin item amount
+ * @param {number} data.scheduleMode target fin item schedule mode
+ * @param {function} callback
+ */
+const createScheduledFinItem = (db, data, callback) => {
+  let promise = new Promise((resolve) => {
+    const SCHEDULE_NONE = 0;
+    let scheduleMode = data.scheduleMode || SCHEDULE_NONE;
+    let sqlTemplate =
+      `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, isScheduled, scheduleId)
+      select "{{id}}", "${data.category}", "${data.subcategory}", {{datetimeFn}}, "${data.comment}", ${data.amount}, ${scheduleMode}, '{{scheduleId}}');`;
+    let sqlList = formatSchedule(sqlTemplate, data.date, scheduleMode);
+    db.all(sqlList.join(' '), (err) => {
+      if (err) {
+        logDBError(`createScheduledFinItem - Create scheduled fin data in ${FIN_TABLE_NAME} table`, JSON.stringify(data), err);
+      } else {
+        logDBSuccess(`createScheduledFinItem - Create scheduled fin data in ${FIN_TABLE_NAME} table`, JSON.stringify(data));
       }
 
       callback && callback(err);
@@ -482,6 +550,7 @@ module.exports = {
   getSumByMonth,
   getCategoryGroup,
   createFinItem,
+  createScheduledFinItem,
   updateFinItem,
   deleteFinItem,
   getMonthlyTotal,

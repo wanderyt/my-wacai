@@ -33,6 +33,35 @@ router.post('/createFinItem', (req, res) => {
   })
 });
 
+router.post('/createScheduledFinItem', (req, res) => {
+  logger.info('api /createScheduledFinItem');
+  let {data} = req.body;
+  logger.info('create scheduled fin item data: ');
+  logger.info(JSON.stringify(data));
+
+  let db = createDBConnection();
+  let createScheduledFinItemPromise = createScheduledFinItem(db, data);
+
+  createScheduledFinItemPromise.then((data) => {
+    closeDB(db);
+    if (data.err) {
+      logger.error('api /createScheduledFinItem failed with error');
+      logger.error(data.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: data.err
+      });
+    } else {
+      logger.info('api /createScheduledFinItem success');
+      res.statusCode = 200;
+      res.send({
+        status: true
+      });
+    }
+  })
+});
+
 module.exports = {
   router
 };
