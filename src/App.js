@@ -9,6 +9,7 @@ import FinTemplateList from './modules/fin-template-list';
 import AutoUpdateNumber from './modules/autoupdate-number';
 import ErrorNotification from './modules/error-notification';
 import SearchFinItem from './modules/search-fin-item';
+import {formatMonth} from './utils/helper';
 
 import './App.scss';
 
@@ -23,25 +24,28 @@ const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
   useEffect(() => {
     setIsLoading(true);
 
-    Axios.get('/api/wacai/getFinList')
-      .then(({data}) => {
-        setTimeout(() => {
+    if (!selectedItem) {
+      let now = new Date();
+      Axios.get(`/api/wacai/getFinList?year=${now.getFullYear()}&month=${now.getMonth() + 1}`)
+        .then(({data}) => {
+          setTimeout(() => {
+            setIsLoading(false);
+
+            let total = data.total || 0;
+            let finList = data.data || [];
+            setFinList(finList);
+            setMonthTotal(total);
+          }, API_LOADING_DELAY);
+        }, ({response}) => {
           setIsLoading(false);
 
-          let total = data.total || 0;
-          let finList = data.data || [];
-          setFinList(finList);
-          setMonthTotal(total);
-        }, API_LOADING_DELAY);
-      }, ({response}) => {
-        setIsLoading(false);
-
-        if (response.status === 401) {
-          dispatch({
-            type: 'TOKEN_INVALID'
-          });
-        }
-      });
+          if (response.status === 401) {
+            dispatch({
+              type: 'TOKEN_INVALID'
+            });
+          }
+        });
+    }
   }, [selectedItem]);
 
   const handleTotalAmountClick = () => {

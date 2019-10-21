@@ -24,6 +24,12 @@
       }
       .Fin-Comment {
         margin-top: 5px;
+        .Fin-IsScheduled {
+          border: 1px solid $GREY-REGULAR;
+          border-radius: 2px;
+          padding: 1px 2px;
+          margin-right: 5px;
+        }
       }
     }
     .Fin-Right {

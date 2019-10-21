@@ -6,7 +6,7 @@ import {FinListItemLoadingState} from '../loading-state';
 import './index.scss';
 
 const FinItem = ({item, isLoading, dayMode = false, isLast = false, dispatch}) => {
-  const {category, subcategory, date, amount, comment} = item;
+  const {category, subcategory, date, amount, comment, isScheduled} = item;
 
   const selectItem = () => {
     dispatch({
@@ -32,6 +32,9 @@ const FinItem = ({item, isLoading, dayMode = false, isLast = false, dispatch}) =
                   </span>
                 </div>
                 <div className='Fin-Info Fin-Comment'>
+                  {
+                    isScheduled && <span className='Fin-IsScheduled'>周期</span>
+                  }
                   <span>{comment}</span>
                 </div>
               </div>
