@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, createFinItem} = require('../../db/dao');
+const {createDBConnection, closeDB, createFinItem, createScheduledFinItem} = require('../../db/dao');
 
 router.post('/createFinItem', (req, res) => {
   logger.info('api /createFinItem');
