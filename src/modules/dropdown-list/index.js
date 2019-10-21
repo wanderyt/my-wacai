@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 
 import './index.scss';
 
-const DropdownList = ({title = '', items = [], customizeItemClickHandler = () => void 0, isDisabled = false}) => {
+const DropdownList = ({defaultSelectedValue = '', items = [], customizeItemClickHandler = () => void 0, isDisabled = false}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [caption, setCaption] = useState(title);
+  const [selectedValue, setSelectedValue] = useState(defaultSelectedValue);
 
   const toggleClickDropdownHeader = () => {
-    setIsOpen(!isOpen);
+    setIsOpen(!isOpen && !isDisabled);
   }
 
   const handleItemClick = (item) => {
     setIsOpen(false);
-    setCaption(item.value);
+    setSelectedValue(item.value);
     customizeItemClickHandler(item);
   }
 
@@ -35,10 +35,10 @@ const DropdownList = ({title = '', items = [], customizeItemClickHandler = () =>
       <div
         className={`DropdownHeader DropdownList-Element ${isOpen ? 'DropdownHeader--Open' : ''}`}
         onClick={toggleClickDropdownHeader}>
-        {caption}
+        {selectedValue}
       </div>
       {
-        isOpen && !isDisabled &&
+        isOpen &&
         <div className='DropdownPanel DropdownList-Element'>
           {
             items.map((item) => (

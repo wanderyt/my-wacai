@@ -10,12 +10,66 @@
   }
 }
 
-
 .KeywordsSelectionPanel {
   margin: 5px;
 
   input {
     @extend .MyWacai-Input;
     inline-size: calc(100% - 1px);
+  }
+}
+
+.CategorySelectionPanel {
+  .CategorySelectionContainer, .SubCategorySelectionContainer {
+    display: flex;
+    padding: 5px 5px;
+    align-items: center;
+    justify-content: space-between;
+
+    .CategoryTitle, .SubCategoryTitle {
+      color: $GREY-REGULAR;
+    }
+  }
+}
+
+.AmountRangeSelectionPanel {
+  .AmountRangeAdder {
+    @extend .MyWacai-Button;
+    float: right;
+    width: 30px;
+  }
+
+  .AmountRangeContainer {
+    clear: both;
+  }
+
+  .AmountRangeItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    height: 30px;
+
+    .AmountRangeMain {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: calc(100% - 40px);
+
+      input {
+        @extend .MyWacai-Input;
+        inline-size: 150px;
+      }
+    }
+
+    .AmountRangeRemover {
+      @extend .MyWacai-Button;
+      justify-self: flex-end;
+      width: 30px;
+      border-radius: 15px;
+      font-size: 40px;
+      line-height: 24px;
+      background-color: rgba(255, 56, 56, .9);
+    }
   }
 }

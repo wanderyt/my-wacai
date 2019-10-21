@@ -37,20 +37,33 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
         let dateRangeSearch = `date >= '${dateRange.minDate}' and date <= '${dateRange.maxDate}'`;
         searchQuery.push(dateRangeSearch);
         break;
-      case 'amountRange':
-        let amountRange = searchOptions[key];
-        let amountRangeSearch = `amount >= '${amountRange.minAmount}' and amount <= '${amountRange.maxAmount}'`;
-        searchQuery.push(amountRangeSearch);
+      case 'amountRanges':
+        let amountRanges = JSON.parse(searchOptions[key]);
+        if (amountRanges.length > 0) {
+          let amountQueries = [];
+          amountQueries = amountRanges.map(({minAmount, maxAmount}) => {
+            if (+maxAmount === 0) {
+              return `(amount >= '${minAmount}')`;
+            } else {
+              return `(amount >= '${minAmount}' and amount <= '${maxAmount}')`;
+            }
+          });
+          searchQuery.push(amountQueries.join(' or '));
+        }
         break;
       case 'category':
         let category = searchOptions[key];
-        let categorySearch = `category = '${category}'`;
-        searchQuery.push(categorySearch);
+        if (category !== '全部') {
+          let categorySearch = `category = '${category}'`;
+          searchQuery.push(categorySearch);
+        }
         break;
       case 'subcategory':
         let subcategory = searchOptions[key];
-        let subcategorySearch = `subcategory = '${subcategory}'`;
-        searchQuery.push(subcategorySearch);
+        if (subcategory !== '全部') {
+          let subcategorySearch = `subcategory = '${subcategory}'`;
+          searchQuery.push(subcategorySearch);
+        }
         break;
       case 'keyword':
         let keyword = searchOptions[key];

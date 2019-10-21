@@ -10,7 +10,15 @@ const AdvancedSearch = ({searchParams, dispatch, submitHandler = void 0}) => {
   const handleSubmit = () => {
     let params = [];
     Object.keys(searchParams).map((key) => {
-      params.push(`${key}=${searchParams[key]}`);
+      if (Array.isArray(searchParams[key])) {
+        params.push(`${key}=${JSON.stringify(searchParams[key])}`);
+      } else if (typeof searchParams[key] === 'object') {
+        for (const item in searchParams[key]) {
+          params.push(`${item}=${searchParams[key][item]}`);
+        }
+      } else {
+        params.push(`${key}=${searchParams[key]}`);
+      }
     });
     Axios.get(`/api/wacai/deepSearchFinItems?${params.join('&')}`)
       .then(({data}) => {
@@ -30,14 +38,16 @@ const AdvancedSearch = ({searchParams, dispatch, submitHandler = void 0}) => {
         <div className='clearFloat' />
       </div>
       {
-        ADVANCE_SEARCH_ITEMS && ADVANCE_SEARCH_ITEMS.map(({type, name, comp}, index) => (
+        ADVANCE_SEARCH_ITEMS && ADVANCE_SEARCH_ITEMS.map(({type, name, comp, defaultValue, formatter}, index) => (
           <div
             className='AdvanceSearchItem-Container'
             key={index}>
             <AdvanceSearchItem
               type={type}
               name={name}
-              Comp={comp} />
+              Comp={comp}
+              defaultValue={defaultValue}
+              formatter={formatter} />
           </div>
         ))
       }
