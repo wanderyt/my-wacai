@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import FinComCatItem from '../fin-com-cat-item';
 import SearchDropdown from '../search-dropdown';
+import PopupButtons from '../popup-buttons';
 import DateTime from 'react-datetime';
+import DropdownList from '../dropdown-list';
 import {connect} from 'react-redux';
 import Axios from 'axios';
 
@@ -10,9 +12,29 @@ import {uuid} from '../../utils/helper';
 
 import './index.scss';
 
+const scheduleModeItems = [{
+  key: 0,
+  value: '非周期入账'
+}, {
+  key: 1,
+  value: '每天入账'
+}, {
+  key: 2,
+  value: '每周入账'
+}, {
+  key: 3,
+  value: '每月入账'
+}, {
+  key: 4,
+  value: '每年入账'
+}];
+
 const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
   const [commentOptions, setCommentOptions] = useState([]);
+  const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
+  const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] = useState(false);
+  const isUpdate = !!item.id;
 
   useEffect(() => {
     Axios.get('/api/wacai/getAllComment')
@@ -47,6 +69,11 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   const handleDateTimeChange = (newDate) => {
     let newDateString = newDate.format('YYYY-MM-DD hh:mm:ss');
     setLatestItem(Object.assign({}, latestItem, {date: newDateString}));
+  }
+
+  const handleScheduleModeChange = (newItem) => {
+    let newScheduleMode = newItem.key;
+    setLatestItem(Object.assign({}, latestItem, {isScheduled: newScheduleMode}));
   }
 
   const handleCatSelection = () => {
@@ -105,12 +132,22 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
 
     let requestUrl = '', data = {};
     if (latestItem.id) {
-      requestUrl = '/api/wacai/updateFinItem';
-      data = {...latestItem};
+      if (latestItem.isScheduled > 0) {
+        setUpdateScheduledPopupStatus(true);
+      } else {
+        requestUrl = '/api/wacai/updateFinItem';
+        data = {...latestItem};
+      }
     } else {
-      requestUrl = '/api/wacai/createFinItem';
-      data = {...latestItem, id: uuid()};
+      if (latestItem.isScheduled > 0) {
+        requestUrl = '/api/wacai/createScheduledFinItem';
+        data = {...latestItem};
+      } else {
+        requestUrl = '/api/wacai/createFinItem';
+        data = {...latestItem, id: uuid()};
+      }
     }
+
     Axios.post(requestUrl, {data})
       .then(() => {
         dispatch({
@@ -119,7 +156,62 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
       });
   }
 
+  const updateSingleScheduledItem = () => {
+    setUpdateScheduledPopupStatus(false);
+    const requestUrl = '/api/wacai/updateFinItem';
+    const data = {...latestItem};
+    Axios.post(requestUrl, {data})
+      .then(() => {
+        dispatch({
+          type: 'RESET_SELECTED_ITEM'
+        });
+      });
+  }
+
+  const updateSeriesScheduledItems = () => {
+    setUpdateScheduledPopupStatus(false);
+    const requestUrl = '/api/wacai/updateScheduledFinItem';
+    const data = {...latestItem};
+    const options = {};
+    const now = new Date();
+    options.scheduledId = data.scheduledId;
+    options.year = now.getFullYear();
+    options.month = now.getMonth();
+    options.day = now.getDate();
+    Axios.post(requestUrl, {data, options})
+      .then(() => {
+        dispatch({
+          type: 'RESET_SELECTED_ITEM'
+        });
+      });
+  }
+
   const handleDeleteButton = () => {
+    if (latestItem.isScheduled > 0) {
+      setDeleteScheduledPopupStatus(true);
+    } else {
+      Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`)
+        .then(() => {
+          dispatch({
+            type: 'RESET_SELECTED_ITEM'
+          });
+        }, ({response}) => {
+          if (response.status === 401) {
+            dispatch({
+              type: 'TOKEN_INVALID'
+            });
+          }
+        });
+    }
+  }
+
+  const popupButtonsCancelHandler = () => {
+    setDeleteScheduledPopupStatus(false);
+    setUpdateScheduledPopupStatus(false);
+  }
+
+  const deleteSingleScheduledItem = () => {
+    setDeleteScheduledPopupStatus(false);
     Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`)
       .then(() => {
         dispatch({
@@ -133,6 +225,39 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         }
       });
   }
+
+  const deleteSeriesScheduledItems = () => {
+    setDeleteScheduledPopupStatus(false);
+    const now = new Date();
+    Axios.delete(`/api/wacai/deleteScheduledFinItem?scheduleId=${latestItem.scheduleId}&year=${now.getFullYear()}&month=${now.getMonth()}&day=${now.getDate()}`)
+      .then(() => {
+        dispatch({
+          type: 'RESET_SELECTED_ITEM'
+        });
+      }, ({response}) => {
+        if (response.status === 401) {
+          dispatch({
+            type: 'TOKEN_INVALID'
+          });
+        }
+      });
+  }
+
+  const deleteScheduledPopupButtons = [{
+    name: '只删除这一笔',
+    clickHandler: deleteSingleScheduledItem
+  }, {
+    name: '删除这一笔以及以后所有',
+    clickHandler: deleteSeriesScheduledItems
+  }];
+
+  const updateScheduledPopupButtons = [{
+    name: '只更新这一笔',
+    clickHandler: updateSingleScheduledItem
+  }, {
+    name: '更新这一笔以及以后所有',
+    clickHandler: updateSeriesScheduledItems
+  }]
 
   /*
     Format change from '2019-04-20 19:20:00' to '2019/04/20 19:20:00'
@@ -149,7 +274,15 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         <DateTime
           value={new Date(latestItem.date.replace(/-/g, '/'))}
           defaultValue={new Date()}
-          onChange={handleDateTimeChange} />
+          onChange={handleDateTimeChange}
+          inputProps={{disabled: isUpdate && latestItem.isScheduled > 0}} />
+      </div>
+      <div className='Fin-Schedule Fin-WhiteBack'>
+        <DropdownList
+          isDisabled={isUpdate}
+          title={scheduleModeItems[latestItem.isScheduled || 0].value}
+          items={scheduleModeItems}
+          customizeItemClickHandler={handleScheduleModeChange} />
       </div>
       <div className='Fin-Header Fin-WhiteBack'>
         <div
@@ -216,6 +349,22 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
           </div>
         </div>
       </div>
+      {
+        deleteScheduledPopupStatus &&
+        <div className="PopupButtons--Container">
+          <PopupButtons
+            buttons={deleteScheduledPopupButtons}
+            cancelHandler={popupButtonsCancelHandler} />
+        </div>
+      }
+      {
+        updateScheduledPopupStatus &&
+        <div className="PopupButtons--Container">
+          <PopupButtons
+            buttons={updateScheduledPopupButtons}
+            cancelHandler={popupButtonsCancelHandler} />
+        </div>
+      }
     </div>
   )
 };

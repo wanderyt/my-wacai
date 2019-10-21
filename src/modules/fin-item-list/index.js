@@ -10,7 +10,8 @@ const FinItemList = ({dispatch}) => {
   const [historyExpense, setHistoryExpense] = useState({});
 
   useEffect(() => {
-    Axios.get('/api/wacai/getHistoryExpense')
+    let now = new Date();
+    Axios.get(`/api/wacai/getHistoryExpense?year=${now.getFullYear()}&month=${now.getMonth() + 1}`)
       .then(({data}) => {
         let responseData = data.data || {};
         setHistoryExpense(responseData);

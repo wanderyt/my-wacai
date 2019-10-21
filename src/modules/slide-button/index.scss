@@ -1,0 +1,44 @@
+.SlideButton {
+  .SlideFrame {
+    width: 80px;
+    height: 30px;
+    position: relative;
+    .Block {
+      width: 30px;
+      height: 30px;
+      border-radius: 15px;
+      z-index: 1;
+      position: absolute;
+      transition: all 80ms linear;
+      box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+    }
+    .Slider {
+      width: 100%;
+      height: 20px;
+      border-radius: 10px;
+      position: absolute;
+      top: 5px;
+      transition-delay: 50ms;
+      transition-property: background-color;
+    }
+  }
+
+  &.active {
+    .Block {
+      transform: translateX(50px);
+      background-color: #4C3389;
+    }
+    .Slider {
+      background-color: rgba(#4C3389,.6);
+    }
+  }
+  &.inactive {
+    .Block {
+      transform: translateX(0px);
+      background-color: #FAFAFA;
+    }
+    .Slider {
+      background-color: rgba(0,0,0,.38);
+    }
+  }
+}

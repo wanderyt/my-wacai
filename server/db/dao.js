@@ -1,6 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const {TEST_DB_FILE_PATH, DB_FILE_PATH, FIN_TABLE_NAME, CATEGORY_TABLE_NAME, TEMPLATE_TABLE_NAME} = require('./config');
-const {logDBError, logDBSuccess, mapSearchParamsToDBSearch} = require('./util');
+const {logDBError, logDBSuccess, mapSearchParamsToDBSearch, uuid} = require('./util');
+const {padZero} = require('../helper');
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 
@@ -67,12 +68,18 @@ const deleteAllData = (db, callback) => {
  * @param {Object} db DB connection object
  * @param {object} options query options
  * @param {number} options.top query numbers
+ * @param {number} options.month query ends with specific month, need to be formatted like MM
+ * @param {number} options.year query ends with specific month, need to be formatted like YYYY
  * @param {function} callback
  */
 const getFinList = (db, options, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select * from ${FIN_TABLE_NAME} order by date desc`;
+    let sql = `select * from ${FIN_TABLE_NAME}`;
     if (options) {
+      if (options.month && options.year) {
+        sql += ` where date <= '${options.year}-${padZero(options.month + 1)}-%'`;
+      }
+      sql += ' order by date desc';
       if (options.top) {
         sql += ' limit ' + options.top;
       }
@@ -98,12 +105,13 @@ const getFinList = (db, options, callback) => {
  * Get fin list by month
  * @param {Object} db DB connection object
  * @param {Object} options options for sql
- * @param {string} options.month query month details, format as 'YYYY-MM'
+ * @param {string} options.month query month details, need to be formatted as 'MM'
+ * @param {string} options.year query year details, need to be formatted as 'YYYY'
  * @param {function} callback
  */
-const getSumByMonth = (db, options, callback) => {
+const getSumByYearMonth = (db, options, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date like '${options.month}-%');`;
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date like '${options.year}-${padZero(options.month)}-%');`;
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError('getFinListByMonth - Fetch data in FIN table', sql, err);
@@ -152,7 +160,7 @@ const getCategoryGroup = (db, options, callback) => {
  * @param {string} data.id target fin item id
  * @param {string} data.category target fin item category
  * @param {string} data.subcategory target fin item subcategory
- * @param {string} data.date target fin item date
+ * @param {string} data.date target fin item date - 2019-04-20 19:20:00
  * @param {string} data.comment target fin item comment
  * @param {number} data.amount target fin item amount
  * @param {function} callback
@@ -167,6 +175,73 @@ const createFinItem = (db, data, callback) => {
         logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql, err);
       } else {
         logDBSuccess(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql);
+      }
+
+      callback && callback(err);
+
+      resolve({err});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Config schedule sql settings
+ * const SCHEDULE_DAY = 1;
+ * const SCHEDULE_WEEK = 2;
+ * const SCHEDULE_MONTH = 3;
+ * const SCHEDULE_YEAR = 4;
+ * @param {*} sqlTemplate
+ * @param {*} scheduleMode
+ * @returns {*} list of insert sql statement
+ */
+const formatSchedule = (sqlTemplate, datetime, scheduleMode) => {
+  const scheduleModeMapping = {
+    1: ['+{{number}} day', 100 * 365],
+    2: ['+{{number}} week', 100 * 52],
+    3: ['+{{number}} month', 100 * 12],
+    4: ['+{{number}} year', 100]
+  };
+  let sqls = [];
+  const currentScheduleId = uuid();
+  // Default setting will be added within 100 years
+  const [datetimeTemplate, loopTimes] = scheduleModeMapping[scheduleMode];
+  for (let index = 0; index <= loopTimes; index++) {
+    let datetimeFn = datetimeTemplate.replace('{{number}}', index);
+    let datetimeSql = `datetime('${datetime}','${datetimeFn}')`
+    let id = uuid();
+    sqls.push(sqlTemplate.replace('{{datetimeFn}}', datetimeSql).replace('{{id}}', id).replace('{{scheduleId}}', currentScheduleId));
+  }
+
+  return sqls;
+}
+
+/**
+ * Create scheduled fin item record
+ * @param {object} db
+ * @param {object} data target fin item
+ * @param {string} data.id target fin item id
+ * @param {string} data.category target fin item category
+ * @param {string} data.subcategory target fin item subcategory
+ * @param {string} data.date target fin item date
+ * @param {string} data.comment target fin item comment
+ * @param {number} data.amount target fin item amount
+ * @param {number} data.isScheduled target fin item schedule mode
+ * @param {function} callback
+ */
+const createScheduledFinItem = (db, data, callback) => {
+  let promise = new Promise((resolve) => {
+    const SCHEDULE_NONE = 0;
+    let scheduleMode = data.isScheduled || SCHEDULE_NONE;
+    let insertHeaderSQL = `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, isScheduled, scheduleId) `;
+    let insertRowSQL = `select "{{id}}", "${data.category}", "${data.subcategory}", {{datetimeFn}}, "${data.comment}", ${data.amount}, ${scheduleMode}, '{{scheduleId}}'`;
+    let sqlList = formatSchedule(insertHeaderSQL + insertRowSQL + ';', data.date, scheduleMode);
+    db.exec(sqlList.join(''), (err) => {
+      if (err) {
+        logDBError(`createScheduledFinItem - Create scheduled fin data in ${FIN_TABLE_NAME} table`, JSON.stringify(data), err);
+      } else {
+        logDBSuccess(`createScheduledFinItem - Create scheduled fin data in ${FIN_TABLE_NAME} table`, JSON.stringify(data));
       }
 
       callback && callback(err);
@@ -219,6 +294,56 @@ const updateFinItem = (db, data, callback) => {
 }
 
 /**
+ * Update existing scheduled fin items
+ * @param {object} db
+ * @param {object} data target fin item
+ * @param {string} data.id target fin item id
+ * @param {string} data.category target fin item category
+ * @param {string} data.subcategory target fin item subcategory
+ * @param {string} data.date target fin item date
+ * @param {string} data.comment target fin item comment
+ * @param {number} data.amount target fin item amount
+ * @param {string} options.scheduleId query specific schedule id
+ * @param {number} options.year query specific year
+ * @param {number} options.month query specific month
+ * @param {number} options.day query specific day
+ * @param {function} callback
+ */
+const updateScheduledFinItem = (db, data, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let updateOptions = '';
+    for (const key in data) {
+      if (key !== 'id') {
+        const value = data[key];
+        updateOptions += `${key}="${value}", `;
+      }
+    }
+    updateOptions = updateOptions.slice(0, updateOptions.length - 2);
+
+    let searchParams = [options.scheduleId];
+    if (options.year && options.month && options.day && Number(options.year) && options.month < 13 && options.day < 35) {
+      sql += ' and date >= date(?, "+1 day")';
+      searchParams.push(`${options.year}-${padZero(options.month)}-${padZero(options.day)}`);
+    }
+
+    let sql = `update ${FIN_TABLE_NAME} set ${updateOptions} where scheduleId = ?`;
+    db.run(sql, searchParams, (err) => {
+      if (err) {
+        logDBError(`updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`, sql, err);
+      } else {
+        logDBSuccess(`updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`, sql);
+      }
+
+      callback && callback(err);
+
+      resolve({err});
+    });
+  });
+
+  return promise;
+}
+
+/**
  * Delete specific fin item
  * @param {object} db
  * @param {string} id target fin item data id
@@ -226,8 +351,42 @@ const updateFinItem = (db, data, callback) => {
  */
 const deleteFinItem = (db, id, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `delete from ${FIN_TABLE_NAME} where id = "${id}";`;
-    db.run(sql, (err) => {
+    let sql = `delete from ${FIN_TABLE_NAME} where id = ?;`;
+    db.run(sql, [id], (err) => {
+      if (err) {
+        logDBError('Delete fin data in FIN table', sql + id, err);
+      } else {
+        logDBSuccess('Delete fin data in FIN table', sql + id);
+      }
+
+      callback && callback(err);
+
+      resolve({err});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Delete specific scheduled fin item(s)
+ * @param {object} db
+ * @param {object} options query options
+ * @param {string} options.scheduleId query specific schedule id
+ * @param {number} options.year query specific year
+ * @param {number} options.month query specific month
+ * @param {number} options.day query specific day
+ * @param {function} callback
+ */
+const deleteScheduledFinItem = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `delete from ${FIN_TABLE_NAME} where scheduleId = ?`;
+    let params = [options.scheduleId];
+    if (options.year && options.month && options.day && Number(options.year) && options.month < 13 && options.day < 35) {
+      sql += ' and date >= date(?, "+1 day")';
+      params.push(`${options.year}-${padZero(options.month)}-${padZero(options.day)}`);
+    }
+    db.run(sql, params, (err) => {
       if (err) {
         logDBError('Delete fin data in FIN table', sql, err);
       } else {
@@ -246,11 +405,17 @@ const deleteFinItem = (db, id, callback) => {
 /**
  * Get all monthly total data.
  * @param {object} db
+ * @param {object} options query options
+ * @param {number} options.month query ends with specific month, need to be formatted like MM
+ * @param {number} options.year query ends with specific month, need to be formatted like YYYY
  * @param {function} callback
  */
-const getMonthlyTotal = (db, callback) => {
+const getMonthlyTotal = (db, options, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select sum(amount) as total, year_month from (select amount, substr(date, 1, 7) as year_month from ${FIN_TABLE_NAME}) group by year_month order by year_month desc;`;
+    let sql = `select sum(amount) as total, year_month from (select amount, substr(date, 1, 7) as year_month from ${FIN_TABLE_NAME} {{queries}}) group by year_month order by year_month desc;`;
+    if (options.month && options.year) {
+      sql = sql.replace("{{queries}}", `where date <= '${options.year}-${padZero(options.month + 1)}-%'`);
+    }
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError('Fetch monthly total data in FIN table', sql, err);
@@ -479,11 +644,14 @@ module.exports = {
   insertFinData,
   deleteAllData,
   getFinList,
-  getSumByMonth,
+  getSumByYearMonth,
   getCategoryGroup,
   createFinItem,
+  createScheduledFinItem,
   updateFinItem,
+  updateScheduledFinItem,
   deleteFinItem,
+  deleteScheduledFinItem,
   getMonthlyTotal,
   getDailyTotal,
   getFinItemsByMonth,

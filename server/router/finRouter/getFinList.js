@@ -1,19 +1,17 @@
-const {createDBConnection, getFinList, getSumByMonth, closeDB} = require('../../db/dao');
+const {createDBConnection, getFinList, getSumByYearMonth, closeDB} = require('../../db/dao');
 const express = require('express');
 const router = express.Router();
-const {formatMonth} = require('../../helper');
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 
 router.get('/getFinList', (req, res) => {
-  const {month = formatMonth()} = req.query;
-  console.log('getFinList endpoint...');
+  const {month, year} = req.query;
   logger.info('api /getFinList');
   let db = createDBConnection();
-  let getFinListPromise = getFinList(db, {top: 10});
-  let getSumByMonthPromise = getSumByMonth(db, {month: month});
+  let getFinListPromise = getFinList(db, {month: month, year: year, top: 10});
+  let getSumByYearMonthPromise = getSumByYearMonth(db, {month: month, year: year});
 
-  Promise.all([getFinListPromise, getSumByMonthPromise])
+  Promise.all([getFinListPromise, getSumByYearMonthPromise])
     .then((data) => {
       closeDB(db);
       let [finListResponse, sumByMonthResponse] = data;

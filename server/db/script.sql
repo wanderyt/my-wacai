@@ -178,3 +178,7 @@ INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
 VALUES('生活', '零食', '来伊份');
 INSERT INTO FIN_TEMPLATE(category, subcategory, comment)
 VALUES('生活', '通讯', '话费充值');
+
+-- Add schedule related columns
+ALTER TABLE FIN ADD isScheduled NUMBER;
+ALTER TABLE FIN ADD scheduleId VARCHAR(100);

@@ -5,9 +5,10 @@ const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB, getMonthlyTotal} = require('../../db/dao');
 
 router.get('/getHistoryExpense', (req, res) => {
+  const {month, year} = req.query;
   logger.info('api /getHistoryExpense');
   let db = createDBConnection();
-  let getMonthlyTotalPromise = getMonthlyTotal(db);
+  let getMonthlyTotalPromise = getMonthlyTotal(db, {month, year});
   getMonthlyTotalPromise
     .then((data) => {
       closeDB(db);
