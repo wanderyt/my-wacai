@@ -1,0 +1,69 @@
+@import '../../colors.scss';
+
+@mixin trimTextWithDot {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space : nowrap;
+}
+
+.DropdownList {
+  width: 300px;
+  position: relative;
+
+  .DropdownHeader {
+    @include trimTextWithDot();
+    border: 1px solid $GREY-LIGHT-II;
+    border-radius: 5px;
+
+    font-size: 16px;
+    line-height: 30px;
+
+    padding: 0 10px;
+
+    &--Open {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      border-bottom: 0px;
+    }
+  }
+  .DropdownPanel {
+    border: 1px solid $GREY-LIGHT-II;
+    border-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    position: absolute;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: white;
+
+    @keyframes expandDown {
+      0% {
+        opacity: 0;
+        border-top: 0px;
+        height: 0px;
+      }
+      100% {
+        opacity: 1;
+        border-top: 0px;
+        height: auto;
+      }
+    }
+
+    .DropdownList__Item {
+      @include trimTextWithDot();
+      padding: 6px 10px;
+      &:hover {
+        background-color: $GREY-LIGHT-III;
+      }
+    }
+  }
+
+  &--Open .DropdownPanel {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1);
+  }
+
+  &--disabled {
+    background-color: $GREY-LIGHT-II;
+  }
+}
