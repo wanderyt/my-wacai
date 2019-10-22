@@ -616,10 +616,19 @@ const getFinItemsBySearchString = (db, searchString, callback) => {
  * @param {function} callback
  */
 const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
-  let searchString = mapSearchParamsToDBSearch(searchOptions);
+  let searchString = '';
+  try {
+    searchString = mapSearchParamsToDBSearch(searchOptions);
+  } catch (e) {
+    return new Promise((res, rej) => {
+      rej({
+        err: e
+      });
+    });
+  }
+
   let promise = new Promise((resolve) => {
     let sql = `select * from ${FIN_TABLE_NAME} where ${searchString};`;
-    console.log('sql: ', sql);
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError(`Search all fin items in fin table with search string: ${searchString}`, sql, err);

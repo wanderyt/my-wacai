@@ -33,9 +33,11 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
   Object.keys(searchOptions).map((key) => {
     switch (key) {
       case 'dateRange':
-        let dateRange = searchOptions[key];
-        let dateRangeSearch = `date >= '${dateRange.minDate}' and date <= '${dateRange.maxDate}'`;
-        searchQuery.push(dateRangeSearch);
+        let dateRange = JSON.parse(searchOptions[key]);
+        if (dateRange.minDate && dateRange.maxDate) {
+          let dateRangeSearch = `date >= '${dateRange.minDate}' and date <= '${dateRange.maxDate}'`;
+          searchQuery.push(dateRangeSearch);
+        }
         break;
       case 'amountRanges':
         let amountRanges = JSON.parse(searchOptions[key]);
@@ -74,7 +76,7 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
         break;
     }
   })
-  return searchQuery.join(' and ');
+  return searchQuery.join(' and ') + ' order by date asc';
 }
 
 /**

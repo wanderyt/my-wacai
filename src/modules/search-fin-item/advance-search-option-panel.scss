@@ -1,5 +1,6 @@
 @import '../../colors.scss';
 @import '../../common.scss';
+@import '../../../node_modules/react-datetime/css/react-datetime.css';
 
 .Selection__ButtonGroups {
   margin-top: 10px;
@@ -70,6 +71,54 @@
       font-size: 40px;
       line-height: 24px;
       background-color: rgba(255, 56, 56, .9);
+    }
+  }
+}
+
+.DateRangeSelectionPanel {
+  .DateRangeDropdownList {
+    .DropdownList {
+      width: 100%;
+    }
+  }
+  .DateRangeSelection--Custom {
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    .DateRangeSelection {
+      width: 50%;
+      height: 70px;
+      border-radius: 5px;
+      .Title, .Value {
+        padding: 5px;
+        font-size: 16px;
+        text-indent: 10px;
+        letter-spacing: 0.1em;
+      }
+      .Value {
+        text-indent: 20px;
+        font-family: 'HelveticaNeue';
+        font-size: 16px;
+        color: $OLIVE;
+        font-weight: bold;
+      }
+      .DateTimeStyles {
+        z-index: 1;
+      }
+    }
+    .DateRangeSelection--CustomStart {
+      background-color: $GREY-LIGHT-IIII;
+      position: relative;
+      &:after {
+        content: '';
+        position: absolute;
+        right: -13px;
+        top: 0;
+        border-left: 30px solid $GREY-LIGHT-IIII;
+        border-top: 35px solid transparent;
+        border-bottom: 35px solid transparent;
+        border-right: 0px solid transparent;
+      }
     }
   }
 }

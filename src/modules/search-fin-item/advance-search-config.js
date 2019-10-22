@@ -1,8 +1,20 @@
-import {KeywordsSelectionPanel, CategorySelectionPanel, AmountRangeSelectionPanel} from './advance-search-option-panel';
+import {KeywordsSelectionPanel, CategorySelectionPanel, AmountRangeSelectionPanel, DateRangeSelectionPanel} from './advance-search-option-panel';
+import {formatDateObject} from '../../utils/helper';
 
 export const ADVANCE_SEARCH_ITEMS = [{
   type: 'dateRange',
-  name: '日期'
+  name: '日期',
+  defaultValue: '全部',
+  comp: DateRangeSelectionPanel,
+  formatter: (dateRange) => {
+    if (dateRange.minDate && dateRange.maxDate) {
+      let minDate = typeof dateRange.minDate === 'object' ? formatDateObject(dateRange.minDate) : dateRange.minDate;
+      let maxDate = typeof dateRange.maxDate === 'object' ? formatDateObject(dateRange.maxDate) : dateRange.maxDate;
+      return `${minDate} - ${maxDate}`;
+    } else {
+      return '全部';
+    }
+  }
 }, {
   type: 'amountRanges',
   name: '金额',
