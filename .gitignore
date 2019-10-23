@@ -9,7 +9,8 @@
 /coverage
 
 # production
-/build
+# [TODO] Temporarily disabled since production build is failing.
+# /build
 
 # misc
 .DS_Store
