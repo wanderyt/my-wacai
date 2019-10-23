@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import './advance-search-item.scss';
 
-const AdvanceSearchItem = ({type, name, Comp, searchParams, dispatch}) => {
+const AdvanceSearchItem = ({type, name, Comp, defaultValue, formatter = (value) => value, searchParams, dispatch}) => {
   const [isSelectionPanelOpen, setIsSelectionPanelOpen] = useState(false);
 
   const setSelectionValue = (value) => {
@@ -19,7 +19,7 @@ const AdvanceSearchItem = ({type, name, Comp, searchParams, dispatch}) => {
   }
 
   const formatValue = (value) => {
-    return value;
+    return formatter ? formatter(value) : value;
   }
 
   const submitHandler = (value) => {
@@ -41,7 +41,7 @@ const AdvanceSearchItem = ({type, name, Comp, searchParams, dispatch}) => {
           <div
             className='ItemOption-Container'
             onClick={toggleSelectionDetailPanel}>
-            <div className='ItemSelectedValue'>{searchParams[type] ? formatValue(searchParams[type]) : '全部'}</div>
+            <div className='ItemSelectedValue'>{searchParams[type] ? formatValue(searchParams[type]) : defaultValue}</div>
             <div className='ItemSelectionButton'>></div>
           </div>
         </div>

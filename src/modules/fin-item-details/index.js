@@ -280,7 +280,7 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
       <div className='Fin-Schedule Fin-WhiteBack'>
         <DropdownList
           isDisabled={isUpdate}
-          title={scheduleModeItems[latestItem.isScheduled || 0].value}
+          defaultSelectedValue={scheduleModeItems[latestItem.isScheduled || 0].value}
           items={scheduleModeItems}
           customizeItemClickHandler={handleScheduleModeChange} />
       </div>

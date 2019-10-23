@@ -6,6 +6,22 @@ const padZero = (day) => {
   }
 };
 
+const formatDate = (year, month, day) => {
+  let validDatePart = [];
+  year && validDatePart.push(year);
+  month && validDatePart.push(padZero(month));
+  day && validDatePart.push(padZero(day));
+  return validDatePart.join('-');
+}
+
+const formatDateObject = (dateObj) => {
+  let validDatePart = [];
+  validDatePart.push(dateObj.getFullYear());
+  validDatePart.push(padZero(dateObj.getMonth()));
+  validDatePart.push(padZero(dateObj.getDate()));
+  return validDatePart.join('-');
+}
+
 const formatDateTime = (date = new Date()) => {
   let year = date.getFullYear();
   let month = date.getMonth();
@@ -43,4 +59,6 @@ export {
   formatDateTime,
   formatMonth,
   uuid,
+  formatDate,
+  formatDateObject
 };

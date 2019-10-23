@@ -36,6 +36,7 @@
     width: 100%;
     box-sizing: border-box;
     background-color: white;
+    z-index: 1;
 
     @keyframes expandDown {
       0% {
