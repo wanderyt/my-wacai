@@ -13,7 +13,7 @@ import {formatMonth} from './utils/helper';
 
 import './App.scss';
 
-const API_LOADING_DELAY = 1500;
+const API_LOADING_DELAY = 500;
 
 const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
   let [monthTotal, setMonthTotal] = useState(0);
