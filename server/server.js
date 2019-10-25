@@ -37,6 +37,10 @@ app.use('/api/user', loginRouters.router);
 const fileRouters = require('./router/fileRouter/index');
 app.use('/api/file', fileRouters.router);
 
+// define database operation request path
+const dbRouters = require('./router/dbRouter/index');
+app.use('/api/db', dbRouters.router);
+
 // define test request path
 // const testRouters = require('./router/testRouter/index');
 // app.use('/api/test', testRouters.router);
