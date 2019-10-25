@@ -592,7 +592,7 @@ const getAllComments = (db, callback) => {
  */
 const getFinItemsBySearchString = (db, searchString, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%';`;
+    let sql = `select * from ${FIN_TABLE_NAME} where category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' order date desc;`;
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError(`Search all fin items in fin table with search string: ${searchString}`, sql, err);
