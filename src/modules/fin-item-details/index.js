@@ -4,6 +4,7 @@ import SearchDropdown from '../search-dropdown';
 import PopupButtons from '../popup-buttons';
 import DateTime from 'react-datetime';
 import DropdownList from '../dropdown-list';
+import Calculator from '../calculator';
 import {connect} from 'react-redux';
 import Axios from 'axios';
 
@@ -34,7 +35,9 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   const [commentOptions, setCommentOptions] = useState([]);
   const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
   const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] = useState(false);
+  const [calculatorStatus, setCalculatorStatus] = useState(false);
   const isUpdate = !!item.id;
+  const amountInputRef = React.createRef();
 
   useEffect(() => {
     Axios.get('/api/wacai/getAllComment')
@@ -257,7 +260,20 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   }, {
     name: '更新这一笔以及以后所有',
     clickHandler: updateSeriesScheduledItems
-  }]
+  }];
+
+  const toggleCalculator = () => {
+    setCalculatorStatus(!calculatorStatus);
+  }
+
+  const handleCalculatorCallback = (result) => {
+    let amount = +parseFloat(result).toFixed(2);
+    setLatestItem(Object.assign({}, latestItem, {amount}));
+    setCalculatorStatus(false);
+
+    // Set input value
+    amountInputRef.current.value = parseFloat(result).toFixed(2);
+  }
 
   /*
     Format change from '2019-04-20 19:20:00' to '2019/04/20 19:20:00'
@@ -298,10 +314,19 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
         <div className='Fin-Amount'>
           <input
             type='number'
+            ref={amountInputRef}
             onFocus={handleAmountFocus}
             onBlur={handleAmountBlur}
             onChange={handleAmountChange}
             defaultValue={parseFloat(latestItem.amount).toFixed(2) || 0} />
+          <div className='CalculatorIcon' onClick={toggleCalculator}>
+            {
+              calculatorStatus &&
+              <div className='CalculatorPanel'>
+                <Calculator defaultValue={latestItem.amount + ''} confirmCallback={handleCalculatorCallback} />
+              </div>
+            }
+          </div>
         </div>
       </div>
       <div className='Fin-ComCats Fin-WhiteBack'>

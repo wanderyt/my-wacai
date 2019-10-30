@@ -52,16 +52,37 @@
       }
     }
     .Fin-Amount {
+      height: 100%;
       float: right;
+      display: flex;
+      align-items: center;
       input {
         inline-size: 200px;
         text-align: right;
-        font-size: 24px;
+        font-size: 20px;
         color: red;
         font-weight: bold;
         outline: none;
         border: 0;
         background: transparent;
+      }
+      .CalculatorIcon {
+        width: 30px;
+        height: 30px;
+        background-image: url('./calculator.png');
+        background-size: 20px;
+        background-position: center;
+        background-repeat: no-repeat;
+        .CalculatorPanel {
+          padding-top: 60%;
+          position: fixed;
+          width: 100%;
+          left: 0;
+          top: 0;
+          height: 100%;
+          z-index: 1;
+          background-color: rgba(255, 255, 255, 0.96);
+        }
       }
     }
   }
