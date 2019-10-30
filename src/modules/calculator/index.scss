@@ -1,0 +1,40 @@
+@import '../../colors.scss';
+@import '../../common.scss';
+
+.Calculator {
+  .NumberContainer {
+    margin: 5px 1%;
+    text-align: right;
+  }
+  .OperatorContainer {
+    .OperatorRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .OperatorItem {
+        @extend .forbid-select;
+        border: 1px solid $GREY-LIGHT-IIII;
+        border-radius: 5px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 16px;
+        width: 24%;
+        margin: 5px 1%;
+        font-family: HelveticaNeue;
+        text-align: center;
+      }
+      .OperatorItem--TwoSpan {
+        width: 50%;
+      }
+      .ConfirmBtn {
+        font-size: 14px;
+      }
+      .Backspace {
+        background-image: url('./backspace.png');
+        background-size: 25px;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    }
+  }
+}
