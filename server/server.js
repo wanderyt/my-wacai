@@ -41,6 +41,10 @@ app.use('/api/file', fileRouters.router);
 const dbRouters = require('./router/dbRouter/index');
 app.use('/api/db', dbRouters.router);
 
+// define my owner testing routers
+const workRouters = require('./router/workRouter/index');
+app.use('/api/work', workRouters.router);
+
 // define test request path
 // const testRouters = require('./router/testRouter/index');
 // app.use('/api/test', testRouters.router);

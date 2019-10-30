@@ -4,7 +4,7 @@ import Axios from 'axios';
 import MonthExpense from './month-expense';
 import HeaderToolbar from '../header-toolbar';
 
-import historyExpense from './mockData.json';
+// import historyExpense from './mockData.json';
 
 const FinItemList = ({dispatch}) => {
   const [historyExpense, setHistoryExpense] = useState({});

@@ -9,7 +9,6 @@ import FinTemplateList from './modules/fin-template-list';
 import AutoUpdateNumber from './modules/autoupdate-number';
 import ErrorNotification from './modules/error-notification';
 import SearchFinItem from './modules/search-fin-item';
-import {formatMonth} from './utils/helper';
 
 import './App.scss';
 
