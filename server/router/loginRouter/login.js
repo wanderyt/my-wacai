@@ -13,7 +13,7 @@ router.post('/login', (req, res) => {
   logger.info(JSON.stringify(data));
   if (data.username === process.env.REACT_APP_USERNAME && data.password === process.env.REACT_APP_PASSWORD) {
     logger.info('api /login success');
-    res.cookie(process.env.REACT_APP_COOKIE_NAME, generateToken(data.username, data.password), {maxAge: COOKIE_MAX_AGE});
+    res.cookie(process.env.REACT_APP_COOKIE_NAME, generateToken(data.username, data.password), {maxAge: COOKIE_MAX_AGE, httpOnly: true});
     res.statusCode = 200;
     res.send({
       status: true
