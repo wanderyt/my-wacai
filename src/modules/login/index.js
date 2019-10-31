@@ -35,6 +35,7 @@ const Login = ({loginSuccessCallback}) => {
 
   return (
     <div className='Login'>
+      <span>{document.cookie}</span>
       <div className='LoginContainer'>
         <div className='UsernameInput'>
           <div className='Username-Image'>
