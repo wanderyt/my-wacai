@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import './index.scss';
 
-const ErrorNotification = ({errorMsg, errorTimeout = 1000, dispatch}) => {
+const Notification = ({type, message, errorTimeout = 1000, dispatch}) => {
   const [addAnimation, setAddAnimation] = useState(true);
   useEffect(() => {
     setAddAnimation(false);
@@ -11,20 +11,20 @@ const ErrorNotification = ({errorMsg, errorTimeout = 1000, dispatch}) => {
       setAddAnimation(true);
       setTimeout(() => {
         dispatch({
-          type: 'RESET_ERROR_MESSAGE'
+          type: 'RESET_MESSAGE'
         });
       }, 1000);
     }, errorTimeout);
   }, []);
   return (
-    <div className={`ErrorNotification ${addAnimation ? 'fadeOutAnimation' : ''}`}>
-      <div className='ErrorMessage-Container'>
-        <div className='ErrorMessage'>
-          {errorMsg}
+    <div className={`Notification ${addAnimation ? 'fadeOutAnimation' : ''}`}>
+      <div className={`${type === 'error' ? 'Message-Container Error' : 'Message-Container Info'}`}>
+        <div className={`${type === 'error' ? 'ErrorMessage' : 'InfoMessage'}`}>
+          {message}
         </div>
       </div>
     </div>
   );
 };
 
-export default connect()(ErrorNotification);
+export default connect()(Notification);

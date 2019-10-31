@@ -7,14 +7,14 @@ import FinCatSelection from './modules/fin-cat-subcat';
 import FinItemList from './modules/fin-item-list';
 import FinTemplateList from './modules/fin-template-list';
 import AutoUpdateNumber from './modules/autoupdate-number';
-import ErrorNotification from './modules/error-notification';
+import Notification from './modules/notification';
 import SearchFinItem from './modules/search-fin-item';
 
 import './App.scss';
 
 const API_LOADING_DELAY = 500;
 
-const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
+const App = ({pageIndex, notificationType, notificationMsg, selectedItem, dispatch}) => {
   let [monthTotal, setMonthTotal] = useState(0);
   let [finList, setFinList] = useState(new Array(5).fill({}));
   let [isLoading, setIsLoading] = useState(true);
@@ -56,10 +56,11 @@ const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
   return (
     <div className="App">
       {
-        errorMsg &&
-        <div className='App-Page-Error-Notification'>
-          <ErrorNotification
-            errorMsg={errorMsg} />
+        notificationMsg &&
+        <div className='App-Page-Notification'>
+          <Notification
+            type={notificationType}
+            message={notificationMsg} />
         </div>
       }
       {
@@ -121,7 +122,8 @@ const App = ({pageIndex, errorMsg, selectedItem, dispatch}) => {
 const mapStateToProps = (state) => ({
   selectedItem: state.fin ? state.fin.selectedItem : null,
   pageIndex: state.fin ? state.fin.pageIndex : 'MAIN',
-  errorMsg: state.errorMsg ? state.errorMsg.message : '',
+  notificationType: state.notification ? state.notification.notificationType : '',
+  notificationMsg: state.notification ? state.notification.notificationMsg : '',
 });
 
 export default connect(mapStateToProps)(App);

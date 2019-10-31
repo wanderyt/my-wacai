@@ -1,6 +1,6 @@
 @import '../../colors.scss';
 
-.ErrorNotification {
+.Notification {
   &.fadeOutAnimation {
     opacity: 0;
     animation-name: fadeOutOpacity;
@@ -17,7 +17,7 @@
       }
     }
   }
-  .ErrorMessage-Container {
+  .Message-Container {
     margin: 0 auto;
     border: 2px solid #544742;
     border-radius: 5px;
@@ -28,7 +28,12 @@
     .ErrorMessage {
       font-size: 16px;
       font-weight: bold;
-      color: red;
+      color: $RED;
+    }
+    .InfoMessage {
+      font-size: 16px;
+      font-weight: bold;
+      color: $GREEN;
     }
   }
 }
