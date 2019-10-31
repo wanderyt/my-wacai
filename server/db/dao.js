@@ -169,7 +169,7 @@ const createFinItem = (db, data, callback) => {
   let promise = new Promise((resolve) => {
     let sql =
       `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount)
-      values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment}", ${data.amount});`;
+      values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment || ''}", ${data.amount});`;
     db.all(sql, (err) => {
       if (err) {
         logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql, err);
@@ -269,8 +269,9 @@ const updateFinItem = (db, data, callback) => {
   let promise = new Promise((resolve) => {
     let updateOptions = '';
     for (const key in data) {
-      if (key !== 'id') {
-        const value = data[key];
+      const value = data[key];
+      // Remove null object value, but need to allow empty string
+      if (key !== 'id' && (value === '' || !!value)) {
         updateOptions += `${key}="${value}", `;
       }
     }

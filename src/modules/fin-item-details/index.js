@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import FinComCatItem from '../fin-com-cat-item';
 import SearchDropdown from '../search-dropdown';
 import PopupButtons from '../popup-buttons';
@@ -37,7 +37,7 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] = useState(false);
   const [calculatorStatus, setCalculatorStatus] = useState(false);
   const isUpdate = !!item.id;
-  const amountInputRef = React.createRef();
+  const amountInputRef = useRef(null);
 
   useEffect(() => {
     Axios.get('/api/wacai/getAllComment')
@@ -123,11 +123,12 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     return null;
   }
 
-  const handleSaveButton = () => {
+  const handleSaveButton = ({repeatRecord = false}) => {
     let isInvalid = validateFinItem(latestItem);
     if (isInvalid) {
       dispatch({
-        type: 'SET_ERROR_MESSAGE',
+        type: 'SET_MESSAGE',
+        notificationType: 'error',
         message: isInvalid.errorMsg
       });
       return;
@@ -154,8 +155,19 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     Axios.post(requestUrl, {data})
       .then(() => {
         dispatch({
-          type: 'RESET_SELECTED_ITEM'
+          type: 'SET_MESSAGE',
+          notificationType: 'info',
+          message: '保存成功'
         });
+
+        if (repeatRecord) {
+          setLatestItem(Object.assign({}, latestItem, {amount: 0}));
+          amountInputRef.current.value = '0.00';
+        } else {
+          dispatch({
+            type: 'RESET_SELECTED_ITEM'
+          });
+        }
       });
   }
 
@@ -275,6 +287,10 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     amountInputRef.current.value = parseFloat(result).toFixed(2);
   }
 
+  const handleRepeatButton = () => {
+    handleSaveButton({repeatRecord: true});
+  }
+
   /*
     Format change from '2019-04-20 19:20:00' to '2019/04/20 19:20:00'
     Required on mobile browser difference
@@ -360,11 +376,17 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
             返回
           </div>
           {
-            latestItem.id &&
+            latestItem.id ?
             <div
               className='Fin-Btn Fin-DeleteBtn'
               onClick={handleDeleteButton}>
               删除
+            </div>
+            :
+            <div
+              className='Fin-Btn Fin-RepeatBtn'
+              onClick={handleRepeatButton}>
+              保存再记
             </div>
           }
           <div

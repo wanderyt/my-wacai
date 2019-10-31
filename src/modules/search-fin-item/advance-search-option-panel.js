@@ -184,7 +184,8 @@ const AmountRangeSelectionPanelComp = ({currentValue = [], submitHandler = () =>
     for (const item in amountRanges) {
       if (amountRanges[item].minAmount > amountRanges[item].maxAmount && amountRanges[item].maxAmount != 0) {
         dispatch({
-          type: 'SET_ERROR_MESSAGE',
+          type: 'SET_MESSAGE',
+          notificationType: 'error',
           message: '金额区间设置有误'
         });
 

@@ -1,13 +1,13 @@
 import {combineReducers} from 'redux';
 import fin from './fin';
-import errorMsg from './errorMsg';
+import notification from './notification';
 import login from './login';
 import search from './search';
 // import test from './test';
 
 const reducers = combineReducers({
   fin,
-  errorMsg,
+  notification,
   login,
   search,
   // test,
