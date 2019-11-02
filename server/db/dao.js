@@ -235,7 +235,7 @@ const createScheduledFinItem = (db, data, callback) => {
     const SCHEDULE_NONE = 0;
     let scheduleMode = data.isScheduled || SCHEDULE_NONE;
     let insertHeaderSQL = `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, isScheduled, scheduleId) `;
-    let insertRowSQL = `select "{{id}}", "${data.category}", "${data.subcategory}", {{datetimeFn}}, "${data.comment}", ${data.amount}, ${scheduleMode}, '{{scheduleId}}'`;
+    let insertRowSQL = `select "{{id}}", "${data.category}", "${data.subcategory}", {{datetimeFn}}, "${data.comment || ''}", ${data.amount}, ${scheduleMode}, '{{scheduleId}}'`;
     let sqlList = formatSchedule(insertHeaderSQL + insertRowSQL + ';', data.date, scheduleMode);
     db.exec(sqlList.join(''), (err) => {
       if (err) {
