@@ -303,8 +303,8 @@ const updateFinItem = (db, data, callback) => {
  * @param {string} data.subcategory target fin item subcategory
  * @param {string} data.date target fin item date
  * @param {string} data.comment target fin item comment
+ * @param {string} data.scheduleId target fin item schedule id
  * @param {number} data.amount target fin item amount
- * @param {string} options.scheduleId query specific schedule id
  * @param {number} options.year query specific year
  * @param {number} options.month query specific month
  * @param {number} options.day query specific day
@@ -314,25 +314,25 @@ const updateScheduledFinItem = (db, data, options, callback) => {
   let promise = new Promise((resolve) => {
     let updateOptions = '';
     for (const key in data) {
-      if (key !== 'id') {
+      if (key !== 'id' && key !== 'date') {
         const value = data[key];
         updateOptions += `${key}="${value}", `;
       }
     }
     updateOptions = updateOptions.slice(0, updateOptions.length - 2);
 
-    let searchParams = [options.scheduleId];
+    let sql = `update ${FIN_TABLE_NAME} set ${updateOptions} where scheduleId = ?`;
+    let searchParams = [data.scheduleId];
     if (options.year && options.month && options.day && Number(options.year) && options.month < 13 && options.day < 35) {
       sql += ' and date >= date(?, "+1 day")';
       searchParams.push(`${options.year}-${padZero(options.month)}-${padZero(options.day)}`);
     }
 
-    let sql = `update ${FIN_TABLE_NAME} set ${updateOptions} where scheduleId = ?`;
     db.run(sql, searchParams, (err) => {
       if (err) {
-        logDBError(`updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`, sql, err);
+        logDBError(`updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`, `${sql} - ${searchParams}`, err);
       } else {
-        logDBSuccess(`updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`, sql);
+        logDBSuccess(`updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`, `${sql} - ${searchParams}`);
       }
 
       callback && callback(err);

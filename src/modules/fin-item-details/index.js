@@ -138,6 +138,7 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     if (latestItem.id) {
       if (latestItem.isScheduled > 0) {
         setUpdateScheduledPopupStatus(true);
+        return;
       } else {
         requestUrl = '/api/wacai/updateFinItem';
         data = {...latestItem};
@@ -184,7 +185,6 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   }
 
   const updateSeriesScheduledItems = () => {
-    setUpdateScheduledPopupStatus(false);
     const requestUrl = '/api/wacai/updateScheduledFinItem';
     const data = {...latestItem};
     const options = {};
@@ -195,6 +195,7 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     options.day = now.getDate();
     Axios.post(requestUrl, {data, options})
       .then(() => {
+        setUpdateScheduledPopupStatus(false);
         dispatch({
           type: 'RESET_SELECTED_ITEM'
         });
@@ -226,13 +227,14 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   }
 
   const deleteSingleScheduledItem = () => {
-    setDeleteScheduledPopupStatus(false);
     Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`)
       .then(() => {
+        setDeleteScheduledPopupStatus(false);
         dispatch({
           type: 'RESET_SELECTED_ITEM'
         });
       }, ({response}) => {
+        setDeleteScheduledPopupStatus(false);
         if (response.status === 401) {
           dispatch({
             type: 'TOKEN_INVALID'
@@ -242,14 +244,15 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   }
 
   const deleteSeriesScheduledItems = () => {
-    setDeleteScheduledPopupStatus(false);
     const now = new Date();
     Axios.delete(`/api/wacai/deleteScheduledFinItem?scheduleId=${latestItem.scheduleId}&year=${now.getFullYear()}&month=${now.getMonth()}&day=${now.getDate()}`)
       .then(() => {
+        setDeleteScheduledPopupStatus(false);
         dispatch({
           type: 'RESET_SELECTED_ITEM'
         });
       }, ({response}) => {
+        setDeleteScheduledPopupStatus(false);
         if (response.status === 401) {
           dispatch({
             type: 'TOKEN_INVALID'
