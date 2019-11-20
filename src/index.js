@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import App from './App';
-import Loading from './modules/loading';
 import FileUploader from './modules/file-uploader';
 import {withRouter} from 'react-router';
 import {BrowserRouter as Router, Route} from 'react-router-dom';

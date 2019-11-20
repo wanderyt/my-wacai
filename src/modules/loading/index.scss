@@ -11,7 +11,8 @@
     content: ' ';
     left: 0;
     box-sizing: border-box;
-    animation: animate-loading 2.5s steps(4, end) infinite;
+    // animation: animate-loading 2.5s steps(4, end) infinite;
+    animation: animate-loading 2.5s linear infinite;
     border-radius: 50%;
   }
 }
