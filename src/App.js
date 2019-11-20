@@ -9,12 +9,13 @@ import FinTemplateList from './modules/fin-template-list';
 import AutoUpdateNumber from './modules/autoupdate-number';
 import Notification from './modules/notification';
 import SearchFinItem from './modules/search-fin-item';
+import Loading from './modules/loading';
 
 import './App.scss';
 
-const API_LOADING_DELAY = 500;
+const API_LOADING_DELAY = 0;
 
-const App = ({pageIndex, notificationType, notificationMsg, selectedItem, dispatch}) => {
+const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppLoading, dispatch}) => {
   let [monthTotal, setMonthTotal] = useState(0);
   let [finList, setFinList] = useState(new Array(5).fill({}));
   let [isLoading, setIsLoading] = useState(true);
@@ -61,6 +62,14 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, dispat
           <Notification
             type={notificationType}
             message={notificationMsg} />
+        </div>
+      }
+      {
+        isAppLoading &&
+        <div className='App-Page-Loading'>
+          <div className='LoadingContainer'>
+            <Loading />
+          </div>
         </div>
       }
       {
@@ -122,6 +131,7 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, dispat
 const mapStateToProps = (state) => ({
   selectedItem: state.fin ? state.fin.selectedItem : null,
   pageIndex: state.fin ? state.fin.pageIndex : 'MAIN',
+  isAppLoading: state.fin && state.fin.isAppLoading,
   notificationType: state.notification ? state.notification.notificationType : '',
   notificationMsg: state.notification ? state.notification.notificationMsg : '',
 });

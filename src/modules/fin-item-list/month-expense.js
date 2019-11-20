@@ -12,7 +12,7 @@ import './month-expense.scss';
 // const BAR_WIDTH_BASE_PIXEL = 200;
 // In percentage
 const BAR_WIDTH_BASE_PERC = 1;
-const API_LOADING_DELAY = 1500;
+const API_LOADING_DELAY = 0;
 
 const MonthExpense = ({month = '04', year = '2019', amount = 11086.00, barWidthRatio = 1, dayItems = [], dispatch}) => {
   const [expanded, setExpanded] = useState(false);

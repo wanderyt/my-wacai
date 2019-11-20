@@ -30,7 +30,7 @@ const scheduleModeItems = [{
   value: '每年入账'
 }];
 
-const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
+const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
   const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
   const [commentOptions, setCommentOptions] = useState([]);
   const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
@@ -153,8 +153,18 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
       }
     }
 
+    // App Loading Status
+    dispatch({
+      type: 'APP_LOADING'
+    });
+
     Axios.post(requestUrl, {data})
       .then(() => {
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
+
         dispatch({
           type: 'SET_MESSAGE',
           notificationType: 'info',
@@ -176,8 +186,19 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     setUpdateScheduledPopupStatus(false);
     const requestUrl = '/api/wacai/updateFinItem';
     const data = {...latestItem};
+
+    // App Loading Status
+    dispatch({
+      type: 'APP_LOADING'
+    });
+
     Axios.post(requestUrl, {data})
       .then(() => {
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
+
         dispatch({
           type: 'RESET_SELECTED_ITEM'
         });
@@ -193,8 +214,19 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     options.year = now.getFullYear();
     options.month = now.getMonth();
     options.day = now.getDate();
+
+    // App Loading Status
+    dispatch({
+      type: 'APP_LOADING'
+    });
+
     Axios.post(requestUrl, {data, options})
       .then(() => {
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
+
         setUpdateScheduledPopupStatus(false);
         dispatch({
           type: 'RESET_SELECTED_ITEM'
@@ -206,12 +238,27 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
     if (latestItem.isScheduled > 0) {
       setDeleteScheduledPopupStatus(true);
     } else {
+      // App Loading Status
+      dispatch({
+        type: 'APP_LOADING'
+      });
+
       Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`)
         .then(() => {
+          // App Loaded Status
+          dispatch({
+            type: 'APP_LOADED'
+          });
+
           dispatch({
             type: 'RESET_SELECTED_ITEM'
           });
         }, ({response}) => {
+          // App Loaded Status
+          dispatch({
+            type: 'APP_LOADED'
+          });
+
           if (response.status === 401) {
             dispatch({
               type: 'TOKEN_INVALID'
@@ -227,13 +274,28 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   }
 
   const deleteSingleScheduledItem = () => {
+    // App Loading Status
+    dispatch({
+      type: 'APP_LOADING'
+    });
+
     Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`)
       .then(() => {
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
+
         setDeleteScheduledPopupStatus(false);
         dispatch({
           type: 'RESET_SELECTED_ITEM'
         });
       }, ({response}) => {
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
+
         setDeleteScheduledPopupStatus(false);
         if (response.status === 401) {
           dispatch({
@@ -244,14 +306,29 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
   }
 
   const deleteSeriesScheduledItems = () => {
+    // App Loading Status
+    dispatch({
+      type: 'APP_LOADING'
+    });
+
     const now = new Date();
     Axios.delete(`/api/wacai/deleteScheduledFinItem?scheduleId=${latestItem.scheduleId}&year=${now.getFullYear()}&month=${now.getMonth()}&day=${now.getDate()}`)
       .then(() => {
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
+
         setDeleteScheduledPopupStatus(false);
         dispatch({
           type: 'RESET_SELECTED_ITEM'
         });
       }, ({response}) => {
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
+
         setDeleteScheduledPopupStatus(false);
         if (response.status === 401) {
           dispatch({
@@ -337,7 +414,8 @@ const FinItemDetails = ({item = {}, updatedCatGroup, dispatch}) => {
             onFocus={handleAmountFocus}
             onBlur={handleAmountBlur}
             onChange={handleAmountChange}
-            defaultValue={parseFloat(latestItem.amount).toFixed(2) || 0} />
+            // defaultValue={parseFloat(latestItem.amount).toFixed(2) || '0.00'} />
+            value={latestItem.amount || 0} />
           <div className='CalculatorIcon' onClick={toggleCalculator}>
             {
               calculatorStatus &&

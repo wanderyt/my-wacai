@@ -78,6 +78,16 @@ const fin = (state = {}, action) => {
         ...state,
         pageIndex: 'SEARCH_FIN_ITEM',
       }
+    case 'APP_LOADING':
+      return {
+        ...state,
+        isAppLoading: true
+      };
+    case 'APP_LOADED':
+      return {
+        ...state,
+        isAppLoading: false
+      };
     default:
       return state;
   }

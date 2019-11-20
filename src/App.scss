@@ -12,6 +12,24 @@
     transform: translateX(-50%);
   }
 
+  .App-Page-Loading {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.96);
+    .LoadingContainer {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      .Loading {
+        margin: 0 auto;
+      }
+    }
+  }
+
   .App-Page-Cat-Selection {
     position: relative;
     opacity: 1;
