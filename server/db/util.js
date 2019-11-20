@@ -76,7 +76,7 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
         break;
     }
   })
-  return searchQuery.join(' and ') + ' order by date asc';
+  return searchQuery.join(' and ');
 }
 
 /**
