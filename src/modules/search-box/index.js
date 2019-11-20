@@ -16,7 +16,8 @@ const SearchBox = ({customStyles = {}, advancedSearchHanlder = void 0, dispatch}
       return;
     }
 
-    Axios.get(`/api/wacai/searchFinItems?searchString=${searchString}`)
+    let now = new Date();
+    Axios.get(`/api/wacai/searchFinItems?searchString=${searchString}&year=${now.getFullYear()}&month=${now.getMonth() + 1}`)
       .then(({data}) => {
         let finItems = data.data || [];
         dispatch({type: 'SEARCH_FIN_RESULTS_LOADED', finItems});

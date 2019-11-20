@@ -6,11 +6,11 @@ const {createDBConnection, closeDB, getFinItemsBySearchString} = require('../../
 
 router.get('/searchFinItems', (req, res) => {
   logger.info('api /searchFinItems');
-  let {searchString} = req.query;
+  let {searchString, year, month} = req.query;
   logger.info(`search fin items by search string: ${searchString}`);
 
   let db = createDBConnection();
-  let getFinItemsBySearchStringPromise = getFinItemsBySearchString(db, searchString);
+  let getFinItemsBySearchStringPromise = getFinItemsBySearchString(db, searchString, {year, month});
 
   getFinItemsBySearchStringPromise.then((data) => {
     closeDB(db);

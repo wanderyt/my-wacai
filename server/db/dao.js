@@ -77,7 +77,7 @@ const getFinList = (db, options, callback) => {
     let sql = `select * from ${FIN_TABLE_NAME}`;
     if (options) {
       if (options.month && options.year) {
-        sql += ` where date <= '${options.year}-${padZero(options.month + 1)}-%'`;
+        sql += ` where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
       }
       sql += ' order by date desc';
       if (options.top) {
@@ -415,7 +415,7 @@ const getMonthlyTotal = (db, options, callback) => {
   let promise = new Promise((resolve) => {
     let sql = `select sum(amount) as total, year_month from (select amount, substr(date, 1, 7) as year_month from ${FIN_TABLE_NAME} {{queries}}) group by year_month order by year_month desc;`;
     if (options.month && options.year) {
-      sql = sql.replace("{{queries}}", `where date <= '${options.year}-${padZero(options.month + 1)}-%'`);
+      sql = sql.replace("{{queries}}", `where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`);
     }
     db.all(sql, (err, rows) => {
       if (err) {
@@ -589,11 +589,20 @@ const getAllComments = (db, callback) => {
  * Search all fin items by specific search string
  * @param {object} db
  * @param {string} searchString
+ * @param {object} options
+ * @param {string} options.year
+ * @param {string} options.month
  * @param {function} callback
  */
-const getFinItemsBySearchString = (db, searchString, callback) => {
+const getFinItemsBySearchString = (db, searchString, options = {}, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' order date desc;`;
+    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%') {{dateSearchString}} order by date desc;`;
+    let dateSearchString = '';
+    if (options.month && options.year) {
+      dateSearchString = ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
+    }
+    sql = sql.replace('{{dateSearchString}}', dateSearchString);
+    console.log(sql);
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError(`Search all fin items in fin table with search string: ${searchString}`, sql, err);
@@ -628,8 +637,16 @@ const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
     });
   }
 
+  let dateSearchString = '';
+  if (searchOptions.month && searchOptions.year) {
+    dateSearchString = ` and date <= '${searchOptions.year}-${padZero(parseInt(searchOptions.month) + 1)}-%' `;
+  }
+
+  searchString += dateSearchString;
+
   let promise = new Promise((resolve) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where ${searchString};`;
+    let sql = `select * from ${FIN_TABLE_NAME} where ${searchString} order by date desc;`;
+    console.log('david: ', sql);
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError(`Search all fin items in fin table with search string: ${searchString}`, sql, err);
