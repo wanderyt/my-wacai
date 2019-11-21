@@ -44,7 +44,7 @@ router.get('/cleanupBackupData', (req, res) => {
         } else {
           logger.info(`Clean up backup data files success! @${new Date()}`);
           logger.info(`Clean up date range: ${start} - ${end}`);
-          logger.error(data);
+          logger.info(data);
         }
 
         res.statusCode = err ? 500 : 200;
