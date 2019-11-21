@@ -54,11 +54,39 @@ const uuid = () => {
   return uuid;
 }
 
+/**
+ * Get preselected category / subcategory/
+ * Support weekend presetting
+ * @returns {object} category group - {category, subcategory}
+ */
+const getPreselectedCategories = () => {
+  let now = new Date();
+  let day = now.getDay(); // [0 - 6], [Sunday - Saturday]
+  let category = '周末', subcategory = '晚餐';
+  if (day === 0 || day === 6) {
+    category = '周末';
+    let hours = now.getHours();
+    if (hours <= 10) {
+      subcategory = '早餐';
+    } else if (hours < 15 && hours > 10) {
+      subcategory = '午餐';
+    } else if (hours < 20 && hours > 16) {
+      subcategory = '晚餐';
+    }
+  }
+
+  return {
+    category,
+    subcategory
+  };
+}
+
 export {
   padZero,
   formatDateTime,
   formatMonth,
   uuid,
   formatDate,
-  formatDateObject
+  formatDateObject,
+  getPreselectedCategories
 };
