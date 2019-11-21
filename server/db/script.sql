@@ -135,7 +135,7 @@ VALUES('生活', '礼物', 0);
 INSERT INTO CATEGORY(category, subcategory, is_common)
 VALUES('居家', '家政服务', 0);
 INSERT INTO CATEGORY(category, subcategory, is_common)
-VALUES('居家', '放款房贷', 0);
+VALUES('居家', '房款房贷', 0);
 INSERT INTO CATEGORY(category, subcategory, is_common)
 VALUES('交通', '地铁', 0);
 INSERT INTO CATEGORY(category, subcategory, is_common)

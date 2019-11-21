@@ -4,6 +4,8 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 let jobs = {};
 
+const backupDataFolder = 'backupData';
+
 router.get('/createScheduleBackup', (req, res) => {
   logger.info('api /createScheduleBackup');
   const schedule = require('node-schedule');
@@ -19,7 +21,7 @@ router.get('/createScheduleBackup', (req, res) => {
     const dailyJob = schedule.scheduleJob('my-daily-job', rule, function () {
       const now = new Date();
       const newFileNameSuffix = `${now.getFullYear()}-${padZero(now.getMonth() + 1)}-${padZero(now.getDate())}T${padZero(now.getHours())}:${padZero(now.getMinutes())}:${padZero(now.getSeconds())}`;
-      fs.copyFileSync(`./${dbFileName}.db`, `./${dbFileName}-${newFileNameSuffix}.db`);
+      fs.copyFileSync(`./${dbFileName}.db`, `./${backupDataFolder}/${dbFileName}-${newFileNameSuffix}.db`);
     });
 
     logger.info('Created backup database job!');
