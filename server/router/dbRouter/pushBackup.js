@@ -10,7 +10,7 @@ const git = require('simple-git');
 router.get('/pushBackupData', (req, res) => {
   logger.info('api /pushBackupData');
   git(dataFileGitPath)
-    .add('./*')
+    .add(['./*', '--all'])
     .commit(`update @${new Date()}`)
     .push(['-u', 'origin', 'master'], (err, data) => {
       if (err) {

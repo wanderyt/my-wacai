@@ -24,18 +24,22 @@ router.get('/cleanupBackupData', (req, res) => {
     let dataFiles = fs.readdirSync('./backupData');
     let dateRegex = /^test-(.*).db$/;
     let startDate = new Date(start), endDate = new Date(end);
-    dataFiles
+    let needToDeleteFiles = dataFiles
       .filter((fileName) => dateRegex.test(fileName))
       .filter((fileName) => {
         let dateMark = dateRegex.exec(fileName)[1];
         let currDate = new Date(dateMark);
-        if (currDate > startDate && currDate < endDate) {
-          fs.unlinkSync('./backupData/' + fileName);
-        }
+        return currDate > startDate && currDate < endDate;
       });
 
+    needToDeleteFiles.map((fileName) => {
+      if (currDate > startDate && currDate < endDate) {
+        fs.unlinkSync('./backupData/' + fileName);
+      }
+    });
+
     git(dataFileGitPath)
-      .add('./*')
+      .add(['./*', '--all'])
       .commit(`clean up @${new Date()}`)
       .push(['-u', 'origin', 'master'], (err, data) => {
         if (err) {
@@ -49,7 +53,8 @@ router.get('/cleanupBackupData', (req, res) => {
 
         res.statusCode = err ? 500 : 200;
         res.send({
-          status: !Boolean(err)
+          status: !Boolean(err),
+          deleteFiles: err ? [] : needToDeleteFiles
         });
       });
   }
