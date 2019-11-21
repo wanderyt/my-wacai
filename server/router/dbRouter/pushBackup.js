@@ -18,7 +18,7 @@ router.get('/pushBackupData', (req, res) => {
         logger.error(err);
       } else {
         logger.info(`Push backup data files success! @${new Date()}`);
-        logger.error(data);
+        logger.info(data);
       }
 
       res.statusCode = err ? 500 : 200;
