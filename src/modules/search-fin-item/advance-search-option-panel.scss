@@ -104,6 +104,12 @@
       }
       .DateTimeStyles {
         z-index: 1;
+        &.EndDatePicker {
+          right: 50px;
+        }
+      }
+      .StartDateContainer, .EndDateContainer {
+        padding-top: 5px;
       }
     }
     .DateRangeSelection--CustomStart {

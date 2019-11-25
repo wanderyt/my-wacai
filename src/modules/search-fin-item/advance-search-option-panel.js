@@ -418,7 +418,8 @@ export const DateRangeSelectionPanel = ({currentValue = {}, submitHandler = () =
                 value={customStartDate}
                 defaultValue={customStartDate}
                 onChange={handleStartDateChange}
-                className='DateTimeStyles' />
+                className='DateTimeStyles StartDatePicker'
+                timeFormat={false} />
             }
           </div>
           <div className='DateRangeSelection DateRangeSelection--CustomEnd'>
@@ -433,7 +434,8 @@ export const DateRangeSelectionPanel = ({currentValue = {}, submitHandler = () =
                 value={customEndDate}
                 defaultValue={customEndDate}
                 onChange={handleEndDateChange}
-                className='DateTimeStyles' />
+                className='DateTimeStyles EndDatePicker'
+                timeFormat={false} />
             }
           </div>
         </div>

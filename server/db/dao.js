@@ -637,13 +637,6 @@ const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
     });
   }
 
-  let dateSearchString = '';
-  if (searchOptions.month && searchOptions.year) {
-    dateSearchString = ` and date <= '${searchOptions.year}-${padZero(parseInt(searchOptions.month) + 1)}-%' `;
-  }
-
-  searchString += dateSearchString;
-
   let promise = new Promise((resolve) => {
     let sql = `select * from ${FIN_TABLE_NAME} where ${searchString} order by date desc;`;
     console.log('david: ', sql);

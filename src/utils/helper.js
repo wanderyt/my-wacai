@@ -17,7 +17,7 @@ const formatDate = (year, month, day) => {
 const formatDateObject = (dateObj) => {
   let validDatePart = [];
   validDatePart.push(dateObj.getFullYear());
-  validDatePart.push(padZero(dateObj.getMonth()));
+  validDatePart.push(padZero(dateObj.getMonth() + 1));
   validDatePart.push(padZero(dateObj.getDate()));
   return validDatePart.join('-');
 }
