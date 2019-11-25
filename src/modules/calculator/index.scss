@@ -32,7 +32,7 @@ $CALCULATOR-BUTTON-FONT: sans-serif;
         // border-radius: 5px;
         height: 40px;
         line-height: 40px;
-        font-size: 20px;
+        font-size: 30px;
         width: 24%;
         margin: 5px 1%;
         font-family: $CALCULATOR-NUMBER-FONT;
@@ -41,6 +41,7 @@ $CALCULATOR-BUTTON-FONT: sans-serif;
       }
       .Operand {
         color: $CALCULATOR-RED;
+        font-family: unset;
       }
       .OperatorItem--TwoSpan {
         width: 50%;
