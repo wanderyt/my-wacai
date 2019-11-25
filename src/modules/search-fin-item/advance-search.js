@@ -25,8 +25,7 @@ const AdvancedSearch = ({searchParams, dispatch, submitHandler = void 0}) => {
         params.push(`${key}=${searchParams[key]}`);
       }
     });
-    let now = new Date();
-    Axios.get(`/api/wacai/deepSearchFinItems?${params.join('&')}&year=${now.getFullYear()}&month=${now.getMonth() + 1}`)
+    Axios.get(`/api/wacai/deepSearchFinItems?${params.join('&')}`)
       .then(({data}) => {
         submitHandler();
         let finItems = data.data || [];

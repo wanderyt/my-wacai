@@ -35,7 +35,7 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
       case 'dateRange':
         let dateRange = JSON.parse(searchOptions[key]);
         if (dateRange.minDate && dateRange.maxDate) {
-          let dateRangeSearch = `date >= '${dateRange.minDate}' and date <= '${dateRange.maxDate}'`;
+          let dateRangeSearch = `date >= date('${dateRange.minDate}') and date <= date('${dateRange.maxDate}', '+1 day')`;
           searchQuery.push(dateRangeSearch);
         }
         break;
