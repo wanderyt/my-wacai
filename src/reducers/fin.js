@@ -1,4 +1,4 @@
-import {formatDateTime} from '../utils/helper';
+import {formatDateTime, getPreselectedCategories} from '../utils/helper';
 
 const fin = (state = {}, action) => {
   switch (action.type) {
@@ -17,11 +17,12 @@ const fin = (state = {}, action) => {
         selectedItem: null
       };
     case 'CREATE_ITEM':
+      let {category, subcategory} = getPreselectedCategories();
       return {
         ...state,
         selectedItem: {
-          category: '周末',
-          subcategory: '晚餐',
+          category,
+          subcategory,
           date: formatDateTime(),
           amount: 0
         }
