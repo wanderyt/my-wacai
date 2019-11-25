@@ -2,7 +2,8 @@
 @import '../../common.scss';
 
 $CALCULATOR-RED: #D40740;
-$CALCULATOR-FONT: Osaka;
+$CALCULATOR-NUMBER-FONT: DigitalMono, Osaka, monaco, sans-serif;
+$CALCULATOR-BUTTON-FONT: sans-serif;
 
 .Calculator {
   max-width: 400px;
@@ -13,8 +14,8 @@ $CALCULATOR-FONT: Osaka;
     text-align: right;
     height: 15vh;
     line-height: 21vh;
-    font-family: $CALCULATOR-FONT;
-    font-size: 2.5em;
+    font-family: $CALCULATOR-NUMBER-FONT;
+    font-size: 3.5em;
     color: $WHITE;
     background-color: $CALCULATOR-RED;
     padding-right: 10px;
@@ -34,7 +35,7 @@ $CALCULATOR-FONT: Osaka;
         font-size: 20px;
         width: 24%;
         margin: 5px 1%;
-        font-family: $CALCULATOR-FONT;
+        font-family: $CALCULATOR-NUMBER-FONT;
         font-weight: bold;
         text-align: center;
       }
@@ -47,6 +48,7 @@ $CALCULATOR-FONT: Osaka;
       .ConfirmBtn {
         font-size: 16px;
         color: $WHITE;
+        font-family: $CALCULATOR-BUTTON-FONT;
         background-color: $CALCULATOR-RED;
       }
       .Backspace {
