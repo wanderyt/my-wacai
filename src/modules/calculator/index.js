@@ -118,10 +118,10 @@ const Calculator = ({defaultValue = '0', confirmCallback = () => void 0}) => {
       <div className='NumberContainer'>{value}</div>
       <div className='OperatorContainer'>
         <div className='OperatorRow BasicOperators'>
-          <div className='OperatorItem' onClick={handleOperand}>+</div>
-          <div className='OperatorItem' onClick={handleOperand}>-</div>
-          <div className='OperatorItem' onClick={handleOperand}>×</div>
-          <div className='OperatorItem' onClick={handleOperand}>÷</div>
+          <div className='OperatorItem Operand' onClick={handleOperand}>+</div>
+          <div className='OperatorItem Operand' onClick={handleOperand}>-</div>
+          <div className='OperatorItem Operand' onClick={handleOperand}>×</div>
+          <div className='OperatorItem Operand' onClick={handleOperand}>÷</div>
         </div>
         <div className='OperatorRow NumberPad-1'>
           <div className='OperatorItem' onClick={handleNumber}>1</div>
@@ -133,13 +133,13 @@ const Calculator = ({defaultValue = '0', confirmCallback = () => void 0}) => {
           <div className='OperatorItem' onClick={handleNumber}>4</div>
           <div className='OperatorItem' onClick={handleNumber}>5</div>
           <div className='OperatorItem' onClick={handleNumber}>6</div>
-          <div className='OperatorItem' onClick={handleClear}>C</div>
+          <div className='OperatorItem Operand' onClick={handleClear}>C</div>
         </div>
         <div className='OperatorRow NumberPad-7'>
           <div className='OperatorItem' onClick={handleNumber}>7</div>
           <div className='OperatorItem' onClick={handleNumber}>8</div>
           <div className='OperatorItem' onClick={handleNumber}>9</div>
-          <div className='OperatorItem' onClick={handleEqual}>=</div>
+          <div className='OperatorItem Operand' onClick={handleEqual}>=</div>
         </div>
         <div className='OperatorRow NumberPad-0'>
           <div className='OperatorItem OperatorItem--TwoSpan' onClick={handleNumber}>0</div>

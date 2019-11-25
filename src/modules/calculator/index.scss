@@ -1,10 +1,24 @@
 @import '../../colors.scss';
 @import '../../common.scss';
 
+$CALCULATOR-RED: #D40740;
+$CALCULATOR-FONT: Osaka;
+
 .Calculator {
+  max-width: 400px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
   .NumberContainer {
-    margin: 5px 1%;
     text-align: right;
+    height: 15vh;
+    line-height: 21vh;
+    font-family: $CALCULATOR-FONT;
+    font-size: 2.5em;
+    color: $WHITE;
+    background-color: $CALCULATOR-RED;
+    padding-right: 10px;
+    margin: 5px 1%;
   }
   .OperatorContainer {
     .OperatorRow {
@@ -13,25 +27,31 @@
       justify-content: space-between;
       .OperatorItem {
         @extend .forbid-select;
-        border: 1px solid $GREY-LIGHT-IIII;
-        border-radius: 5px;
-        height: 30px;
-        line-height: 30px;
-        font-size: 16px;
+        // border: 1px solid $GREY-LIGHT-IIII;
+        // border-radius: 5px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
         width: 24%;
         margin: 5px 1%;
-        font-family: HelveticaNeue;
+        font-family: $CALCULATOR-FONT;
+        font-weight: bold;
         text-align: center;
+      }
+      .Operand {
+        color: $CALCULATOR-RED;
       }
       .OperatorItem--TwoSpan {
         width: 50%;
       }
       .ConfirmBtn {
-        font-size: 14px;
+        font-size: 16px;
+        color: $WHITE;
+        background-color: $CALCULATOR-RED;
       }
       .Backspace {
-        background-image: url('./backspace.png');
-        background-size: 25px;
+        background-image: url('./backspace-red-bold.png');
+        background-size: 30px;
         background-position: center;
         background-repeat: no-repeat;
       }
