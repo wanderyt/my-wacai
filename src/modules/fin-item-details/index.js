@@ -414,8 +414,8 @@ const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
             onFocus={handleAmountFocus}
             onBlur={handleAmountBlur}
             onChange={handleAmountChange}
-            // defaultValue={parseFloat(latestItem.amount).toFixed(2) || '0.00'} />
-            value={latestItem.amount || 0} />
+            defaultValue={parseFloat(latestItem.amount).toFixed(2) || '0.00'} />
+            {/* value={latestItem.amount || 0} /> */}
           <div className='CalculatorIcon' onClick={toggleCalculator}>
             {
               calculatorStatus &&
