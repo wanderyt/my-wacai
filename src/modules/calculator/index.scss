@@ -42,6 +42,9 @@ $CALCULATOR-BUTTON-FONT: sans-serif;
       .Operand {
         color: $CALCULATOR-RED;
         font-family: unset;
+        &.Clear {
+          font-family: $CALCULATOR-NUMBER-FONT;
+        }
       }
       .OperatorItem--TwoSpan {
         width: 50%;
