@@ -104,6 +104,7 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
       {
         pageIndex === 'MAIN' &&
         <div className='App-Page-Main'>
+          <div className='App-Logout' />
           <div className='App-Header'>
             <div className='Header-MonthTotal'>
               <div className='Caption'>本月总计</div>
