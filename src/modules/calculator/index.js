@@ -62,24 +62,35 @@ const Calculator = ({defaultValue = '0', confirmCallback = () => void 0}) => {
     }
   }
 
+  const checkDigits = (num) => {
+    // check whether it is decimal
+    if (Math.floor(num) === num) {
+      return num + '';
+    } else if (Math.floor(num * 10) === num * 10) {
+      return num.toFixed(1);
+    } else {
+      return num.toFixed(2);
+    }
+  }
+
   const calculateOutput = () => {
     let curValue = value;
     switch (lastOperand) {
       case '+':
         curValue = parseFloat(operator) + parseFloat(value);
-        setValue(curValue + '');
+        setValue(checkDigits(curValue));
         break;
       case '-':
         curValue = parseFloat(operator) - parseFloat(value);
-        setValue(curValue + '');
+        setValue(checkDigits(curValue));
         break;
       case '×':
         curValue = parseFloat(operator) * parseFloat(value);
-        setValue(curValue + '');
+        setValue(checkDigits(curValue));
         break;
       case '÷':
         curValue = parseFloat(operator) / parseFloat(value);
-        setValue(curValue + '');
+        setValue(checkDigits(curValue));
         break;
     }
     setOperator('0');
@@ -133,7 +144,7 @@ const Calculator = ({defaultValue = '0', confirmCallback = () => void 0}) => {
           <div className='OperatorItem' onClick={handleNumber}>4</div>
           <div className='OperatorItem' onClick={handleNumber}>5</div>
           <div className='OperatorItem' onClick={handleNumber}>6</div>
-          <div className='OperatorItem Operand' onClick={handleClear}>C</div>
+          <div className='OperatorItem Operand Clear' onClick={handleClear}>C</div>
         </div>
         <div className='OperatorRow NumberPad-7'>
           <div className='OperatorItem' onClick={handleNumber}>7</div>
