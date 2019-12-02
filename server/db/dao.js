@@ -102,10 +102,10 @@ const getFinList = (db, options, callback) => {
 };
 
 /**
- * Get fin list by month
+ * Get sum expense of whole month in specific year month
  * @param {Object} db DB connection object
  * @param {Object} options options for sql
- * @param {string} options.month query month details, need to be formatted as 'MM'
+ * @param {string} options.month query month details, will be formatted as 'MM' inside function
  * @param {string} options.year query year details, need to be formatted as 'YYYY'
  * @param {function} callback
  */
@@ -121,6 +121,78 @@ const getSumByYearMonth = (db, options, callback) => {
 
       callback && callback(err, rows);
 
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get sum expense of whole current week in specific year month day, this will exclude those scheduled items.
+ * @param {Object} db DB connection object
+ * @param {Object} options options for sql
+ * @param {string} options.month query month details, will be formatted as 'MM' inside function
+ * @param {string} options.year query year details, need to be formatted as 'YYYY'
+ * @param {string} options.day query day details, will be formatted as 'DD' inside function
+ * @param {string} options.dayOfWeek query day of week details, Sunday as 0, Monday as 1, etc.
+ * @param {function} callback
+ */
+const getSumByWeek = (db, options, callback) => {
+  const {month, year, day, dayOfWeek} = options;
+  let promise = new Promise((resolve) => {
+    let validDayOfWeek = dayOfWeek - 1;
+    let startDay = 0, endDay = 0;
+    // Start day logic and End day logic
+    if (validDayOfWeek < 0) {
+      startDay = (validDayOfWeek + 7) * -1;
+      endDay = 0;
+    } else {
+      startDay = validDayOfWeek;
+      endDay = 6 - validDayOfWeek;
+    }
+
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date(?, "${startDay >= 0 ? '+' + startDay : startDay} days") and date <= date(?, "+${endDay} days") and (isScheduled = 0 or isScheduled is null));`;
+    const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
+    let searchParams = [currentDay, currentDay];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError('getSumByWeek - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '), err);
+      } else {
+        logDBSuccess('getSumByWeek - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '));
+      }
+
+      callback && callback(err, rows);
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get sum expense of current day in specific year month day, this will exclude those scheduled items.
+ * @param {Object} db DB connection object
+ * @param {Object} options options for sql
+ * @param {string} options.month query month details, will be formatted as 'MM' inside function
+ * @param {string} options.year query year details, need to be formatted as 'YYYY'
+ * @param {string} options.day query day details, will be formatted as 'DD' inside function
+ * @param {function} callback
+ */
+const getSumByDay = (db, options, callback) => {
+  const {month, year, day} = options;
+  let promise = new Promise((resolve) => {
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date(?) and date < date(?, "+1 day") and (isScheduled = 0 or isScheduled is null));`;
+    const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
+    let searchParams = [currentDay, currentDay];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError('getSumByDay - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '), err);
+      } else {
+        logDBSuccess('getSumByDay - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '));
+      }
+
+      callback && callback(err, rows);
       resolve({err, rows});
     });
   });
@@ -666,6 +738,8 @@ module.exports = {
   deleteAllData,
   getFinList,
   getSumByYearMonth,
+  getSumByWeek,
+  getSumByDay,
   getCategoryGroup,
   createFinItem,
   createScheduledFinItem,
