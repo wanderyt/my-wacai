@@ -77,7 +77,7 @@ const getFinList = (db, options, callback) => {
     let sql = `select * from ${FIN_TABLE_NAME}`;
     if (options) {
       if (options.month && options.year) {
-        sql += ` where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
+        sql += ` where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%' and date <= date('now')`;
       }
       sql += ' order by date desc';
       if (options.top) {

@@ -14,6 +14,7 @@ import Loading from './modules/loading';
 import './App.scss';
 
 const API_LOADING_DELAY = 0;
+const DEFAULT_FIN_ITEMS = 15;
 
 const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppLoading, dispatch}) => {
   let [monthTotal, setMonthTotal] = useState(0);
@@ -26,7 +27,7 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
 
     if (!selectedItem) {
       let now = new Date();
-      Axios.get(`/api/wacai/getFinList?year=${now.getFullYear()}&month=${now.getMonth() + 1}`)
+      Axios.get(`/api/wacai/getFinList?year=${now.getFullYear()}&month=${now.getMonth() + 1}&top=${DEFAULT_FIN_ITEMS}`)
         .then(({data}) => {
           setTimeout(() => {
             setIsLoading(false);
