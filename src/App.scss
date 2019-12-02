@@ -106,7 +106,7 @@
         line-height: 30px;
         font-size: 16px;
       }
-      .Header-MonthTotal {
+      .Header-MonthTotal, .Header-WeekDayTotal {
         position: absolute;
         bottom: 40px;
         left: 20px;
@@ -120,6 +120,10 @@
         .Amount {
           font-size: 20px;
         }
+      }
+
+      .Header-WeekDayTotal {
+        bottom: 190px;
       }
     }
     .App-FinDetails {

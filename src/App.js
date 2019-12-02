@@ -18,6 +18,8 @@ const DEFAULT_FIN_ITEMS = 15;
 
 const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppLoading, dispatch}) => {
   let [monthTotal, setMonthTotal] = useState(0);
+  let [weekTotal, setWeekTotal] = useState(0);
+  let [dayTotal, setDayTotal] = useState(0);
   let [finList, setFinList] = useState(new Array(5).fill({}));
   let [isLoading, setIsLoading] = useState(true);
 
@@ -27,15 +29,17 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
 
     if (!selectedItem) {
       let now = new Date();
-      Axios.get(`/api/wacai/getFinList?year=${now.getFullYear()}&month=${now.getMonth() + 1}&top=${DEFAULT_FIN_ITEMS}`)
+      Axios.get(`/api/wacai/getFinList?year=${now.getFullYear()}&month=${now.getMonth() + 1}&day=${now.getDate()}&dayOfWeek=${now.getDay()}&top=${DEFAULT_FIN_ITEMS}`)
         .then(({data}) => {
           setTimeout(() => {
             setIsLoading(false);
 
-            let total = data.total || 0;
+            let {monthTotal = 0, weekTotal = 0, dayTotal = 0} = data;
             let finList = data.data || [];
             setFinList(finList);
-            setMonthTotal(total);
+            setMonthTotal(monthTotal);
+            setWeekTotal(weekTotal);
+            setDayTotal(dayTotal);
           }, API_LOADING_DELAY);
         }, ({response}) => {
           setIsLoading(false);
@@ -106,9 +110,22 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
               <div
                 className='Amount'
                 onClick={handleTotalAmountClick}>
-                {/* {parseFloat(monthTotal).toFixed(2)} */}
                 <AutoUpdateNumber
                   total={monthTotal}
+                  duration={100} />
+              </div>
+            </div>
+            <div className='Header-WeekDayTotal'>
+              <div className='Caption'>本周总计</div>
+              <div className='Amount'>
+                <AutoUpdateNumber
+                  total={weekTotal}
+                  duration={100} />
+              </div>
+              <div className='Caption'>今日总计</div>
+              <div className='Amount'>
+                <AutoUpdateNumber
+                  total={dayTotal}
                   duration={100} />
               </div>
             </div>
