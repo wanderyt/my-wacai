@@ -85,7 +85,6 @@ const getFinList = (db, options, callback) => {
       }
     }
 
-    console.log('david, sql: ', sql);
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError('getFinList - Fetch data in FIN table', sql, err);
