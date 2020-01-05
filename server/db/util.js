@@ -69,7 +69,7 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
         break;
       case 'keyword':
         let keyword = searchOptions[key];
-        let keywordSearch = `(category like '%${keyword}%' or subcategory like '%${keyword}%' or comment like '%${keyword}%')`;
+        let keywordSearch = `(category like '%${keyword}%' or subcategory like '%${keyword}%' or comment like '%${keyword}%' or place like '%${keyword}%' or city like '%${keyword}%')`;
         searchQuery.push(keywordSearch);
         break;
       default:

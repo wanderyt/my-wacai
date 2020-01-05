@@ -30,6 +30,8 @@ const scheduleModeItems = [{
   value: '每年入账'
 }];
 
+const DEFAULT_CITY = '上海';
+
 const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
   const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
   const [commentOptions, setCommentOptions] = useState([]);
@@ -77,6 +79,15 @@ const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
   const handleScheduleModeChange = (newItem) => {
     let newScheduleMode = newItem.key;
     setLatestItem(Object.assign({}, latestItem, {isScheduled: newScheduleMode}));
+  }
+
+  const handlePlaceChange = (place) => {
+    setLatestItem(Object.assign({}, latestItem, {place: place}));
+  }
+
+  const handleCityChange = (evt) => {
+    let city = evt.target.value || '';
+    setLatestItem(Object.assign({}, latestItem, {city: city}));
   }
 
   const handleCatSelection = () => {
@@ -448,6 +459,22 @@ const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
           placeholder='备注'
           onChangeCallback={handleCommentChange}
           defaultValue={latestItem.comment} />
+      </div>
+      <div className='Fin-FullDetails Fin-WhiteBack'>
+        <div className='Fin-Place'>
+          <SearchDropdown
+            optionList={commentOptions}
+            placeholder='商场'
+            onChangeCallback={handlePlaceChange}
+            defaultValue={latestItem.place} />
+        </div>
+        <div className='Fin-City'>
+          <input
+            type='input'
+            placeholder='城市'
+            onChange={handleCityChange}
+            defaultValue={latestItem.city || DEFAULT_CITY} />
+        </div>
       </div>
       <div className='Fin-Toolbar Fin-WhiteBack'>
         <div className='Fin-Btns'>

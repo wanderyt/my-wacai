@@ -77,7 +77,7 @@ const getFinList = (db, options, callback) => {
     let sql = `select * from ${FIN_TABLE_NAME}`;
     if (options) {
       if (options.month && options.year) {
-        sql += ` where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%' and date <= date('now')`;
+        sql += ` where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
       }
       sql += ' order by date desc';
       if (options.top) {
@@ -235,13 +235,15 @@ const getCategoryGroup = (db, options, callback) => {
  * @param {string} data.date target fin item date - 2019-04-20 19:20:00
  * @param {string} data.comment target fin item comment
  * @param {number} data.amount target fin item amount
+ * @param {string} data.place target fin item place
+ * @param {string} data.city target fin item city
  * @param {function} callback
  */
 const createFinItem = (db, data, callback) => {
   let promise = new Promise((resolve) => {
     let sql =
-      `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount)
-      values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment || ''}", ${data.amount});`;
+      `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, place, city)
+      values ("${data.id}", "${data.category}", "${data.subcategory}", "${data.date}", "${data.comment || ''}", ${data.amount}, "${data.place || ''}", "${data.city || ''}");`;
     db.all(sql, (err) => {
       if (err) {
         logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table`, sql, err);
@@ -300,14 +302,16 @@ const formatSchedule = (sqlTemplate, datetime, scheduleMode) => {
  * @param {string} data.comment target fin item comment
  * @param {number} data.amount target fin item amount
  * @param {number} data.isScheduled target fin item schedule mode
+ * @param {string} data.place target fin item place
+ * @param {string} data.city target fin item city
  * @param {function} callback
  */
 const createScheduledFinItem = (db, data, callback) => {
   let promise = new Promise((resolve) => {
     const SCHEDULE_NONE = 0;
     let scheduleMode = data.isScheduled || SCHEDULE_NONE;
-    let insertHeaderSQL = `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, isScheduled, scheduleId) `;
-    let insertRowSQL = `select "{{id}}", "${data.category}", "${data.subcategory}", {{datetimeFn}}, "${data.comment || ''}", ${data.amount}, ${scheduleMode}, '{{scheduleId}}'`;
+    let insertHeaderSQL = `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, isScheduled, scheduleId, place, city) `;
+    let insertRowSQL = `select "{{id}}", "${data.category}", "${data.subcategory}", {{datetimeFn}}, "${data.comment || ''}", ${data.amount}, ${scheduleMode}, '{{scheduleId}}', "${data.place || ''}", "${data.city || ''}"`;
     let sqlList = formatSchedule(insertHeaderSQL + insertRowSQL + ';', data.date, scheduleMode);
     db.exec(sqlList.join(''), (err) => {
       if (err) {
@@ -335,6 +339,8 @@ const createScheduledFinItem = (db, data, callback) => {
  * @param {string} data.date target fin item date
  * @param {string} data.comment target fin item comment
  * @param {number} data.amount target fin item amount
+ * @param {string} data.place target fin item place
+ * @param {string} data.city target fin item city
  * @param {function} callback
  */
 const updateFinItem = (db, data, callback) => {
@@ -377,6 +383,8 @@ const updateFinItem = (db, data, callback) => {
  * @param {string} data.comment target fin item comment
  * @param {string} data.scheduleId target fin item schedule id
  * @param {number} data.amount target fin item amount
+ * @param {string} data.place target fin item place
+ * @param {string} data.city target fin item city
  * @param {number} options.year query specific year
  * @param {number} options.month query specific month
  * @param {number} options.day query specific day
@@ -640,7 +648,7 @@ const createFinTemplate = (db, data, callback) => {
  */
 const getAllComments = (db, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select distinct comment from ${FIN_TABLE_NAME} where comment != '';`;
+    let sql = `select distinct comment from (select distinct comment from ${FIN_TABLE_NAME} where comment != '' union select distinct place as comment from ${FIN_TABLE_NAME} where place != '');`;
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError(`Fetch all non empty comments in fin table`, sql, err);
@@ -668,7 +676,7 @@ const getAllComments = (db, callback) => {
  */
 const getFinItemsBySearchString = (db, searchString, options = {}, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%') {{dateSearchString}} order by date desc;`;
+    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%') or place like '%${searchString}%') or city like '%${searchString}%') {{dateSearchString}} order by date desc;`;
     let dateSearchString = '';
     if (options.month && options.year) {
       dateSearchString = ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
