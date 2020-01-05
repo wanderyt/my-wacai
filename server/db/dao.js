@@ -598,12 +598,13 @@ const getFinTemplates = (db, callback) => {
  * @param {string} data.category Target new template category data.
  * @param {string} data.subcategory Target new template subcategory data.
  * @param {string} data.comment Target new template comment data.
+ * @param {string} data.place Target new template place data.
  * @param {function} callback
  */
 const createFinTemplate = (db, data, callback) => {
   let promise = new Promise((resolve) => {
     if (data) {
-      let {category, subcategory, comment} = data;
+      let {category, subcategory, comment, place, city} = data;
       let querySQL = `select * from ${TEMPLATE_TABLE_NAME} where category = '${category}' and subcategory = '${subcategory}' and comment = '${comment}';`;
       db.all(querySQL, (err, rows) => {
         if (err) {
@@ -614,7 +615,7 @@ const createFinTemplate = (db, data, callback) => {
             logDBError(`Target new template is already existed`, querySQL, err);
             resolve({err: 'Target new template is already existed'});
           } else {
-            let insertSQL = `insert into ${TEMPLATE_TABLE_NAME}(category, subcategory, comment) values('${category}', '${subcategory}', '${comment}');`;
+            let insertSQL = `insert into ${TEMPLATE_TABLE_NAME}(category, subcategory, comment, place) values('${category}', '${subcategory}', '${comment}', '${place}');`;
             db.run(insertSQL, (err) => {
               if (err) {
                 logDBError(`Insert new template in template table`, insertSQL, err);
@@ -676,7 +677,7 @@ const getAllComments = (db, callback) => {
  */
 const getFinItemsBySearchString = (db, searchString, options = {}, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%') or place like '%${searchString}%') or city like '%${searchString}%') {{dateSearchString}} order by date desc;`;
+    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%') {{dateSearchString}} order by date desc;`;
     let dateSearchString = '';
     if (options.month && options.year) {
       dateSearchString = ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
