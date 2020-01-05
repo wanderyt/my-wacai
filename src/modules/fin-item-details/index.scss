@@ -131,8 +131,6 @@
     }
     .Fin-City {
       flex-grow: 1;
-      height: 50px;
-      line-height: 50px;
       margin-left: 15px;
 
       background-image: url('./geo-icon.svg');
@@ -141,6 +139,8 @@
       background-repeat: no-repeat;
       border-bottom: 1px solid $GREY-LIGHT-II;
       input {
+        height: 50px;
+        line-height: 50px;
         inline-size: 100px;
         text-indent: 25px;
         font-size: 16px;
