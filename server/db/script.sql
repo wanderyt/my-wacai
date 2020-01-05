@@ -182,3 +182,7 @@ VALUES('生活', '通讯', '话费充值');
 -- Add schedule related columns
 ALTER TABLE FIN ADD isScheduled NUMBER;
 ALTER TABLE FIN ADD scheduleId VARCHAR(100);
+
+-- Add full details related columns
+ALTER TABLE FIN ADD place VARCHAR(100);
+ALTER TABLE FIN ADD city VARCHAR(100);
