@@ -109,6 +109,47 @@
     height: 50px;
     line-height: 50px;
   }
+  .Fin-FullDetails {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 10px;
+    .Fin-Place {
+      flex-grow: 1;
+
+      // Rewrite search dropdown css
+      .Dropdown-Input {
+        border: 0px;
+        border-bottom: 1px solid $GREY-LIGHT-II;
+        border-radius: 0;
+        background-color: #FFF;
+        .Dropdown-SearchImage {
+          background-image: url('./market-square.png');
+        }
+      }
+    }
+    .Fin-City {
+      flex-grow: 1;
+      height: 50px;
+      line-height: 50px;
+      margin-left: 15px;
+
+      background-image: url('./geo-icon.svg');
+      background-position: left center;
+      background-size: 16px;
+      background-repeat: no-repeat;
+      border-bottom: 1px solid $GREY-LIGHT-II;
+      input {
+        inline-size: 100px;
+        text-indent: 25px;
+        font-size: 16px;
+        outline: none;
+        border: 0;
+        background: transparent;
+      }
+    }
+  }
   .Fin-Date {
     height: 30px;
     line-height: 30px;
