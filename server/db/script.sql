@@ -184,5 +184,9 @@ ALTER TABLE FIN ADD isScheduled NUMBER;
 ALTER TABLE FIN ADD scheduleId VARCHAR(100);
 
 -- Add full details related columns
+-- fin table
+ALTER TABLE FIN ADD place VARCHAR(100);
+ALTER TABLE FIN ADD city VARCHAR(100);
+-- fin template table
 ALTER TABLE FIN ADD place VARCHAR(100);
 ALTER TABLE FIN ADD city VARCHAR(100);
