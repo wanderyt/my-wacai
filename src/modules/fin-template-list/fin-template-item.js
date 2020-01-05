@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import './fin-template-item.scss';
 
 const FinTemplateItem = ({item = {}, isLast = false, dispatch}) => {
-  const {comment, category, subcategory} = item;
+  const {comment, category, subcategory, place} = item;
 
   const handleItemClick = () => {
     dispatch({
@@ -14,6 +14,7 @@ const FinTemplateItem = ({item = {}, isLast = false, dispatch}) => {
         comment,
         category,
         subcategory,
+        place,
         amount: 0
       }
     });

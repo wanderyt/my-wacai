@@ -4,7 +4,7 @@ import Axios from 'axios';
 
 import './create-template.scss';
 
-const CreateTemplate = ({updatedCatGroup = {}, isCreatingTemplate, dispatch}) => {
+const CreateTemplate = ({updatedCatGroup, dispatch}) => {
   const [template, setTemplate] = useState(updatedCatGroup);
 
   useEffect(() => {
@@ -50,6 +50,10 @@ const CreateTemplate = ({updatedCatGroup = {}, isCreatingTemplate, dispatch}) =>
     setTemplate(Object.assign({}, template, {comment: evt.target.value}));
   };
 
+  const handlePlaceChange = (evt) => {
+    setTemplate(Object.assign({}, template, {place: evt.target.value}));
+  };
+
   return (
     <div className='CreateTemplate'>
       <div className='CreatePanel'>
@@ -59,7 +63,20 @@ const CreateTemplate = ({updatedCatGroup = {}, isCreatingTemplate, dispatch}) =>
           {template.category} - {template.subcategory}
         </div>
         <div className='Fin-Comment'>
-          <input className='CommentInput' placeholder='备注' type='input' onChange={handleCommentChange} value={template.comment} />
+          <input
+            className='CommentInput'
+            placeholder='备注'
+            type='input'
+            onChange={handleCommentChange}
+            value={template.comment} />
+        </div>
+        <div className='Fin-Place'>
+          <input
+            className='PlaceInput'
+            placeholder='商场'
+            type='input'
+            onChange={handlePlaceChange}
+            value={template.place} />
         </div>
         <div className='Fin-Toolbar'>
           <div className='Fin-Btns'>
