@@ -599,7 +599,6 @@ const getFinTemplates = (db, callback) => {
  * @param {string} data.subcategory Target new template subcategory data.
  * @param {string} data.comment Target new template comment data.
  * @param {string} data.place Target new template place data.
- * @param {string} data.city Target new template city data.
  * @param {function} callback
  */
 const createFinTemplate = (db, data, callback) => {
@@ -616,7 +615,7 @@ const createFinTemplate = (db, data, callback) => {
             logDBError(`Target new template is already existed`, querySQL, err);
             resolve({err: 'Target new template is already existed'});
           } else {
-            let insertSQL = `insert into ${TEMPLATE_TABLE_NAME}(category, subcategory, comment, place, city) values('${category}', '${subcategory}', '${comment}', '${place}', '${city}');`;
+            let insertSQL = `insert into ${TEMPLATE_TABLE_NAME}(category, subcategory, comment, place) values('${category}', '${subcategory}', '${comment}', '${place}');`;
             db.run(insertSQL, (err) => {
               if (err) {
                 logDBError(`Insert new template in template table`, insertSQL, err);
