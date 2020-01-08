@@ -243,13 +243,13 @@ export const DateRangeSelectionPanel = ({currentValue = {}, submitHandler = () =
   const getLastSeason = (year, month) => {
     if (month < 3) {
       return {
-        minDate: formatDate(year - 1, 9),
-        maxDate: formatDate(year - 1, 12)
+        minDate: formatDate(year - 1, 9, 1),
+        maxDate: formatDate(year - 1, 12, 31)
       };
     } else {
       return {
-        minDate: formatDate(year, month - (month % 3) - 3),
-        maxDate: formatDate(year, month + (3 - month % 3) - 3)
+        minDate: formatDate(year, month - (month % 3) - 3, 1),
+        maxDate: formatDate(year, month + (3 - month % 3) - 3, 31)
       };
     }
   }
@@ -312,13 +312,13 @@ export const DateRangeSelectionPanel = ({currentValue = {}, submitHandler = () =
   }, {
     key: 1,
     value: '本年',
-    minDate: year,
-    maxDate: year + 1
+    minDate: formatDate(year, 1, 1),
+    maxDate: formatDate(year, 12, 31),
   }, {
     key: 2,
     value: '去年',
-    minDate: year - 1,
-    maxDate: year
+    minDate: formatDate(year - 1, 1, 1),
+    maxDate: formatDate(year - 1, 12, 31),
   }, {
     key: 3,
     value: '本季',
