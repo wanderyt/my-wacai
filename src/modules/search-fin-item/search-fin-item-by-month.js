@@ -20,7 +20,9 @@ const SearchFinItemByMonth = ({month = '04', year = '2019', amount = 11086.00, b
   const translateDayItems = (items) => {
     let dayItems = {};
     items.map((item) => {
-      let itemDate = new Date(item.date);
+      // Issue: https://stackoverflow.com/questions/4310953/invalid-date-in-safari
+      // Mobile Safari does not support YYYY-MM-DD as a standard date
+      let itemDate = new Date(item.date.replace(/-/g, '/'));
       let day = padZero(itemDate.getDate());
       let month = padZero(itemDate.getMonth() + 1);
       let year = itemDate.getFullYear();

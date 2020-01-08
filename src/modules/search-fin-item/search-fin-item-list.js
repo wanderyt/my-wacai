@@ -16,7 +16,9 @@ const SearchFinItemList = ({finItems = []}) => {
   const translateFinItems = (finItems = []) => {
     let historyExpense = {}, highestMonthAmount = 0;
     finItems.map((item, index) => {
-      let itemDate = new Date(item.date);
+      // Issue: https://stackoverflow.com/questions/4310953/invalid-date-in-safari
+      // Mobile Safari does not support YYYY-MM-DD as a standard date
+      let itemDate = new Date(item.date.replace(/-/g, '/'));
       let month = padZero(itemDate.getMonth() + 1);
       let year = itemDate.getFullYear();
       if (historyExpense[`${year}-${month}`]) {
