@@ -6,11 +6,11 @@ const padZero = (day) => {
   }
 };
 
-const formatDate = (year, month, day) => {
+const formatDate = (year, month = 1, day = 1) => {
   let validDatePart = [];
-  year && validDatePart.push(year);
-  month && validDatePart.push(padZero(month));
-  day && validDatePart.push(padZero(day));
+  validDatePart.push(year);
+  validDatePart.push(padZero(month));
+  validDatePart.push(padZero(day));
   return validDatePart.join('-');
 }
 
