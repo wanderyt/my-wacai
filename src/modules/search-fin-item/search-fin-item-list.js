@@ -1,5 +1,7 @@
 import React from 'react';
 import FinItem from '../fin-item';
+import SearchFinItemByMonth from './search-fin-item-by-month';
+import {padZero} from '../../utils/helper';
 
 import './search-fin-item-list.scss'
 
@@ -10,6 +12,36 @@ const SearchFinItemList = ({finItems = []}) => {
       total = total + item.amount;
     });
   }
+
+  const translateFinItems = (finItems = []) => {
+    let historyExpense = {}, highestMonthAmount = 0;
+    finItems.map((item, index) => {
+      let itemDate = new Date(item.date);
+      let month = padZero(itemDate.getMonth() + 1);
+      let year = itemDate.getFullYear();
+      if (historyExpense[`${year}-${month}`]) {
+        historyExpense[`${year}-${month}`].amount += item.amount;
+        historyExpense[`${year}-${month}`].dayItems.push(item);
+      } else {
+        historyExpense[`${year}-${month}`] = {
+          amount: item.amount,
+          dayItems: [item]
+        };
+      }
+    });
+    Object.values(historyExpense).forEach((expense) => {
+      if (expense.amount > highestMonthAmount) {
+        highestMonthAmount = expense.amount;
+      }
+    });
+
+    return {
+      highestMonthAmount,
+      items: historyExpense
+    };
+  }
+
+  const historyExpense = translateFinItems(finItems);
 
   return (
     <div className='SearchFinItemList'>
@@ -25,12 +57,22 @@ const SearchFinItemList = ({finItems = []}) => {
       </div>
       <div className='ListContainer'>
         {
-          finItems.map((item, index) => (
-            <div
-              className='ListItemContainer'
-              key={index}>
-              <FinItem
-                item={item} />
+          // finItems.map((item, index) => (
+          //   <div
+          //     className='ListItemContainer'
+          //     key={index}>
+          //     <FinItem
+          //       item={item} />
+          //   </div>
+          // ))
+          finItems.length > 0 && Object.keys(historyExpense.items).sort().reverse().map((month, index) =>(
+            <div key={index}>
+              <SearchFinItemByMonth
+                month={month.split('-')[1]}
+                year={month.split('-')[0]}
+                amount={historyExpense.items[month].amount}
+                barWidthRatio={historyExpense.items[month].amount / historyExpense.highestMonthAmount}
+                dayItems={historyExpense.items[month].dayItems} />
             </div>
           ))
         }
