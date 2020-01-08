@@ -322,8 +322,8 @@ export const DateRangeSelectionPanel = ({currentValue = {}, submitHandler = () =
   }, {
     key: 3,
     value: '本季',
-    minDate: formatDate(year, month - (month % 3) + 1),
-    maxDate: formatDate(year, month + (3 - month % 3))
+    minDate: formatDate(year, month - (month % 3) + 1, 1),
+    maxDate: formatDate(year, month + (3 - month % 3), 31)
   }, {
     key: 4,
     value: '上季',
