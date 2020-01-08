@@ -5,6 +5,9 @@ import SearchBox from '../search-box';
 import SearchFinItemList from './search-fin-item-list';
 import AdvancedSearch from './advance-search';
 
+import MonthExpense from '../fin-item-list/month-expense';
+import {padZero} from '../../utils/helper';
+
 import './index.scss';
 
 const SearchFinItem = ({finItems = [], dispatch}) => {
