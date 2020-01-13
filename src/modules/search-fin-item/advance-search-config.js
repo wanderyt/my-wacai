@@ -1,4 +1,4 @@
-import {KeywordsSelectionPanel, CategorySelectionPanel, AmountRangeSelectionPanel, DateRangeSelectionPanel} from './advance-search-option-panel';
+import {KeywordsSelectionPanel, CategorySelectionPanel, AmountRangeSelectionPanel, DateRangeSelectionPanel, CitySelectionPanel} from './advance-search-option-panel';
 import {formatDateObject} from '../../utils/helper';
 
 export const ADVANCE_SEARCH_ITEMS = [{
@@ -37,6 +37,14 @@ export const ADVANCE_SEARCH_ITEMS = [{
   comp: CategorySelectionPanel,
   formatter: ({category, subcategory}) => {
     return `${category} - ${subcategory}`;
+  }
+}, {
+  type: 'city',
+  name: '城市',
+  defaultValue: '全部',
+  comp: CitySelectionPanel,
+  formatter: (cities) => {
+    return cities.join ? cities.join(', ') : cities;
   }
 }, {
   type: 'keyword',
