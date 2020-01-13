@@ -11,8 +11,12 @@ const AdvancedSearch = ({searchParams, dispatch, submitHandler = void 0}) => {
     let params = [];
     Object.keys(searchParams).map((key) => {
       if (Array.isArray(searchParams[key])) {
-        // Amount Range Handler
-        params.push(`${key}=${JSON.stringify(searchParams[key])}`);
+        if (key === 'amountRanges') {
+          // Amount Range Handler
+          params.push(`${key}=${JSON.stringify(searchParams[key])}`);
+        } else if (key === 'city') {
+          params.push(`${key}=${searchParams[key].join(',')}`);
+        }
       } else if (typeof searchParams[key] === 'object') {
         if (key === 'dateRange') {
           params.push(`${key}=${JSON.stringify(searchParams[key])}`);

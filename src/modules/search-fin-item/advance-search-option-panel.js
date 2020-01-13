@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import Axios from 'axios';
 import DropdownList from '../dropdown-list';
+import MultiSelection from '../multi-selection';
 import {formatDate, formatDateObject} from '../../utils/helper';
 import DateTime from 'react-datetime';
 
@@ -444,3 +446,66 @@ export const DateRangeSelectionPanel = ({currentValue = {}, submitHandler = () =
     </div>
   )
 }
+
+const ALL_KEYWORD = '全部';
+export const CitySelectionPanel = ({currentValue = ALL_KEYWORD, submitHandler = () => void 0, cancelHandler = () => void 0}) => {
+  const [validCities, setValidCities] = useState([]);
+  const [selectedCities, setSelectedCities] = useState([]);
+
+  useEffect(() => {
+    Axios.get('/api/wacai/getAllCities')
+      .then(({data}) => {
+        let responseData = data.data || [];
+        let cities = [];
+        responseData.forEach((option) => {
+          cities.push(option.city);
+        });
+
+        setValidCities(cities);
+
+        // Translate '全部' keyword
+        if (currentValue === ALL_KEYWORD) {
+          setSelectedCities(cities.slice());
+        } else {
+          setSelectedCities(currentValue);
+        }
+      });
+  }, []);
+
+  const handleCitySelection = (selections) => {
+    setSelectedCities(selections);
+  };
+
+  const submitHandlerFn = () => {
+    if (selectedCities.length === validCities.length) {
+      submitHandler(ALL_KEYWORD);
+    } else {
+      submitHandler(selectedCities);
+    }
+  };
+
+  const cancelHandlerFn = () => {
+    cancelHandler();
+  };
+
+  return (
+    <div className='CitySelectionPanel'>
+      <div className='CityMultiSelection'>
+        <MultiSelection
+          defaultSelection={selectedCities}
+          validSeletions={validCities}
+          handleSelection={handleCitySelection} />
+      </div>
+      <SelectionPanelButtonGroup submitHandler={submitHandlerFn} cancelHandler={cancelHandlerFn} />
+    </div>
+  )
+};
+
+CitySelectionPanel.propTypes = {
+  currentValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+  ]),
+  submitHandler: PropTypes.func,
+  cancelHandler: PropTypes.func,
+};
