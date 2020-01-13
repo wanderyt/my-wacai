@@ -72,6 +72,20 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
         let keywordSearch = `(category like '%${keyword}%' or subcategory like '%${keyword}%' or comment like '%${keyword}%' or place like '%${keyword}%' or city like '%${keyword}%')`;
         searchQuery.push(keywordSearch);
         break;
+      case 'city':
+        let cities = searchOptions[key];
+        if (cities === '全部') {
+          break;
+        } else {
+          let cityItems = cities.split(',');
+          let citySelectionSQLs = [];
+          cityItems.map((city) => {
+            citySelectionSQLs.push(`city like '%${city}%'`);
+          });
+          let citySearch = `(${citySelectionSQLs.join(' or ')})`;
+          searchQuery.push(citySearch);
+        }
+        break;
       default:
         break;
     }

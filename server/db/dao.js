@@ -649,12 +649,36 @@ const createFinTemplate = (db, data, callback) => {
  */
 const getAllComments = (db, callback) => {
   let promise = new Promise((resolve) => {
-    let sql = `select distinct comment from (select distinct comment from ${FIN_TABLE_NAME} where comment != '' union select distinct place as comment from ${FIN_TABLE_NAME} where place != '');`;
+    let sql = `select distinct comment from (select distinct comment from ${FIN_TABLE_NAME} where comment != '' order by date desc union select distinct place as comment from ${FIN_TABLE_NAME} where place != '' order by date desc);`;
     db.all(sql, (err, rows) => {
       if (err) {
         logDBError(`Fetch all non empty comments in fin table`, sql, err);
       } else {
         logDBSuccess(`Fetch all non empty comments in fin table`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all valid cities
+ * @param {object} db
+ * @param {function} callback
+ */
+const getAllCities = (db, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select distinct city from ${FIN_TABLE_NAME} where city != '' order by date desc;`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch all non empty cities in fin table`, sql, err);
+      } else {
+        logDBSuccess(`Fetch all non empty cities in fin table`, sql);
       }
 
       callback && callback(err, rows);
@@ -762,6 +786,7 @@ module.exports = {
   getFinTemplates,
   createFinTemplate,
   getAllComments,
+  getAllCities,
   getFinItemsBySearchString,
   getFinItemsBySearchOptions,
   closeDB,

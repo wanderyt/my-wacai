@@ -8,6 +8,7 @@ const getFinItemsByMonthRouter = require('./getFinItemsByMonth');
 const getFinTemplatesRouter = require('./getFinTemplates');
 const createFinTemplateRouter = require('./createFinTemplate');
 const getAllCommentRouter = require('./getAllComment');
+const getAllCitiesRouter = require('./getAllCities');
 const searchFinItemsRouter = require('./searchFinItems');
 const deepSearchFinItemsRouter = require('./deepSearchFinItems');
 
@@ -22,6 +23,7 @@ module.exports = {
     getFinItemsByMonthRouter.router,
     getFinTemplatesRouter.router,
     createFinTemplateRouter.router,
+    getAllCitiesRouter.router,
     getAllCommentRouter.router,
     searchFinItemsRouter.router,
     deepSearchFinItemsRouter.router,
