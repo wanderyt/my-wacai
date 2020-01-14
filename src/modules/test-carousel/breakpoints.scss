@@ -1,0 +1,70 @@
+/* Media Query Breakpoints */
+
+/* Breakpoint definitions
+    Note that we only have 4 defined breakpoints:
+    - small
+    - medium
+    - large
+    - xlarge
+    All other variables are helpers and definitions providing the same context
+
+    Resources:
+    - https://webdesign.tutsplus.com/tutorials/an-introduction-to-sass-maps-usage-and-examples--cms-22184
+ */
+ $breakpoints: (
+  small-start: 320px,
+  small-end: 639px,
+  medium-start: 640px,
+  medium-end: 949px,
+  large-start: 950px,
+  large-end: 1280px,
+  xlarge-start: 1281px,
+  xlarge-end: 1920px
+);
+
+/* Advanced function helpers
+  Resources:
+  - http://thesassway.com/advanced/pure-sass-functions
+*/
+
+// Inclusive
+@function breakpoint-and-above ($end) {
+  @return "only screen and (min-width: #{map-get($breakpoints, '#{$end}-start')})";
+}
+
+// Inclusive
+@function breakpoint-and-below ($end) {
+  @return "only screen and (max-width: #{map-get($breakpoints, '#{$end}-end')})";
+}
+
+// Exclusive
+@function breakpoint-only-above ($end) {
+  @return "only screen and (min-width: #{map-get($breakpoints, '#{$end}-end')})";
+}
+
+// Exclusive
+@function breakpoint-only-below ($end) {
+  @return "only screen and (max-width: #{map-get($breakpoints, '#{$end}-start')})";
+}
+
+// Inclusive
+@function breakpoint-between ($start, $end) {
+  @return "only screen and (min-width: #{map-get($breakpoints, '#{$start}-start')}) and (max-width: #{map-get($breakpoints, '#{$end}-end')})";
+}
+
+/* Variable Helpers */
+$breakpoint-small-start: map-get($breakpoints, 'small-start');
+$breakpoint-small-end: map-get($breakpoints, 'small-end');
+$breakpoint-medium-start: map-get($breakpoints, 'medium-start');
+$breakpoint-medium-end: map-get($breakpoints, 'medium-end');
+$breakpoint-large-start: map-get($breakpoints, 'large-start');
+$breakpoint-large-end: map-get($breakpoints, 'large-end');
+$breakpoint-xlarge-start: map-get($breakpoints, 'xlarge-start');
+
+$breakpoint-small: breakpoint-between('small', 'small');
+$breakpoint-medium: breakpoint-between('medium', 'medium');
+$breakpoint-large: breakpoint-between('large', 'large');
+$breakpoint-xlarge: breakpoint-between('xlarge', 'xlarge');
+
+/* Deprecated Zone */
+$breakpoint-large-and-up: "only screen and (min-width: 950px)"; // Don't use! Deprecated

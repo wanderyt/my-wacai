@@ -1,0 +1,201 @@
+@import "./branch.scss";
+@import "./breakpoints.scss";
+@import "./font.scss";
+@import "./colors.scss";
+@import "./mixins.scss";
+
+/*
+ **  CSS structure for component follow:
+ **    - Common shared component structures (fonts, border-radius, alignments)
+ **    - Variant specific stylings (Event, Performer)
+ */
+
+.entity-card {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.entity-card__bkg-img {
+  width: 100%;
+  border-radius: 6px;
+  /* style below fixes safari nested div rounded corner late rendering bug
+    fix ref: https://gist.github.com/ayamflow/b602ab436ac9f05660d9c15190f4fd7b */
+  -webkit-mask-image: radial-gradient(white, black);
+}
+
+.entity-card__link {
+  color: $key-dark-3x;
+}
+
+.entity-card__banner {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 6px;
+  -webkit-mask-image: radial-gradient(white, black);
+}
+
+.entity-card__contents {
+  text-align: left;
+}
+
+.entity-card__time {
+  @include font-large-bold;
+  margin-bottom: 10px;
+  color: $palette-primary-dark;
+}
+
+.entity-card__genre {
+  @include font-large-bold;
+  color: $palette-primary-dark;
+}
+
+.entity-card__name {
+  @include font-xlarge-bold;
+  color: $key-dark-3x;
+  margin-bottom: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.entity-card__venue, .entity-card__location {
+  @include font-large-regular;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+}
+
+.entity-card__location {
+  margin-bottom: 6px;
+}
+
+.entity-card__price {
+  @include font-small-bold;
+}
+
+.entity-card__urgency {
+  @include font-large-regular;
+  margin-top: 6px;
+  padding-left: 20px;
+  background: url("./ticketalert-filled-16-px.svg") left 2px no-repeat;
+}
+
+.lazy-load {
+  height: 100%;
+  width: 100%;
+}
+
+@media #{breakpoint-and-above("large")} {
+  .entity-card__banner {
+    margin-bottom: 9px;
+  }
+
+  .entity-card__time {
+    @include font-small-bold;
+    margin-bottom: 3px;
+  }
+
+  .entity-card__name {
+    @include font-large-bold;
+    margin-bottom: 1px;
+  }
+
+  .entity-card__venue {
+    @include font-small-regular;
+  }
+
+  .entity-card__location {
+    @include font-small-regular;
+    margin-bottom: 6px;
+  }
+
+  .entity-card__price {
+    @include font-small-bold;
+  }
+
+  .entity-card__urgency {
+    @include font-small-regular;
+  }
+
+  // The max-widths for event and performer with the carousel / stacked container is never reached, but
+  // should be enforced as a safeguard in case entity-card is consumed outside of that container context
+  .entity-card.event {
+    max-width: 280px;
+
+    .entity-card__banner {
+      max-height: 176px;
+    }
+
+    .entity-card__location {
+      margin-bottom: 0;
+    }
+  }
+  .entity-card.performer {
+    max-width: 218px;
+
+    .entity-card__banner {
+      max-height: 184px;
+    }
+
+    .entity-card__name {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@media #{$breakpoint-medium} {
+  .entity-card {
+    max-width: 294px;
+  }
+  .entity-card__banner {
+    max-height: 160px;
+  }
+}
+
+@media #{breakpoint-and-below("medium")} {
+  .entity-card__banner {
+    margin-bottom: 10px;
+  }
+
+  .entity-card__time {
+    @include font-xsmall-bold;
+    margin-bottom: 4px;
+  }
+
+  .entity-card__name {
+    @include font-medium-bold;
+    margin-bottom: 3px;
+  }
+
+  .entity-card__venue {
+    @include font-xsmall-regular;
+  }
+
+  .entity-card__location {
+    @include font-xsmall-regular;
+    margin-bottom: 0;
+  }
+
+  .entity-card__price {
+    @include font-xsmall-bold;
+  }
+
+  .entity-card__urgency {
+    @include font-xsmall-regular;
+  }
+
+  .entity-card.performer {
+    .entity-card__name {
+      @include font-medium-bold;
+      margin-bottom: 3px;
+    }
+  }
+}
+
+@media #{breakpoint-and-below("small")} {
+  .entity-card {
+    min-width: 136px;
+  }
+}

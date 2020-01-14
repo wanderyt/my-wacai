@@ -42,7 +42,7 @@ test.db
 .vscode/
 
 # storybook
-.story
+# .story
 
 # test comps
-*test*
+# *test*

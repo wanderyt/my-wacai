@@ -1,0 +1,6 @@
+@mixin bkg-img-ratio($ratio) {
+  .bkg-img__height-control, .bkg-img__bkg {
+    height: 0;
+    padding-bottom: $ratio;
+  }
+}

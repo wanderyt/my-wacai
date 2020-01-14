@@ -1,0 +1,135 @@
+$breakpoints: (
+  small-start: 320px,
+  small-end: 639px,
+  medium-start: 640px,
+  medium-end: 949px,
+  large-start: 950px,
+  large-end: 1280px,
+  xlarge-start: 1281px,
+  xlarge-end: 1920px
+);
+
+// Inclusive
+@function breakpoint-and-above ($end) {
+  @return "only screen and (min-width: #{map-get($breakpoints, '#{$end}-start')})";
+}
+
+// Inclusive
+@function breakpoint-and-below ($end) {
+  @return "only screen and (max-width: #{map-get($breakpoints, '#{$end}-end')})";
+}
+
+// Inclusive
+@function breakpoint-between ($start, $end) {
+  @return "only screen and (min-width: #{map-get($breakpoints, '#{$start}-start')}) and (max-width: #{map-get($breakpoints, '#{$end}-end')})";
+}
+
+$breakpoint-small: breakpoint-between('small', 'small');
+
+$key-light-base: #FFFFFF;
+
+.LazyLoadCarousel {
+  position: relative;
+}
+
+.LazyLoadCarousel__ViewPort {
+  overflow: hidden;
+  position: relative;
+
+  @media #{breakpoint-and-below("medium")} {
+    overflow-x: scroll;
+   -webkit-overflow-scrolling: touch;
+
+   /* Hide scrollbar while still allowing scrolling */
+   -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.LazyLoadCarousel__ViewPort__SliderFrame {
+  min-width: 100%;
+  display: flex;
+
+  @media #{breakpoint-and-below("medium")} {
+    transition: none !important;
+  }
+}
+
+.LazyLoadCarousel__Item {
+  flex: 1 1 auto;
+  margin: 0 8px 0 8px;
+  width: 0; // make content width 0, let it just to grow
+
+  @media #{breakpoint-and-above("large")} {
+    margin: 0 16px;
+    max-width: 280px;
+  }
+  @media #{breakpoint-and-below("medium")} {
+    max-width: 248px;
+  }
+  @media #{$breakpoint-small} {
+    flex: 0 0 calc(29% - 16px);
+  }
+  &:first-child {
+    @media #{breakpoint-and-below("medium")} {
+      padding-left: 16px;
+      margin-left: 16px;
+    }
+  }
+  &:last-child {
+    @media #{breakpoint-and-below("medium")} {
+      margin-right: 16px;
+    }
+  }
+}
+
+.LazyLoadCarousel__Buttons button {
+  position: absolute;
+  outline: none;
+  border: 0;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.LazyLoadCarousel__Buttons {
+  @media #{breakpoint-and-below("medium")} {
+    display: none;
+  }
+}
+
+.LazyLoadCarousel__Buttons__prev {
+  top: 30%;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.LazyLoadCarousel__Buttons__next {
+  top: 30%;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.LazyLoadCarousel__PrevArrow, .LazyLoadCarousel__NextArrow {
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+  background-color: $key-light-base;
+  padding: 16px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.LazyLoadCarousel__PrevArrow span, .LazyLoadCarousel__NextArrow span {
+  display: block;
+  background-image: url('chevron.svg');
+  background-repeat: no-repeat;
+  background-position: 75% 50%;
+  background-size: contain;
+  width: 18px;
+  height: 18px;
+}
+
+.LazyLoadCarousel__PrevArrow span {
+  transform: rotate(-180deg);
+}

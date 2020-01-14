@@ -1,0 +1,57 @@
+/* -- -- -- -- -- -- -- -- -- -- -- */
+/* -- --  Brand Core Palette  -- -- */
+/* -- -- -- -- -- -- -- -- -- -- -- */
+
+/* -- -- - Colors - Primary - -- -- */
+$palette-primary: #D94185;
+$palette-primary-dark: #C23A77;
+
+$palette-secondary: #00B5B5;
+$palette-secondary-dark: #00A1A1;
+
+$palette-tertiary: #340573;
+$palette-tertiary-dark: #260354;
+/* -- -- -- -- -- -- -- -- -- -- -- */
+
+/* -- -- -- Colors - Greys -- -- -- */
+$key-dark-base: #14171A;
+$key-dark-3x: #2F343B;
+$key-dark-2x: #5C6570;
+$key-dark-1x: #87909A;
+$key-dark: #B1BAC2;
+$key-dark-base-trans: rgba(20, 23, 26, 0.5);
+
+$key-light: #CFD4D9;
+$key-light-1x: #E6E9EB;
+$key-light-2x: #F6F8F9;
+$key-light-base: #FFFFFF;
+$key-light-base-trans: rgba(255, 255, 255, 0.5);
+
+$key-shadow: rgba(0, 0, 0, 0.1);
+  /* -- -- -- -- -- -- -- -- -- -- -- */
+
+/* - Colors - Accents & Alternates - */
+$accent-ray: #CFEB34;
+$palette-focus: rgba(0, 181, 181, 0.15);
+/* -- -- -- -- -- -- -- -- -- -- -- */
+
+/* -- -- -- Colors - Alerts -- -- -- */
+$status-error: #CC371F;
+$status-warning: #F2B824;
+$status-success: #00B44C;
+$status-info: #1475C4;
+/* -- -- -- -- -- -- -- -- -- -- -- --*/
+
+/* -- Colors . Text . Transparencies -- */
+$key-text-links: #0F5B99;
+$key-line-trans: rgba(255, 255, 255, 0.15);
+$key-overlay-trans: rgba(0, 0, 0, 0.15);
+/* -- -- -- -- -- -- -- -- -- -- -- -- -- -- -*/
+
+
+/********************************************/
+/* --- --- DON'T USE --- DEPRECATED --- --- */
+/********************************************/
+$accent-louis: #2CDE8B;
+$div-lines-trans: rgba(255, 255, 255, 0.2);
+/* -- -- -- -- -- -- -- -- -- -- -- -- -- -*/
