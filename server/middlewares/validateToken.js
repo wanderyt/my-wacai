@@ -1,4 +1,4 @@
-const {getUserAccount} = require('../login-helper');
+const {getUserAccount, getUserList} = require('../login-helper');
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 
@@ -8,7 +8,7 @@ const logger = log4js.getLogger('wacai');
  * @param {object} res
  * @param {function} next
  */
-const validateTokenMiddleware = (req, res, next) => {
+const validateTokenMiddleware = async (req, res, next) => {
   logger.info('middleware - validate token');
   const cookies = req.headers.cookie;
   const cookiesList = cookies.split(';');
@@ -26,8 +26,17 @@ const validateTokenMiddleware = (req, res, next) => {
     const token = tokenCookie.split('=')[1].trim();
     if (token) {
       let {username, password} = getUserAccount(token);
-      if (username === process.env.REACT_APP_USERNAME && password === process.env.REACT_APP_PASSWORD) {
+      // Get user info
+      let user = await getUserList(username, password);
+
+      if (user) {
         logger.info('token validation success');
+        // _userInfo marked userid / username / password
+        req._userInfo = {
+          userId: user.USERID,
+          userName: user.USERNAME,
+        };
+
         next();
       } else {
         logger.error('token validation failed');

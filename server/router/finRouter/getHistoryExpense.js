@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, getMonthlyTotal} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {getMonthlyTotal} = require('../../db/fin/get');
 
 router.get('/getHistoryExpense', (req, res) => {
   const {month, year} = req.query;
   logger.info('api /getHistoryExpense');
+
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let getMonthlyTotalPromise = getMonthlyTotal(db, {month, year});
+  let getMonthlyTotalPromise = getMonthlyTotal(db, {month, year, ...user});
   getMonthlyTotalPromise
     .then((data) => {
       closeDB(db);

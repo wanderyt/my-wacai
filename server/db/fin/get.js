@@ -1,0 +1,436 @@
+const {FIN_TABLE_NAME, CATEGORY_TABLE_NAME, TEMPLATE_TABLE_NAME} = require('../config');
+const {logDBError, logDBSuccess, mapSearchParamsToDBSearch} = require('../util');
+const {padZero} = require('../../helper');
+
+/**
+ * Search all fin items by search params
+ * [TODO]: change to use sql params
+ * @param {object} db
+ * @param {object} searchOptions
+ * @param {function} callback
+ */
+const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
+  let searchString = '';
+  try {
+    searchString = mapSearchParamsToDBSearch(searchOptions);
+  } catch (e) {
+    return new Promise((res, rej) => {
+      rej({
+        err: e
+      });
+    });
+  }
+
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${FIN_TABLE_NAME} where ${searchString} order by date desc;`;
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Search all fin items in fin table with search string: ${searchString}`, sql, err);
+      } else {
+        logDBSuccess(`Search all fin items in fin table with search string: ${searchString}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all valid cities
+ * @param {object} db
+ * @param {object} options target query data
+ * @param {number} options.userId target query user id
+ * @param {function} callback
+ */
+const getAllCities = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select distinct city from ${FIN_TABLE_NAME} where city != '' and userId = ? order by date desc;`;
+    let searchParam = [options.userId];
+    db.all(sql, searchParam, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch all non empty cities in fin table with params: ${searchParam}`, sql, err);
+      } else {
+        logDBSuccess(`Fetch all non empty cities in fin table with params: ${searchParam}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all valid comments
+ * @param {object} db
+ * @param {object} options target query data
+ * @param {number} options.userId target query user id
+ * @param {function} callback
+ */
+const getAllComments = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select distinct comment from (select distinct comment from ${FIN_TABLE_NAME} where comment != '' and userId = ? order by date desc) union select distinct comment from (select distinct place as comment from ${FIN_TABLE_NAME} where place != '' and userId = ? order by date desc);`;
+    let searchParams = [options.userId, options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch all non empty comments in fin table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`Fetch all non empty comments in fin table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all category groups
+ * @param {Object} db DB connection object
+ * @param {Object} options queries
+ * @param {number} options.userId query user id
+ * @param {function} callback
+ */
+const getCategoryGroup = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select category, subcategory, is_common from ${CATEGORY_TABLE_NAME} where userId = ?;`;
+    let searchParams = [options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`getCategoryGroup - Fetch data in CATEGORY table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`getCategoryGroup - Fetch data in CATEGORY table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all daily total data.
+ * [TODO]: change to use sql params
+ * @param {object} db
+ * @param {object} options
+ * @param {string} options.year target year, format 'YYYY'
+ * @param {string} options.month target month, format 'MM'
+ * @param {number} options.userId target user id
+ * @param {function} callback
+ */
+const getDailyTotal = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select sum(amount) as total, year_month_date from (select amount, substr(date, 1, 10) as year_month_date from ${FIN_TABLE_NAME} where date like '${options.year}-${options.month}%' and userId = ?) group by year_month_date order by year_month_date desc;`;
+    let searchParams = [options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch monthly total data in FIN table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`Fetch monthly total data in FIN table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get fin items by month
+ * @param {object} db
+ * @param {object} options
+ * @param {string} options.year target year, format 'YYYY'
+ * @param {string} options.month target month, format 'MM'
+ * @param {number} options.userId target user id
+ * @param {function} callback
+ */
+const getFinItemsByMonth = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${FIN_TABLE_NAME} where date like '${options.year}-${options.month}%' and userId = ? order by date desc;`;
+    let searchParams = [options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch month (${options.year}-${options.month}) details in FIN table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`Fetch month (${options.year}-${options.month}) details in FIN table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get fin list data
+ * @param {Object} db DB connection object
+ * @param {object} options query options
+ * @param {number} options.top query numbers
+ * @param {number} options.month query ends with specific month, need to be formatted like MM
+ * @param {number} options.year query ends with specific month, need to be formatted like YYYY
+ * @param {number} options.userId query user id
+ * @param {function} callback
+ */
+const getFinList = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${FIN_TABLE_NAME} where userId = ?`;
+    if (options) {
+      if (options.month && options.year) {
+        sql += ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
+      }
+      sql += ' order by date desc';
+      if (options.top) {
+        sql += ' limit ' + options.top;
+      }
+    }
+
+    let searchParams = [options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`getFinList - Fetch data in FIN table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`getFinList - Fetch data in FIN table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  })
+
+  return promise;
+};
+
+/**
+ * Get sum expense of whole month in specific year month
+ * @param {Object} db DB connection object
+ * @param {Object} options options for sql
+ * @param {string} options.month query month details, will be formatted as 'MM' inside function
+ * @param {string} options.year query year details, need to be formatted as 'YYYY'
+ * @param {number} options.userId query user id
+ * @param {function} callback
+ */
+const getSumByYearMonth = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date like '${options.year}-${padZero(options.month)}-%' and userId = ?);`;
+    let searchParams = [options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`getFinListByMonth - Fetch data in FIN table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`getFinListByMonth - Fetch data in FIN table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get sum expense of whole current week in specific year month day, this will exclude those scheduled items.
+ * @param {Object} db DB connection object
+ * @param {Object} options options for sql
+ * @param {string} options.month query month details, will be formatted as 'MM' inside function
+ * @param {string} options.year query year details, need to be formatted as 'YYYY'
+ * @param {string} options.day query day details, will be formatted as 'DD' inside function
+ * @param {string} options.dayOfWeek query day of week details, Sunday as 0, Monday as 1, etc.
+ * @param {number} options.userId query user id
+ * @param {function} callback
+ */
+const getSumByWeek = (db, options, callback) => {
+  const {month, year, day, dayOfWeek, userId} = options;
+  let promise = new Promise((resolve) => {
+    let validDayOfWeek = dayOfWeek - 1;
+    let startDay = 0, endDay = 0;
+    // Start day logic and End day logic
+    if (validDayOfWeek < 0) {
+      startDay = (validDayOfWeek + 7) * -1;
+      endDay = 0;
+    } else {
+      startDay = validDayOfWeek;
+      endDay = 6 - validDayOfWeek;
+    }
+
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date(?, "${startDay >= 0 ? '+' + startDay : startDay} days") and date <= date(?, "+${endDay} days") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
+    const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
+    let searchParams = [currentDay, currentDay, userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError('getSumByWeek - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '), err);
+      } else {
+        logDBSuccess('getSumByWeek - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '));
+      }
+
+      callback && callback(err, rows);
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get sum expense of current day in specific year month day, this will exclude those scheduled items.
+ * @param {Object} db DB connection object
+ * @param {Object} options options for sql
+ * @param {string} options.month query month details, will be formatted as 'MM' inside function
+ * @param {string} options.year query year details, need to be formatted as 'YYYY'
+ * @param {string} options.day query day details, will be formatted as 'DD' inside function
+ * @param {number} options.userId query user id
+ * @param {function} callback
+ */
+const getSumByDay = (db, options, callback) => {
+  const {month, year, day, userId} = options;
+  let promise = new Promise((resolve) => {
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date(?) and date < date(?, "+1 day") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
+    const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
+    let searchParams = [currentDay, currentDay, userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError('getSumByDay - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '), err);
+      } else {
+        logDBSuccess('getSumByDay - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '));
+      }
+
+      callback && callback(err, rows);
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all fin templates
+ * @param {object} db
+ * @param {object} options
+ * @param {number} options.userId query user id
+ * @param {function} callback
+ */
+const getFinTemplates = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${TEMPLATE_TABLE_NAME} where userId = ?;`;
+    let searchParams = [options.userId];
+    console.log('get fin template: ', options.userId);
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch fin templates in template table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`Fetch fin templates in template table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all monthly total data.
+ * @param {object} db
+ * @param {object} options query options
+ * @param {number} options.month query ends with specific month, need to be formatted like MM
+ * @param {number} options.year query ends with specific month, need to be formatted like YYYY
+ * @param {number} options.userId query user id
+ * @param {function} callback
+ */
+const getMonthlyTotal = (db, options, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select sum(amount) as total, year_month from (select amount, substr(date, 1, 7) as year_month from ${FIN_TABLE_NAME} {{queries}}) group by year_month order by year_month desc;`;
+    if (options.month && options.year) {
+      sql = sql.replace("{{queries}}", `where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%' and userId = ?`);
+    }
+    let searchParams = [options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch monthly total data in FIN table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`Fetch monthly total data in FIN table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Search all fin items by specific search string
+ * @param {object} db
+ * @param {string} searchString
+ * @param {object} options
+ * @param {string} options.year
+ * @param {string} options.month
+ * @param {number} options.userId
+ * @param {function} callback
+ */
+const getFinItemsBySearchString = (db, searchString, options = {}, callback) => {
+  let promise = new Promise((resolve) => {
+    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%') and userId = ? {{dateSearchString}} order by date desc;`;
+    let dateSearchString = '';
+    if (options.month && options.year) {
+      dateSearchString = ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
+    }
+    sql = sql.replace('{{dateSearchString}}', dateSearchString);
+
+    let searchParams = [options.userId];
+    console.log(sql);
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`Search all fin items in fin table with search string: ${searchString} with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`Search all fin items in fin table with search string: ${searchString} with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      resolve({err, rows});
+    });
+  });
+
+  return promise;
+}
+
+module.exports = {
+  getFinItemsBySearchOptions,
+  getAllCities,
+  getAllComments,
+  getCategoryGroup,
+  getDailyTotal,
+  getFinItemsByMonth,
+  getFinList,
+  getSumByYearMonth,
+  getSumByWeek,
+  getSumByDay,
+  getFinTemplates,
+  getMonthlyTotal,
+  getFinItemsBySearchString,
+};

@@ -1,17 +1,22 @@
-const {createDBConnection, getFinList, getSumByYearMonth, getSumByWeek, getSumByDay, closeDB} = require('../../db/dao');
 const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {getFinList, getSumByYearMonth, getSumByWeek, getSumByDay} = require('../../db/fin/get');
 
 router.get('/getFinList', (req, res) => {
   const {month, year, day, dayOfWeek, top = 10} = req.query;
   logger.info('api /getFinList');
+
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let getFinListPromise = getFinList(db, {month, year, top});
-  let getSumByYearMonthPromise = getSumByYearMonth(db, {month, year});
-  let getSumByWeekPromise = getSumByWeek(db, {month, year, day, dayOfWeek});
-  let getSumByDayPromise = getSumByDay(db, {month, year, day});
+  let getFinListPromise = getFinList(db, {month, year, top, ...user});
+  let getSumByYearMonthPromise = getSumByYearMonth(db, {month, year, ...user});
+  let getSumByWeekPromise = getSumByWeek(db, {month, year, day, dayOfWeek, ...user});
+  let getSumByDayPromise = getSumByDay(db, {month, year, day, ...user});
 
   Promise.all([getFinListPromise, getSumByYearMonthPromise, getSumByWeekPromise, getSumByDayPromise])
     .then((data) => {

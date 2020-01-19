@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, updateFinItem, updateScheduledFinItem} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {updateFinItem, updateScheduledFinItem} = require('../../db/fin/update');
 
 router.post('/updateFinItem', (req, res) => {
   logger.info('api /updateFinItem');
@@ -10,8 +11,11 @@ router.post('/updateFinItem', (req, res) => {
   logger.info('update fin item data: ');
   logger.info(JSON.stringify(data));
 
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let updateFinItemPromise = updateFinItem(db, data);
+  let updateFinItemPromise = updateFinItem(db, {...data, ...user});
 
   updateFinItemPromise.then((data) => {
     closeDB(db);
@@ -41,8 +45,11 @@ router.post('/updateScheduledFinItem', (req, res) => {
   logger.info('with following options: ');
   logger.info(JSON.stringify(options));
 
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let updateScheduledFinItemPromise = updateScheduledFinItem(db, data, options);
+  let updateScheduledFinItemPromise = updateScheduledFinItem(db, {...data, ...user}, options);
 
   updateScheduledFinItemPromise.then((data) => {
     closeDB(db);

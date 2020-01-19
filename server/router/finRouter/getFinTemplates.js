@@ -2,12 +2,17 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, getFinTemplates} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {getFinTemplates} = require('../../db/fin/get');
 
 router.get('/getFinTemplates', (req, res) => {
   logger.info('api /getFinTemplates');
+
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let getFinTemplatesPromise = getFinTemplates(db);
+  let getFinTemplatesPromise = getFinTemplates(db, user);
   getFinTemplatesPromise
     .then((data) => {
       closeDB(db);
