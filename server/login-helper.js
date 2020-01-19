@@ -95,11 +95,43 @@ const getUserAccount = (token = '') => {
     username,
     password,
   }
-}
+};
+
+const {createDBConnection, closeDB} = require('./db/dbops');
+const {getUserInfo} = require('./db/user/user');
+const log4js = require('log4js');
+const logger = log4js.getLogger('wacai');
+
+/**
+ * Get user list from DB query
+ * @param {string} username
+ * @param {string} password
+ * @returns user object
+ */
+const getUserList = async (username, password) => {
+  let user = null;
+  let db = createDBConnection();
+  let getUserInfoResponse = await getUserInfo(db, {username, password});
+  closeDB(db);
+
+  if (getUserInfoResponse.err) {
+    logger.error('api /getUserInfo failed with error');
+    logger.error(getUserInfoResponse.err);
+  } else {
+    logger.info('api /getUserInfo success');
+    let users = getUserInfoResponse.rows || [];
+    if (users.length > 0) {
+      user = users[0];
+    }
+  }
+
+  return user;
+};
 
 module.exports = {
   encrypto,
   decrypto,
   generateToken,
   getUserAccount,
+  getUserList
 };
