@@ -86,6 +86,10 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
           searchQuery.push(citySearch);
         }
         break;
+      case 'userId':
+        let userId = searchOptions[key];
+        let userSearch = `userId = '${userId}'`;
+        searchQuery.push(userSearch);
       default:
         break;
     }

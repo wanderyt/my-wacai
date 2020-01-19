@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, createFinItem, createScheduledFinItem} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {createFinItem, createScheduledFinItem} = require('../../db/fin/create');
 
 router.post('/createFinItem', (req, res) => {
   logger.info('api /createFinItem');
@@ -10,8 +11,11 @@ router.post('/createFinItem', (req, res) => {
   logger.info('create fin item data: ');
   logger.info(JSON.stringify(data));
 
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let createFinItemPromise = createFinItem(db, data);
+  let createFinItemPromise = createFinItem(db, {...data, ...user});
 
   createFinItemPromise.then((data) => {
     closeDB(db);
@@ -39,8 +43,11 @@ router.post('/createScheduledFinItem', (req, res) => {
   logger.info('create scheduled fin item data: ');
   logger.info(JSON.stringify(data));
 
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let createScheduledFinItemPromise = createScheduledFinItem(db, data);
+  let createScheduledFinItemPromise = createScheduledFinItem(db, {...data, ...user});
 
   createScheduledFinItemPromise.then((data) => {
     closeDB(db);

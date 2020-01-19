@@ -2,15 +2,19 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, getFinItemsBySearchOptions} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {getFinItemsBySearchOptions} = require('../../db/fin/get');
 
 router.get('/deepSearchFinItems', (req, res) => {
   logger.info('api /deepSearchFinItems');
   let query = req.query;
   logger.info(`deep search fin items by search params: ${query}`);
 
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let getFinItemsBySearchOptionsPromise = getFinItemsBySearchOptions(db, query);
+  let getFinItemsBySearchOptionsPromise = getFinItemsBySearchOptions(db, {...query, ...user});
 
   getFinItemsBySearchOptionsPromise.then((data) => {
     closeDB(db);

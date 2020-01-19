@@ -2,15 +2,19 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, deleteFinItem, deleteScheduledFinItem} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {deleteFinItem, deleteScheduledFinItem} = require('../../db/fin/delete');
 
 router.delete('/deleteFinItem', (req, res) => {
   logger.info('api /deleteFinItem');
   let {id} = req.query;
   logger.info(`delete fin item data: ${id}`);
 
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let deleteFinItemPromise = deleteFinItem(db, id);
+  let deleteFinItemPromise = deleteFinItem(db, {id, ...user});
 
   deleteFinItemPromise.then((data) => {
     closeDB(db);
@@ -37,8 +41,11 @@ router.delete('/deleteScheduledFinItem', (req, res) => {
   let {scheduleId, year, month, day} = req.query;
   logger.info(`delete scheduled fin item data: scheduleId - ${scheduleId}, from ${year}-${month}-${day}`);
 
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let deleteScheduledFinItemPromise = deleteScheduledFinItem(db, {scheduleId, year, month, day});
+  let deleteScheduledFinItemPromise = deleteScheduledFinItem(db, {scheduleId, year, month, day, ...user});
 
   deleteScheduledFinItemPromise.then((data) => {
     closeDB(db);

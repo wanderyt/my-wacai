@@ -2,15 +2,19 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, getDailyTotal, getFinItemsByMonth} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {getDailyTotal, getFinItemsByMonth} = require('../../db/fin/get');
 
 router.get('/getFinItemsByMonth', (req, res) => {
   logger.info('api /getFinItemsByMonth');
   const {month, year} = req.query;
 
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let getDailyTotalPromise = getDailyTotal(db, {month, year});
-  let getFinItemsByMonthPromise = getFinItemsByMonth(db, {month, year});
+  let getDailyTotalPromise = getDailyTotal(db, {month, year, ...user});
+  let getFinItemsByMonthPromise = getFinItemsByMonth(db, {month, year, ...user});
 
   Promise.all([getDailyTotalPromise, getFinItemsByMonthPromise])
     .then((data) => {

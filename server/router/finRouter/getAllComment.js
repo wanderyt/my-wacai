@@ -2,12 +2,17 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, getAllComments} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {getAllComments} = require('../../db/fin/get');
 
 router.get('/getAllComment', (req, res) => {
   logger.info('api /getAllComment');
+
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let getAllCommentPromise = getAllComments(db);
+  let getAllCommentPromise = getAllComments(db, user);
   getAllCommentPromise
     .then((data) => {
       closeDB(db);

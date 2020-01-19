@@ -2,12 +2,17 @@ const express = require('express');
 const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
-const {createDBConnection, closeDB, getCategoryGroup} = require('../../db/dao');
+const {createDBConnection, closeDB} = require('../../db/dbops');
+const {getCategoryGroup} = require('../../db/fin/get');
 
 router.get('/getCategoryGroup', (req, res) => {
   logger.info('api /getCategoryGroup');
+
+  // Get user info
+  let user = req._userInfo;
+
   let db = createDBConnection();
-  let getCategoryGroupPromise = getCategoryGroup(db);
+  let getCategoryGroupPromise = getCategoryGroup(db, user);
   getCategoryGroupPromise
     .then((data) => {
       closeDB(db);
