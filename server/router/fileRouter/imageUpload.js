@@ -45,8 +45,18 @@ if (!fs.existsSync(UPLOAD_FILE_PATH)) {
 
 const upload = multer({storage}).single('file');
 
-router.post('/imageUpload', (req, res) => {
+const sleep = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+};
+
+router.post('/imageUpload', async (req, res) => {
   logger.info('api /imageUpload');
+  let sleepMS = Math.floor(Math.random() * 20);
+  await sleep(sleepMS);
   upload(req, res, (err) => {
     if (err) {
       if (err instanceof multer.MulterError) {
