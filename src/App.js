@@ -57,7 +57,14 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
     dispatch({
       type: 'CHANGE_TO_FIN_HISTORY'
     });
-  }
+  };
+
+  const handleLogout = () => {
+    Axios.post(`/api/user/logout`)
+      .then(() => {
+        window.location.reload(true);
+      });
+  };
 
   return (
     <div className="App">
@@ -104,7 +111,9 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
       {
         pageIndex === 'MAIN' &&
         <div className='App-Page-Main'>
-          <div className='App-Logout' />
+          <div
+            className='App-Logout'
+            onClick={handleLogout} />
           <div className='App-Header'>
             <div className='Header-MonthTotal'>
               <div className='Caption'>本月总计</div>
