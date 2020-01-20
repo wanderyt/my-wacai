@@ -84,7 +84,20 @@
     animation-duration: 0.2s;
   }
 
-  .App-Page-Main{
+  .App-Page-Main {
+    $LOGOUT-BUTTON-SIZE: 30px;
+    .App-Logout {
+      background-image: url('./logout-red.png');
+      width: $LOGOUT-BUTTON-SIZE;
+      height: $LOGOUT-BUTTON-SIZE;
+      background-size: $LOGOUT-BUTTON-SIZE;
+      position: absolute;
+      z-index: 5;
+      left: 20px;
+      top: 40px;
+
+      cursor: pointer;
+    }
     .App-Header {
       height: 50vh;
       margin-bottom: 30px;

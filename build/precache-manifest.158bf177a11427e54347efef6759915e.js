@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/static/media/geo-icon.c8d3ba55.svg"
   },
   {
-    "revision": "e9a964d54fc4c41f9541",
-    "url": "/static/css/main.efff3b11.chunk.css"
+    "revision": "f2272c8eea362796f0a8",
+    "url": "/static/css/main.8372144a.chunk.css"
   },
   {
     "revision": "42ac5946195a7306e2a5",
@@ -28,8 +28,8 @@ self.__precacheManifest = [
     "url": "/static/media/search.35b579ad.svg"
   },
   {
-    "revision": "e9a964d54fc4c41f9541",
-    "url": "/static/js/main.f26ebcf1.chunk.js"
+    "revision": "f2272c8eea362796f0a8",
+    "url": "/static/js/main.7239b8a4.chunk.js"
   },
   {
     "revision": "8846e8d04b08c1c7b2a36776ea29b095",
@@ -40,19 +40,19 @@ self.__precacheManifest = [
     "url": "/static/media/digital-7(italic).7c6e146f.ttf"
   },
   {
-    "revision": "1e670d88b23c7ab956f1829e3828a210",
-    "url": "/static/media/digital-7.1e670d88.ttf"
-  },
-  {
     "revision": "58045dabdc3a361cb9bb9faf2f1dd1f3",
     "url": "/static/media/digital-7(mono).58045dab.ttf"
+  },
+  {
+    "revision": "1e670d88b23c7ab956f1829e3828a210",
+    "url": "/static/media/digital-7.1e670d88.ttf"
   },
   {
     "revision": "b630a7f2ae3f81e21058",
     "url": "/static/css/2.78c4eeee.chunk.css"
   },
   {
-    "revision": "f60b5c3423a17577389e12512b88c05f",
+    "revision": "25748925a6458b4d211f6ae2af184d59",
     "url": "/index.html"
   }
 ];
