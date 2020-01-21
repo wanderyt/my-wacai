@@ -2,6 +2,16 @@ const {FIN_TABLE_NAME} = require('../config');
 const {logDBError, logDBSuccess} = require('../util');
 const {padZero} = require('../../helper');
 
+const UPDATE_COLUMN_NAME_LIST = [
+  'category',
+  'subcategory',
+  'comment',
+  'amount',
+  'place',
+  // 'date', date should be handled separately
+  'city',
+];
+
 /**
  * Update existing fin item
  * @param {object} db
@@ -23,7 +33,7 @@ const updateFinItem = (db, data, callback) => {
     for (const key in data) {
       const value = data[key];
       // Remove null object value, but need to allow empty string
-      if (key !== 'id' && (value === '' || !!value)) {
+      if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1 && value) {
         updateOptions += `${key}="${value}", `;
       }
     }
@@ -70,7 +80,7 @@ const updateScheduledFinItem = (db, data, options, callback) => {
   let promise = new Promise((resolve) => {
     let updateOptions = '';
     for (const key in data) {
-      if (key !== 'id' && key !== 'date') {
+      if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1 && value) {
         const value = data[key];
         updateOptions += `${key}="${value}", `;
       }
