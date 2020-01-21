@@ -28,6 +28,8 @@ const FinItemList = ({dispatch}) => {
       });
   }, []);
 
+  // useRef need to be used together with useEffect
+  // as ref element could be binded only after rendering done
   useEffect(() => {
   }, [headerEl]);
 
