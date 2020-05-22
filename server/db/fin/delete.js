@@ -1,5 +1,6 @@
 const {FIN_TABLE_NAME} = require('../config');
 const {logDBError, logDBSuccess} = require('../util');
+const {padZero} = require('../../helper');
 
 /**
  * Delete specific fin item

@@ -80,9 +80,11 @@ const updateScheduledFinItem = (db, data, options, callback) => {
   let promise = new Promise((resolve) => {
     let updateOptions = '';
     for (const key in data) {
-      if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1 && value) {
+      if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1) {
         const value = data[key];
-        updateOptions += `${key}="${value}", `;
+        if (value) {
+          updateOptions += `${key}="${value}", `;
+        }
       }
     }
     updateOptions = updateOptions.slice(0, updateOptions.length - 2);
