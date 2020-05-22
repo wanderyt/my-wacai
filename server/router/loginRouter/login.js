@@ -15,7 +15,7 @@ router.post('/login', async (req, res) => {
   let user = await getUserList(username, password);
   if (user) {
     logger.info('api /login success');
-    res.cookie(process.env.REACT_APP_COOKIE_NAME, generateToken(data.username, data.password), {maxAge: COOKIE_MAX_AGE, httpOnly: true});
+    res.cookie(process.env.REACT_APP_COOKIE_NAME, generateToken(data.username, data.password), {maxAge: COOKIE_MAX_AGE, httpOnly: true, sameSite: 'Strict'});
     res.statusCode = 200;
     res.send({
       status: true
