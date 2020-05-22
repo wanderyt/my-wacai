@@ -42,6 +42,7 @@ const SearchBox = ({customStyles = {}, advancedSearchHanlder = void 0, dispatch}
         </div>
         <div className='SimpleSearch'>
           <input
+            type="text"
             placeholder='请输入关键词'
             onChange={handleSearchInputChange}
             value={searchString} />

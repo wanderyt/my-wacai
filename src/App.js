@@ -62,7 +62,9 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
   const handleLogout = () => {
     Axios.post(`/api/user/logout`)
       .then(() => {
-        window.location.reload(true);
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 0);
       });
   };
 
