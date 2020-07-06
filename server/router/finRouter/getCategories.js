@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {getCategoryGroup} = require('../../db/fin/get');
+const {requestProxy} = require('../../modules/request');
 
 router.get('/getCategoryGroup', (req, res) => {
   logger.info('api /getCategoryGroup');
@@ -13,27 +14,27 @@ router.get('/getCategoryGroup', (req, res) => {
 
   let db = createDBConnection();
   let getCategoryGroupPromise = getCategoryGroup(db, user);
-  getCategoryGroupPromise
+
+  requestProxy(req, res, getCategoryGroupPromise)
     .then((data) => {
       closeDB(db);
-      if (data.err) {
-        logger.error('api /getCategoryGroup failed with error');
-        logger.error(data.err);
-        res.statusCode = 500;
-        res.send({
-          status: false,
-          error: data.err
-        });
-      } else {
-        logger.info('api /getCategoryGroup success');
-        res.statusCode = 200;
-        let categoryGroups = formatCategoryGroups(data.rows);
-        res.send({
-          status: true,
-          data: categoryGroups
-        });
-      }
-    })
+      logger.info('api /getCategoryGroup success');
+      res.statusCode = 200;
+      let categoryGroups = formatCategoryGroups(data.rows);
+      res.send({
+        status: true,
+        data: categoryGroups
+      });
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /getCategoryGroup failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 const formatCategoryGroups = (rows = []) => {

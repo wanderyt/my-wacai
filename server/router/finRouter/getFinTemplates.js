@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {getFinTemplates} = require('../../db/fin/get');
+const {requestProxy} = require('../../modules/request');
 
 router.get('/getFinTemplates', (req, res) => {
   logger.info('api /getFinTemplates');
@@ -13,25 +14,25 @@ router.get('/getFinTemplates', (req, res) => {
 
   let db = createDBConnection();
   let getFinTemplatesPromise = getFinTemplates(db, user);
-  getFinTemplatesPromise
+
+  requestProxy(req, res, getFinTemplatesPromise)
     .then((data) => {
       closeDB(db);
-      if (data.err) {
-        logger.error('api /getFinTemplates failed with error');
-        logger.error(data.err);
-        res.statusCode = 500;
-        res.send({
-          status: false,
-          error: data.err
-        });
-      } else {
-        logger.info('api /getFinTemplates success');
-        res.statusCode = 200;
-        res.send({
-          status: true,
-          data: data.rows
-        });
-      }
+      logger.info('api /getFinTemplates success');
+      res.statusCode = 200;
+      res.send({
+        status: true,
+        data: data.rows
+      });
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /getFinTemplates failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
     });
 });
 

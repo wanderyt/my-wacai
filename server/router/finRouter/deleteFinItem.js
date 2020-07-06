@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {deleteFinItem, deleteScheduledFinItem} = require('../../db/fin/delete');
+const {requestProxy} = require('../../modules/request');
 
 router.delete('/deleteFinItem', (req, res) => {
   logger.info('api /deleteFinItem');
@@ -16,24 +17,24 @@ router.delete('/deleteFinItem', (req, res) => {
   let db = createDBConnection();
   let deleteFinItemPromise = deleteFinItem(db, {id, ...user});
 
-  deleteFinItemPromise.then((data) => {
-    closeDB(db);
-    if (data.err) {
-      logger.error('api /deleteFinItem failed with error');
-      logger.error(data.err);
-      res.statusCode = 500;
-      res.send({
-        status: false,
-        error: data.err
-      });
-    } else {
+  requestProxy(req, res, deleteFinItemPromise)
+    .then(() => {
+      closeDB(db);
       logger.info('api /deleteFinItem success');
       res.statusCode = 200;
       res.send({
         status: true
       });
-    }
-  })
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /deleteFinItem failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 router.delete('/deleteScheduledFinItem', (req, res) => {
@@ -47,24 +48,24 @@ router.delete('/deleteScheduledFinItem', (req, res) => {
   let db = createDBConnection();
   let deleteScheduledFinItemPromise = deleteScheduledFinItem(db, {scheduleId, year, month, day, ...user});
 
-  deleteScheduledFinItemPromise.then((data) => {
-    closeDB(db);
-    if (data.err) {
-      logger.error('api /deleteScheduledFinItem failed with error');
-      logger.error(data.err);
-      res.statusCode = 500;
-      res.send({
-        status: false,
-        error: data.err
-      });
-    } else {
+  requestProxy(req, res, deleteScheduledFinItemPromise)
+    .then(() => {
+      closeDB(db);
       logger.info('api /deleteScheduledFinItem success');
       res.statusCode = 200;
       res.send({
         status: true
       });
-    }
-  });
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /deleteScheduledFinItem failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 module.exports = {

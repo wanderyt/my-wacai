@@ -28,7 +28,7 @@ const UPDATE_COLUMN_NAME_LIST = [
  * @param {function} callback
  */
 const updateFinItem = (db, data, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let updateOptions = '';
     for (const key in data) {
       const value = data[key];
@@ -50,7 +50,7 @@ const updateFinItem = (db, data, callback) => {
 
       callback && callback(err);
 
-      resolve({err});
+      err ? reject({err}) : resolve({status: true});
     });
   });
 
@@ -77,7 +77,7 @@ const updateFinItem = (db, data, callback) => {
  * @param {function} callback
  */
 const updateScheduledFinItem = (db, data, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let updateOptions = '';
     for (const key in data) {
       if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1) {
@@ -105,7 +105,7 @@ const updateScheduledFinItem = (db, data, options, callback) => {
 
       callback && callback(err);
 
-      resolve({err});
+      err ? reject({err}) : resolve({status: true});
     });
   });
 

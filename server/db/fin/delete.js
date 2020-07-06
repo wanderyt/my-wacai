@@ -11,7 +11,7 @@ const {padZero} = require('../../helper');
  * @param {function} callback
  */
 const deleteFinItem = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let {id, userId} = options;
     let sql = `delete from ${FIN_TABLE_NAME} where id = ? and userId = ?;`;
     let searchParams = [id, userId];
@@ -24,7 +24,7 @@ const deleteFinItem = (db, options, callback) => {
 
       callback && callback(err);
 
-      resolve({err});
+      err ? reject({err}) : resolve({status: true});
     });
   });
 
@@ -43,7 +43,7 @@ const deleteFinItem = (db, options, callback) => {
  * @param {function} callback
  */
 const deleteScheduledFinItem = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `delete from ${FIN_TABLE_NAME} where scheduleId = ? and userId = ?`;
     let params = [options.scheduleId, options.userId];
     if (options.year && options.month && options.day && Number(options.year) && options.month < 13 && options.day < 35) {
@@ -59,7 +59,7 @@ const deleteScheduledFinItem = (db, options, callback) => {
 
       callback && callback(err);
 
-      resolve({err});
+      err ? reject({err}) : resolve({status: true});
     });
   });
 

@@ -33,6 +33,15 @@ app.use(function (req, res, next) {
   }
 });
 
+/**
+ * Logging system
+ */
+const {getLoggerMiddleware} = require('./modules/logging');
+const packageJson = require('../package.json');
+const {name: appName, version: appVersion} = packageJson;
+const loggerMiddleware = getLoggerMiddleware({appName, appVersion});
+app.use(loggerMiddleware);
+
 // define fin operation request path
 const {validateTokenMiddleware} = require('./middlewares');
 const finRouters = require('./router/finRouter/index');
@@ -48,7 +57,7 @@ app.use('/api/file', fileRouters.router);
 
 // define database operation request path
 const dbRouters = require('./router/dbRouter/index');
-app.use('/api/db', dbRouters.router);
+app.use('/api/db', [validateTokenMiddleware, ...dbRouters.router]);
 
 // define my owner testing routers
 const workRouters = require('./router/workRouter/index');

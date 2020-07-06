@@ -17,7 +17,7 @@ const {logDBError, logDBSuccess, uuid} = require('../util');
  * @param {function} callback
  */
 const createFinItem = (db, data, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql =
       `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, place, city, userid)
       values (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
@@ -31,7 +31,7 @@ const createFinItem = (db, data, callback) => {
 
       callback && callback(err);
 
-      resolve({err});
+      err ? reject({err}) : resolve({status: true});
     });
   });
 
@@ -87,7 +87,7 @@ const formatSchedule = (sqlTemplate, datetime, scheduleMode) => {
  * @param {function} callback
  */
 const createScheduledFinItem = (db, data, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     const SCHEDULE_NONE = 0;
     let scheduleMode = data.isScheduled || SCHEDULE_NONE;
     let insertHeaderSQL = `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, isScheduled, scheduleId, place, city, userId) `;
@@ -102,7 +102,7 @@ const createScheduledFinItem = (db, data, callback) => {
 
       callback && callback(err);
 
-      resolve({err});
+      err ? reject({err}) : resolve({status: true});
     });
   });
 
@@ -121,7 +121,7 @@ const createScheduledFinItem = (db, data, callback) => {
  * @param {function} callback
  */
 const createFinTemplate = (db, data, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     if (data) {
       let {category, subcategory, comment, place, userId} = data;
       let querySQL = `select * from ${TEMPLATE_TABLE_NAME} where category = ? and subcategory = ? and comment = ? and place = ? and userId = ?;`;
@@ -145,7 +145,7 @@ const createFinTemplate = (db, data, callback) => {
 
               callback && callback(err);
 
-              resolve({err});
+              err ? reject({err}) : resolve({status: true});
             });
           }
         }
@@ -155,7 +155,7 @@ const createFinTemplate = (db, data, callback) => {
         err: 'Data is not set.'
       };
       callback && callback(err, []);
-      resolve({err, rows: []});
+      reject({err});
     }
   });
 

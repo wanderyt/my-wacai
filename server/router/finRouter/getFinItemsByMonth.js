@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {getDailyTotal, getFinItemsByMonth} = require('../../db/fin/get');
+const {requestProxy} = require('../../modules/request');
 
 router.get('/getFinItemsByMonth', (req, res) => {
   logger.info('api /getFinItemsByMonth');
@@ -16,27 +17,25 @@ router.get('/getFinItemsByMonth', (req, res) => {
   let getDailyTotalPromise = getDailyTotal(db, {month, year, ...user});
   let getFinItemsByMonthPromise = getFinItemsByMonth(db, {month, year, ...user});
 
-  Promise.all([getDailyTotalPromise, getFinItemsByMonthPromise])
+  requestProxy(req, res, getDailyTotalPromise, getFinItemsByMonthPromise)
     .then((data) => {
       closeDB(db);
       let [dailyTotalData, finItemsByMonthData] = data;
-      if (dailyTotalData.err || finItemsByMonthData.err) {
-        logger.error('api /getFinItemsByMonth failed with error');
-        logger.error(dailyTotalData.err);
-        logger.error(finItemsByMonthData.err);
-        res.statusCode = 500;
-        res.send({
-          status: false,
-          error: dailyTotalData.err || finItemsByMonthData.err
-        });
-      } else {
-        logger.info('api /getFinItemsByMonth success');
-        res.statusCode = 200;
-        res.send({
-          status: true,
-          data: formatFinItems(dailyTotalData.rows, finItemsByMonthData.rows)
-        });
-      }
+      logger.info('api /getFinItemsByMonth success');
+      res.statusCode = 200;
+      res.send({
+        status: true,
+        data: formatFinItems(dailyTotalData.rows, finItemsByMonthData.rows)
+      });
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /getFinItemsByMonth failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
     });
 });
 

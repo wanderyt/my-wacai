@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {createFinTemplate} = require('../../db/fin/create');
+const {requestProxy} = require('../../modules/request');
 
 router.post('/createFinTemplate', (req, res) => {
   logger.info('api /createFinTemplate');
@@ -17,24 +18,24 @@ router.post('/createFinTemplate', (req, res) => {
   let db = createDBConnection();
   let createFinTemplatePromise = createFinTemplate(db, {...data, ...user});
 
-  createFinTemplatePromise.then((data) => {
-    closeDB(db);
-    if (data.err) {
-      logger.error('api /createFinTemplate failed with error');
-      logger.error(data.err);
-      res.statusCode = 500;
-      res.send({
-        status: false,
-        error: data.err
-      });
-    } else {
+  requestProxy(req, res, createFinTemplatePromise)
+    .then(() => {
+      closeDB(db);
       logger.info('api /createFinTemplate success');
       res.statusCode = 200;
       res.send({
         status: true
       });
-    }
-  })
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /createFinTemplate failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 module.exports = {

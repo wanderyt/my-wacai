@@ -21,7 +21,7 @@ const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
     });
   }
 
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select * from ${FIN_TABLE_NAME} where ${searchString} order by date desc;`;
     db.all(sql, (err, rows) => {
       if (err) {
@@ -32,7 +32,7 @@ const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -47,7 +47,7 @@ const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
  * @param {function} callback
  */
 const getAllCities = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select distinct city from ${FIN_TABLE_NAME} where city != '' and userId = ? order by date desc;`;
     let searchParam = [options.userId];
     db.all(sql, searchParam, (err, rows) => {
@@ -59,7 +59,7 @@ const getAllCities = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -74,7 +74,7 @@ const getAllCities = (db, options, callback) => {
  * @param {function} callback
  */
 const getAllComments = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select distinct comment from (select distinct comment from ${FIN_TABLE_NAME} where comment != '' and userId = ? order by date desc) union select distinct comment from (select distinct place as comment from ${FIN_TABLE_NAME} where place != '' and userId = ? order by date desc);`;
     let searchParams = [options.userId, options.userId];
     db.all(sql, searchParams, (err, rows) => {
@@ -86,7 +86,7 @@ const getAllComments = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -101,7 +101,7 @@ const getAllComments = (db, options, callback) => {
  * @param {function} callback
  */
 const getCategoryGroup = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select category, subcategory, is_common from ${CATEGORY_TABLE_NAME} where userId = ?;`;
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
@@ -113,7 +113,7 @@ const getCategoryGroup = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -131,7 +131,7 @@ const getCategoryGroup = (db, options, callback) => {
  * @param {function} callback
  */
 const getDailyTotal = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select sum(amount) as total, year_month_date from (select amount, substr(date, 1, 10) as year_month_date from ${FIN_TABLE_NAME} where date like '${options.year}-${options.month}%' and userId = ?) group by year_month_date order by year_month_date desc;`;
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
@@ -143,7 +143,7 @@ const getDailyTotal = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -160,7 +160,7 @@ const getDailyTotal = (db, options, callback) => {
  * @param {function} callback
  */
 const getFinItemsByMonth = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select * from ${FIN_TABLE_NAME} where date like '${options.year}-${options.month}%' and userId = ? order by date desc;`;
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
@@ -172,7 +172,7 @@ const getFinItemsByMonth = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -190,7 +190,7 @@ const getFinItemsByMonth = (db, options, callback) => {
  * @param {function} callback
  */
 const getFinList = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select * from ${FIN_TABLE_NAME} where userId = ?`;
     if (options) {
       if (options.month && options.year) {
@@ -212,7 +212,7 @@ const getFinList = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   })
 
@@ -229,7 +229,7 @@ const getFinList = (db, options, callback) => {
  * @param {function} callback
  */
 const getSumByYearMonth = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date like '${options.year}-${padZero(options.month)}-%' and userId = ?);`;
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
@@ -241,7 +241,7 @@ const getSumByYearMonth = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -261,7 +261,7 @@ const getSumByYearMonth = (db, options, callback) => {
  */
 const getSumByWeek = (db, options, callback) => {
   const {month, year, day, dayOfWeek, userId} = options;
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let validDayOfWeek = dayOfWeek - 1;
     let startDay = 0, endDay = 0;
     // Start day logic and End day logic
@@ -284,7 +284,7 @@ const getSumByWeek = (db, options, callback) => {
       }
 
       callback && callback(err, rows);
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -303,7 +303,7 @@ const getSumByWeek = (db, options, callback) => {
  */
 const getSumByDay = (db, options, callback) => {
   const {month, year, day, userId} = options;
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date(?) and date < date(?, "+1 day") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
     const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
     let searchParams = [currentDay, currentDay, userId];
@@ -315,7 +315,7 @@ const getSumByDay = (db, options, callback) => {
       }
 
       callback && callback(err, rows);
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -330,7 +330,7 @@ const getSumByDay = (db, options, callback) => {
  * @param {function} callback
  */
 const getFinTemplates = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select * from ${TEMPLATE_TABLE_NAME} where userId = ?;`;
     let searchParams = [options.userId];
     console.log('get fin template: ', options.userId);
@@ -343,7 +343,7 @@ const getFinTemplates = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -360,7 +360,7 @@ const getFinTemplates = (db, options, callback) => {
  * @param {function} callback
  */
 const getMonthlyTotal = (db, options, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select sum(amount) as total, year_month from (select amount, substr(date, 1, 7) as year_month from ${FIN_TABLE_NAME} {{queries}}) group by year_month order by year_month desc;`;
     if (options.month && options.year) {
       sql = sql.replace("{{queries}}", `where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%' and userId = ?`);
@@ -375,7 +375,7 @@ const getMonthlyTotal = (db, options, callback) => {
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
@@ -393,7 +393,7 @@ const getMonthlyTotal = (db, options, callback) => {
  * @param {function} callback
  */
 const getFinItemsBySearchString = (db, searchString, options = {}, callback) => {
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%') and userId = ? {{dateSearchString}} order by date desc;`;
     let dateSearchString = '';
     if (options.month && options.year) {
@@ -412,7 +412,7 @@ const getFinItemsBySearchString = (db, searchString, options = {}, callback) => 
 
       callback && callback(err, rows);
 
-      resolve({err, rows});
+      err ? reject({err}) : resolve({rows});
     });
   });
 
