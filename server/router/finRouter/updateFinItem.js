@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {updateFinItem, updateScheduledFinItem} = require('../../db/fin/update');
+const {requestProxy} = require('../../modules/request');
 
 router.post('/updateFinItem', (req, res) => {
   logger.info('api /updateFinItem');
@@ -17,24 +18,24 @@ router.post('/updateFinItem', (req, res) => {
   let db = createDBConnection();
   let updateFinItemPromise = updateFinItem(db, {...data, ...user});
 
-  updateFinItemPromise.then((data) => {
-    closeDB(db);
-    if (data.err) {
-      logger.error('api /updateFinItem failed with error');
-      logger.error(data.err);
-      res.statusCode = 500;
-      res.send({
-        status: false,
-        error: data.err
-      });
-    } else {
+  requestProxy(req, res, updateFinItemPromise)
+    .then(() => {
+      closeDB(db);
       logger.info('api /updateFinItem success');
       res.statusCode = 200;
       res.send({
         status: true
       });
-    }
-  })
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /updateFinItem failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 router.post('/updateScheduledFinItem', (req, res) => {
@@ -51,24 +52,24 @@ router.post('/updateScheduledFinItem', (req, res) => {
   let db = createDBConnection();
   let updateScheduledFinItemPromise = updateScheduledFinItem(db, {...data, ...user}, options);
 
-  updateScheduledFinItemPromise.then((data) => {
-    closeDB(db);
-    if (data.err) {
-      logger.error('api /updateScheduledFinItem failed with error');
-      logger.error(data.err);
-      res.statusCode = 500;
-      res.send({
-        status: false,
-        error: data.err
-      });
-    } else {
+  requestProxy(req, res, updateScheduledFinItemPromise)
+    .then(() => {
+      closeDB(db);
       logger.info('api /updateScheduledFinItem success');
       res.statusCode = 200;
       res.send({
         status: true
       });
-    }
-  })
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /updateScheduledFinItem failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 module.exports = {

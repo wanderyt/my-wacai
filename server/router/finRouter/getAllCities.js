@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {getAllCities} = require('../../db/fin/get');
+const {requestProxy} = require('../../modules/request');
 
 router.get('/getAllCities', (req, res) => {
   logger.info('api /getAllCities');
@@ -13,25 +14,25 @@ router.get('/getAllCities', (req, res) => {
 
   let db = createDBConnection();
   let getAllCitiesPromise = getAllCities(db, user);
-  getAllCitiesPromise
+
+  requestProxy(req, res, getAllCitiesPromise)
     .then((data) => {
       closeDB(db);
-      if (data.err) {
-        logger.error('api /getAllCities failed with error');
-        logger.error(data.err);
-        res.statusCode = 500;
-        res.send({
-          status: false,
-          error: data.err
-        });
-      } else {
-        logger.info('api /getAllCities success');
-        res.statusCode = 200;
-        res.send({
-          status: true,
-          data: data.rows
-        });
-      }
+      logger.info('api /getAllCities success');
+      res.statusCode = 200;
+      res.send({
+        status: true,
+        data: data.rows
+      });
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /getAllCities failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
     })
 });
 

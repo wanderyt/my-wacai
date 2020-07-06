@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {getAllComments} = require('../../db/fin/get');
+const {requestProxy} = require('../../modules/request');
 
 router.get('/getAllComment', (req, res) => {
   logger.info('api /getAllComment');
@@ -13,26 +14,26 @@ router.get('/getAllComment', (req, res) => {
 
   let db = createDBConnection();
   let getAllCommentPromise = getAllComments(db, user);
-  getAllCommentPromise
+
+  requestProxy(req, res, getAllCommentPromise)
     .then((data) => {
       closeDB(db);
-      if (data.err) {
-        logger.error('api /getAllComment failed with error');
-        logger.error(data.err);
-        res.statusCode = 500;
-        res.send({
-          status: false,
-          error: data.err
-        });
-      } else {
-        logger.info('api /getAllComment success');
-        res.statusCode = 200;
-        res.send({
-          status: true,
-          data: data.rows
-        });
-      }
-    })
+      logger.info('api /getAllComment success');
+      res.statusCode = 200;
+      res.send({
+        status: true,
+        data: data.rows
+      });
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /getAllComment failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 module.exports = {

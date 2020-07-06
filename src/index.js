@@ -16,6 +16,8 @@ import reducer from './reducers';
 // Login Provider
 import LoginProvider from './modules/login/login-provider';
 
+// import './index.scss';
+
 const initialState = {
   fin: {
     pageIndex: 'MAIN'
@@ -46,8 +48,8 @@ const InnerCompWithRouter = withRouter(InnerComp);
 const Routers = () => {
   return (
     <React.Fragment>
-      <Route exact path={'' || '/'} component={App} key='App'/>
       <Route path='/fileUploader' component={FileUploader} key="FileUploader"/>
+      <Route exact path={'' || '/'} component={App} key='App'/>
     </React.Fragment>
   )
 }

@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {getFinItemsBySearchOptions} = require('../../db/fin/get');
+const {requestProxy} = require('../../modules/request');
 
 router.get('/deepSearchFinItems', (req, res) => {
   logger.info('api /deepSearchFinItems');
@@ -16,25 +17,25 @@ router.get('/deepSearchFinItems', (req, res) => {
   let db = createDBConnection();
   let getFinItemsBySearchOptionsPromise = getFinItemsBySearchOptions(db, {...query, ...user});
 
-  getFinItemsBySearchOptionsPromise.then((data) => {
-    closeDB(db);
-    if (data.err) {
-      logger.error('api /deepSearchFinItems failed with error');
-      logger.error(data.err);
-      res.statusCode = 500;
-      res.send({
-        status: false,
-        error: data.err
-      });
-    } else {
+  requestProxy(req, res, getFinItemsBySearchOptionsPromise)
+    .then((data) => {
+      closeDB(db);
       logger.info('api /deepSearchFinItems success');
       res.statusCode = 200;
       res.send({
         status: true,
         data: data.rows
       });
-    }
-  })
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /deepSearchFinItems failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 module.exports = {

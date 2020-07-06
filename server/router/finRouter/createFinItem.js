@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
 const {createFinItem, createScheduledFinItem} = require('../../db/fin/create');
+const {requestProxy} = require('../../modules/request');
 
 router.post('/createFinItem', (req, res) => {
   logger.info('api /createFinItem');
@@ -17,24 +18,24 @@ router.post('/createFinItem', (req, res) => {
   let db = createDBConnection();
   let createFinItemPromise = createFinItem(db, {...data, ...user});
 
-  createFinItemPromise.then((data) => {
-    closeDB(db);
-    if (data.err) {
-      logger.error('api /createFinItem failed with error');
-      logger.error(data.err);
-      res.statusCode = 500;
-      res.send({
-        status: false,
-        error: data.err
-      });
-    } else {
+  requestProxy(req, res, createFinItemPromise)
+    .then(() => {
+      closeDB(db);
       logger.info('api /createFinItem success');
       res.statusCode = 200;
       res.send({
         status: true
       });
-    }
-  })
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /createFinItem failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 router.post('/createScheduledFinItem', (req, res) => {
@@ -49,24 +50,24 @@ router.post('/createScheduledFinItem', (req, res) => {
   let db = createDBConnection();
   let createScheduledFinItemPromise = createScheduledFinItem(db, {...data, ...user});
 
-  createScheduledFinItemPromise.then((data) => {
-    closeDB(db);
-    if (data.err) {
-      logger.error('api /createScheduledFinItem failed with error');
-      logger.error(data.err);
-      res.statusCode = 500;
-      res.send({
-        status: false,
-        error: data.err
-      });
-    } else {
+  requestProxy(req, res, createScheduledFinItemPromise)
+    .then(() => {
+      closeDB(db);
       logger.info('api /createScheduledFinItem success');
       res.statusCode = 200;
       res.send({
         status: true
       });
-    }
-  })
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /createScheduledFinItem failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
 });
 
 module.exports = {
