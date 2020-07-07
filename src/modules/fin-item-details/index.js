@@ -33,7 +33,7 @@ const scheduleModeItems = [{
 const DEFAULT_CITY = '上海';
 
 const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
-  const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
+  const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup, city: DEFAULT_CITY});
   const [commentOptions, setCommentOptions] = useState([]);
   const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
   const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] = useState(false);
