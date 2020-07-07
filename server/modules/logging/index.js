@@ -48,7 +48,20 @@ function getLogger(loggerMeta, level) {
     console.log('newFileName: ', newFileName);
   });
 
+  // https://github.com/winstonjs/winston/blob/HEAD/UPGRADE-3.0.md#migrating-filters-and-rewriters-to-formats-in-winston3
+  const maskTime = winston.format((info) => {
+    if (!info.dateStamp) {
+      info.dateStamp = new Date().toISOString();
+    }
+
+    return info;
+  });
+
   const options = {
+    format: winston.format.combine(
+      maskTime(),
+      winston.format.json(),
+    ),
     transports: [
       new winston.transports.Console({
         level,
@@ -82,6 +95,7 @@ function getLoggerMiddleware (loggerMeta = {}) {
     onFinished(res, () => {
       logger.close();
       logger = undefined;
+      req.logger && req.logger.close();
       req.logger = undefined;
     });
 
