@@ -13,7 +13,6 @@ import Loading from './modules/loading';
 
 import './App.scss';
 
-const API_LOADING_DELAY = 0;
 const DEFAULT_FIN_ITEMS = 15;
 
 const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppLoading, dispatch}) => {
@@ -22,6 +21,7 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
   let [dayTotal, setDayTotal] = useState(0);
   let [finList, setFinList] = useState(new Array(5).fill({}));
   let [isLoading, setIsLoading] = useState(true);
+  let [helloMsg, setHelloMsg] = useState('');
 
   // Set monthly total amount
   useEffect(() => {
@@ -31,16 +31,21 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
       let now = new Date();
       Axios.get(`/api/wacai/getFinList?year=${now.getFullYear()}&month=${now.getMonth() + 1}&day=${now.getDate()}&dayOfWeek=${now.getDay()}&top=${DEFAULT_FIN_ITEMS}`)
         .then(({data}) => {
-          setTimeout(() => {
-            setIsLoading(false);
+          setIsLoading(false);
 
-            let {monthTotal = 0, weekTotal = 0, dayTotal = 0} = data;
-            let finList = data.data || [];
-            setFinList(finList);
-            setMonthTotal(monthTotal);
-            setWeekTotal(weekTotal);
-            setDayTotal(dayTotal);
-          }, API_LOADING_DELAY);
+          let {monthTotal = 0, weekTotal = 0, dayTotal = 0} = data;
+          let finList = data.data || [];
+          setFinList(finList);
+          setMonthTotal(monthTotal);
+          setWeekTotal(weekTotal);
+          setDayTotal(dayTotal);
+
+          Axios.post(`/api/graphql`, {
+            query: "{hello}"
+          }).then(({data}) => {
+            console.log('graphql data: ', data);
+            setHelloMsg(data.data.hello);
+          });
         }, ({response}) => {
           setIsLoading(false);
 
@@ -134,7 +139,7 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
                   total={weekTotal}
                   duration={100} />
               </div>
-              <div className='Caption'>今日总计</div>
+              <div className='Caption'>今日总计: {helloMsg}</div>
               <div className='Amount'>
                 <AutoUpdateNumber
                   total={dayTotal}

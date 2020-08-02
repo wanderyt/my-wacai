@@ -21,8 +21,14 @@ const formatMonth = (date = new Date()) => {
   return `${year}-${padZero(month + 1)}`;
 };
 
+const ENV_VAR_TRUE_REGEX = /^true|1$/i;
+const isEnvVarTrue = (s) => {
+  return ENV_VAR_TRUE_REGEX.test(s);
+};
+
 module.exports = {
   padZero,
   formatDate,
-  formatMonth
+  formatMonth,
+  isEnvVarTrue
 };

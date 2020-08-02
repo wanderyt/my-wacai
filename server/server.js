@@ -36,11 +36,21 @@ app.use(function (req, res, next) {
 /**
  * Logging system
  */
-const {getLoggerMiddleware} = require('./modules/logging');
+const {getLogger, getLoggerMiddleware} = require('./modules/logging');
 const packageJson = require('../package.json');
 const {name: appName, version: appVersion} = packageJson;
 const loggerMiddleware = getLoggerMiddleware({appName, appVersion});
 app.use(loggerMiddleware);
+
+// Add graphql configuration based on env variable
+const {isEnvVarTrue} = require('./helper');
+console.log('process.env.IS_GRAPHQL_ENABLED: ', process.env.IS_GRAPHQL_ENABLED);
+const isGraphqlEnabled = isEnvVarTrue(process.env.IS_GRAPHQL_ENABLED) || false;
+if (isGraphqlEnabled) {
+  const {addGraphQLMiddleware} = require('./graphql/server');
+  const gqlLogger = getLogger({appName, appVersion}, 'info');
+  addGraphQLMiddleware(app, gqlLogger);
+}
 
 // define fin operation request path
 const {validateTokenMiddleware} = require('./middlewares');
