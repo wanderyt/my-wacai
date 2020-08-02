@@ -45,7 +45,7 @@ const requestProxy = function (req, res, ...promises) {
           ...commonLogMeta,
           status: 200
         });
-        return responses;
+        return responses.length > 1 ? responses : responses[0];
       }, (error) => {
         logger.error({
           ...commonLogMeta,
