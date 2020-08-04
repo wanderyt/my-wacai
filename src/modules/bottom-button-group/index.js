@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import './index.scss';
 
-const ButtomButtonGroup = ({isExpanded = false, goToMainPage = () => void 0, scrollIntoViewRef}) => {
+const BottomButtonGroup = ({isExpanded = false, goToMainPage = () => void 0, scrollIntoViewRef}) => {
   const [buttonExpanded, setbuttonExpanded] = useState(false);
 
   const toggleExpandedButton = () => {
@@ -23,7 +23,7 @@ const ButtomButtonGroup = ({isExpanded = false, goToMainPage = () => void 0, scr
   }
 
   return (
-    <div className='ButtomButtonGroup'>
+    <div className='BottomButtonGroup'>
       <div className={`ControlButton ${buttonExpanded ? 'buttonExpanded' : ''}`} onClick={toggleExpandedButton} />
       {
         buttonExpanded &&
@@ -36,7 +36,7 @@ const ButtomButtonGroup = ({isExpanded = false, goToMainPage = () => void 0, scr
   );
 };
 
-ButtomButtonGroup.propTypes = {
+BottomButtonGroup.propTypes = {
   isExpanded: PropTypes.bool,
 };
 
@@ -48,4 +48,4 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-export default connect(null, mapDispatchToProps)(ButtomButtonGroup);
+export default connect(null, mapDispatchToProps)(BottomButtonGroup);

@@ -1,12 +1,10 @@
-import React, {useRef, useEffect} from 'react';
+import React from 'react';
 import SearchFinItemByMonth from './search-fin-item-by-month';
-import BottomButtonGroup from '../buttom-button-group';
 import {padZero} from '../../utils/helper';
 
 import './search-fin-item-list.scss'
 
 const SearchFinItemList = ({finItems = []}) => {
-  const headerEl = useRef(null);
   let total = 0;
   if (finItems.length > 0) {
     finItems.forEach((item) => {
@@ -44,9 +42,6 @@ const SearchFinItemList = ({finItems = []}) => {
     };
   }
 
-  useEffect(() => {
-  }, [headerEl])
-
   const historyExpense = translateFinItems(finItems);
 
   return (
@@ -73,9 +68,6 @@ const SearchFinItemList = ({finItems = []}) => {
                 dayItems={historyExpense.items[month].dayItems} />
             </div>
           ))
-        }
-        {
-          finItems.length > 0 && <BottomButtonGroup isExpanded={false} scrollIntoViewRef={headerEl} />
         }
       </div>
     </div>

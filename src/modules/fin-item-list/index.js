@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import Axios from 'axios';
 import MonthExpense from './month-expense';
 import HeaderToolbar from '../header-toolbar';
-import BottomButtonGroup from '../buttom-button-group';
+import BottomButtonGroup from '../bottom-button-group';
 
 // import historyExpense from './mockData.json';
 
