@@ -1,19 +1,24 @@
-import React, {useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import HeaderToolbar from '../header-toolbar';
 import SearchBox from '../search-box';
 import SearchFinItemList from './search-fin-item-list';
+import BottomButtonGroup from '../bottom-button-group';
 import AdvancedSearch from './advance-search';
 
 import './index.scss';
 
 const SearchFinItem = ({finItems = [], dispatch}) => {
+  const headerEl = useRef(null);
   const [advancedSearchStatus, setAdvancedSearchStatus] = useState(false);
   const searchBoxStyles = {
     position: 'relative',
     top: '50%',
     transform: 'translateY(-50%)'
   };
+
+  useEffect(() => {
+  }, [headerEl])
 
   const toolbarCloseHanlder = () => {
     if (advancedSearchStatus) {
@@ -34,7 +39,7 @@ const SearchFinItem = ({finItems = [], dispatch}) => {
   }
 
   return (
-    <div className='SearchFinItem'>
+    <div className='SearchFinItem' ref={headerEl}>
       <HeaderToolbar
         closeHandler={toolbarCloseHanlder}
         hasSearch={false}
@@ -51,8 +56,11 @@ const SearchFinItem = ({finItems = [], dispatch}) => {
       </HeaderToolbar>
       {
         !advancedSearchStatus && finItems.length > 0 &&
-        <SearchFinItemList
-          finItems={finItems} />
+        <React.Fragment>
+          <SearchFinItemList
+            finItems={finItems} />
+          <BottomButtonGroup isExpanded={false} scrollIntoViewRef={headerEl} />
+        </React.Fragment>
       }
       {
         advancedSearchStatus &&

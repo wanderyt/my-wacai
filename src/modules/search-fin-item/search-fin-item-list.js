@@ -1,5 +1,4 @@
 import React from 'react';
-import FinItem from '../fin-item';
 import SearchFinItemByMonth from './search-fin-item-by-month';
 import {padZero} from '../../utils/helper';
 
@@ -59,14 +58,6 @@ const SearchFinItemList = ({finItems = []}) => {
       </div>
       <div className='ListContainer'>
         {
-          // finItems.map((item, index) => (
-          //   <div
-          //     className='ListItemContainer'
-          //     key={index}>
-          //     <FinItem
-          //       item={item} />
-          //   </div>
-          // ))
           finItems.length > 0 && Object.keys(historyExpense.items).sort().reverse().map((month, index) =>(
             <div key={index}>
               <SearchFinItemByMonth

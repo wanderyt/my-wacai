@@ -1,0 +1,61 @@
+@import '../../colors.scss';
+
+$BUTTON-SIZE: 40px;
+$HALF-BUTTON-SIZE: 20px;
+$SECONDARY-BUTTON-SIZE: 25px;
+
+.BottomButtonGroup {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+
+  .ControlButton {
+    width: $BUTTON-SIZE;
+    height: $BUTTON-SIZE;
+    background-image: url('./details-white.svg');
+    background-color: $BUTTON-MAIN;
+    background-size: $BUTTON-SIZE;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: $HALF-BUTTON-SIZE;
+    cursor: pointer;
+    transition: background-image 500ms linear;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+  }
+  .buttonExpanded {
+    background-image: url('./cross-white.png');
+  }
+  .Bottom_ButtonGroup {
+    position: fixed;
+    animation: buttonExpand linear .2s forwards;
+    .BottomButton {
+      width: $BUTTON-SIZE;
+      height: $BUTTON-SIZE;
+      background-color: $BUTTON-MAIN;
+      background-size: $SECONDARY-BUTTON-SIZE;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-radius: $HALF-BUTTON-SIZE;
+      cursor: pointer;
+      margin: 5px 0;
+    }
+    .BackToTop {
+      background-image: url('./escalator-up-white.png');
+    }
+    .BackToMain {
+      background-image: url('./up-white.png');
+      transform: rotate(-90deg);
+    }
+  }
+}
+
+@keyframes buttonExpand {
+  0% {
+    bottom: 0;
+    opacity: 0;
+  }
+  100% {
+    bottom: 70px;
+    opacity: 1;
+  }
+}

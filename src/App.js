@@ -40,12 +40,12 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
           setWeekTotal(weekTotal);
           setDayTotal(dayTotal);
 
-          Axios.post(`/api/graphql`, {
-            query: "{hello}"
-          }).then(({data}) => {
-            console.log('graphql data: ', data);
-            setHelloMsg(data.data.hello);
-          });
+          // Axios.post(`/api/graphql`, {
+          //   query: "{hello}"
+          // }).then(({data}) => {
+          //   console.log('graphql data: ', data);
+          //   setHelloMsg(data.data.hello);
+          // });
         }, ({response}) => {
           setIsLoading(false);
 
