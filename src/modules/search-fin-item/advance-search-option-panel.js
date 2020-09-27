@@ -509,3 +509,60 @@ CitySelectionPanel.propTypes = {
   submitHandler: PropTypes.func,
   cancelHandler: PropTypes.func,
 };
+
+export const TagSelectionPanel = ({currentValue = ALL_KEYWORD, submitHandler = () => void 0, cancelHandler = () => void 0}) => {
+  const [validTags, setValidTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  useEffect(() => {
+    Axios.get('/api/wacai/getAllTags')
+      .then(({data}) => {
+        let tags = data.data || [];
+        setValidTags(tags);
+
+        // Translate '全部' keyword
+        if (currentValue === ALL_KEYWORD) {
+          setSelectedTags(tags.slice());
+        } else {
+          setSelectedTags(currentValue);
+        }
+      });
+  }, []);
+
+  const handleTagSelection = (selections) => {
+    setSelectedTags(selections);
+  };
+
+  const submitHandlerFn = () => {
+    if (selectedTags.length === validTags.length) {
+      submitHandler(ALL_KEYWORD);
+    } else {
+      submitHandler(selectedTags);
+    }
+  };
+
+  const cancelHandlerFn = () => {
+    cancelHandler();
+  };
+
+  return (
+    <div className='TagSelectionPanel'>
+      <div className='TagMultiSelection'>
+        <MultiSelection
+          defaultSelection={selectedTags}
+          validSeletions={validTags}
+          handleSelection={handleTagSelection} />
+      </div>
+      <SelectionPanelButtonGroup submitHandler={submitHandlerFn} cancelHandler={cancelHandlerFn} />
+    </div>
+  )
+};
+
+TagSelectionPanel.propTypes = {
+  currentValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+  ]),
+  submitHandler: PropTypes.func,
+  cancelHandler: PropTypes.func,
+};

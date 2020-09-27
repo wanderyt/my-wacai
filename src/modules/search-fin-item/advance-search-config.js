@@ -1,4 +1,4 @@
-import {KeywordsSelectionPanel, CategorySelectionPanel, AmountRangeSelectionPanel, DateRangeSelectionPanel, CitySelectionPanel} from './advance-search-option-panel';
+import {KeywordsSelectionPanel, CategorySelectionPanel, AmountRangeSelectionPanel, DateRangeSelectionPanel, CitySelectionPanel, TagSelectionPanel} from './advance-search-option-panel';
 import {formatDateObject} from '../../utils/helper';
 
 export const ADVANCE_SEARCH_ITEMS = [{
@@ -53,5 +53,13 @@ export const ADVANCE_SEARCH_ITEMS = [{
   comp: KeywordsSelectionPanel,
   formatter: (value) => {
     return value;
+  }
+}, {
+  type: 'tags',
+  name: '标签',
+  defaultValue: '',
+  comp: TagSelectionPanel,
+  formatter: (tags) => {
+    return tags.join ? tags.join(', ') : tags;
   }
 }];

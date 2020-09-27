@@ -1,4 +1,5 @@
 @import '../../colors.scss';
+@import '../../common.scss';
 @import '../../../node_modules/react-datetime/css/react-datetime.css';
 
 .FinItemDetails {
@@ -109,12 +110,48 @@
     height: 50px;
     line-height: 50px;
   }
+  .Fin-Tags {
+    .Fin-Tags-Add {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 50px;
+      line-height: 50px;
+      input {
+        // @extend .MyWacai-Input;
+        display: inline-block;
+        height: 30px;
+        line-height: 30px;
+        width: 100%;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid $GREY-LIGHT-II;
+        font-size: 16px;
+        background: transparent;
+        text-indent: 10px;
+        width: 80%;
+      }
+      .Fin-Tags-Add-Btn {
+        background-image: url('./add-tag.png');
+        background-repeat: no-repeat;
+        background-size: 30px;
+        background-position: center;
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+      }
+    }
+    .Fin-TagsManagement {
+      max-height: 100px;
+      overflow-y: scroll;
+    }
+  }
   .Fin-FullDetails {
     height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 10px;
+    padding: 10px 10px;
     .Fin-Place {
       flex-grow: 1;
 

@@ -1,0 +1,10 @@
+.HashTagManagement {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0 10px;
+  .HashTag__Item {
+    margin: 5px 10px;
+  }
+}

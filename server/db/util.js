@@ -72,6 +72,11 @@ const mapSearchParamsToDBSearch = (searchOptions) => {
         let keywordSearch = `(category like '%${keyword}%' or subcategory like '%${keyword}%' or comment like '%${keyword}%' or place like '%${keyword}%' or city like '%${keyword}%')`;
         searchQuery.push(keywordSearch);
         break;
+      case 'tags':
+        let tags = searchOptions[key];
+        let tagsSearch = `tags like '%${tags}%'`;
+        searchQuery.push(tagsSearch);
+        break;
       case 'city':
         let cities = searchOptions[key];
         if (cities === '全部') {

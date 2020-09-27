@@ -63,6 +63,12 @@ const SearchFinItem = ({finItems = [], dispatch}) => {
         </React.Fragment>
       }
       {
+        !advancedSearchStatus && finItems.length === 0 &&
+        <div className='SearchFinItem--NoResults'>
+          无结果
+        </div>
+      }
+      {
         advancedSearchStatus &&
         <div className='AdvancedSearch-Container'>
           <AdvancedSearch submitHandler={submitHandler} />
