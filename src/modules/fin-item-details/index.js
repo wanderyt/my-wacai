@@ -5,6 +5,7 @@ import PopupButtons from '../popup-buttons';
 import DateTime from 'react-datetime';
 import DropdownList from '../dropdown-list';
 import Calculator from '../calculator';
+import HashTagManagement from '../hash-tag';
 import {connect} from 'react-redux';
 import Axios from 'axios';
 
@@ -35,11 +36,15 @@ const DEFAULT_CITY = '上海';
 const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
   const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup, city: DEFAULT_CITY});
   const [commentOptions, setCommentOptions] = useState([]);
+  const [tagList, setTagList] = useState([]);
+  const [filteredTagList, setFilteredTagList] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(item.tags ? item.tags.split(',') : []);
   const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
   const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] = useState(false);
   const [calculatorStatus, setCalculatorStatus] = useState(false);
   const isUpdate = !!item.id;
   const amountInputRef = useRef(null);
+  const tagInputRef = useRef(null);
 
   useEffect(() => {
     Axios.get('/api/wacai/getAllComment')
@@ -50,7 +55,14 @@ const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
           options.push(option.comment);
         });
         setCommentOptions(options);
-      })
+      });
+
+    Axios.get('/api/wacai/getAllTags')
+      .then(({data}) => {
+        let responseData = data.data || [];
+        setTagList(responseData);
+        setFilteredTagList(responseData);
+      });
 
     dispatch({
       type: 'RESET_UPDATED_CAT_GROUP'
@@ -152,15 +164,15 @@ const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
         return;
       } else {
         requestUrl = '/api/wacai/updateFinItem';
-        data = {...latestItem};
+        data = {...latestItem, tags: selectedTags.join(',')};
       }
     } else {
       if (latestItem.isScheduled > 0) {
         requestUrl = '/api/wacai/createScheduledFinItem';
-        data = {...latestItem};
+        data = {...latestItem, tags: selectedTags.join(',')};
       } else {
         requestUrl = '/api/wacai/createFinItem';
-        data = {...latestItem, id: uuid()};
+        data = {...latestItem, tags: selectedTags.join(','), id: uuid()};
       }
     }
 
@@ -382,6 +394,38 @@ const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
     handleSaveButton({repeatRecord: true});
   }
 
+  const handleTagInputChange = (evt) => {
+    const currInput = evt.target.value;
+    setFilteredTagList(tagList.filter((tag) => tag.indexOf(currInput) > -1));
+  }
+
+  const handleTagAdd = () => {
+    const newTag = tagInputRef.current.value;
+    if (tagList.indexOf(newTag) < 0) {
+      setTagList([newTag, ...tagList]);
+      setFilteredTagList([newTag, ...tagList]);
+    } else {
+      setFilteredTagList([...tagList]);
+    }
+
+    // Automatically add new tag to selected list
+    selectedTags.indexOf(newTag) < 0 && setSelectedTags([...selectedTags, newTag]);
+
+    // clear value once new tag is added
+    tagInputRef.current.value = '';
+  }
+
+  const toggleTagSelection = (tag, isSelected) => {
+    const index = selectedTags.indexOf(tag);
+    let newSelectedTags = selectedTags.slice();
+    if (index > -1) {
+      newSelectedTags.splice(index, 1);
+      setSelectedTags(newSelectedTags);
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  }
+
   /*
     Format change from '2019-04-20 19:20:00' to '2019/04/20 19:20:00'
     Required on mobile browser difference
@@ -474,6 +518,20 @@ const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
             placeholder='城市'
             onChange={handleCityChange}
             defaultValue={latestItem.city || DEFAULT_CITY} />
+        </div>
+      </div>
+      <div className='Fin-Tags Fin-WhiteBack'>
+        <div className='Fin-Tags-Add'>
+          <input
+            type='input'
+            ref={tagInputRef}
+            placeholder='新加标签'
+            onChange={handleTagInputChange}
+            defaultValue='' />
+          <div className='Fin-Tags-Add-Btn' onClick={handleTagAdd} />
+        </div>
+        <div className='Fin-TagsManagement'>
+          <HashTagManagement tags={filteredTagList} selectedTags={selectedTags} toggleTagSelection={toggleTagSelection} />
         </div>
       </div>
       <div className='Fin-Toolbar Fin-WhiteBack'>

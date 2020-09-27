@@ -14,7 +14,7 @@ const AdvancedSearch = ({searchParams, dispatch, submitHandler = void 0}) => {
         if (key === 'amountRanges') {
           // Amount Range Handler
           params.push(`${key}=${JSON.stringify(searchParams[key])}`);
-        } else if (key === 'city') {
+        } else if (key === 'city' || key === 'tags') {
           params.push(`${key}=${searchParams[key].join(',')}`);
         }
       } else if (typeof searchParams[key] === 'object') {
@@ -29,11 +29,27 @@ const AdvancedSearch = ({searchParams, dispatch, submitHandler = void 0}) => {
         params.push(`${key}=${searchParams[key]}`);
       }
     });
+
+    // App Loading Status
+    dispatch({
+      type: 'APP_LOADING'
+    });
+
     Axios.get(`/api/wacai/deepSearchFinItems?${params.join('&')}`)
       .then(({data}) => {
         submitHandler();
         let finItems = data.data || [];
-        dispatch({type: 'SEARCH_FIN_RESULTS_LOADED', finItems});
+        dispatch({type: 'SEARCH_FIN_RESULTS_LOADED', finItems, searchLoading: false});
+
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
+      }, () => {
+        // App Loaded Status
+        dispatch({
+          type: 'APP_LOADED'
+        });
       });
   }
   return (

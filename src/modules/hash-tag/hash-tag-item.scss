@@ -1,0 +1,35 @@
+.HashTagItem {
+  max-width: 150px;
+  padding: 0 5px 0 10px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: "Helvetica Neue", "sans-serif";
+  color: white;
+  background-color: #2C58DE;
+  transition: all .2s ease-in-out;
+  cursor: pointer;
+  &--Selected {
+    background-color: #F24373;
+  }
+  .HashTag__Content {
+    display: inline-block;
+  }
+  .HashTag__Flag {
+    margin-left: 5px;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-image: url('./add.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    transition: all .2s ease-in-out;
+  }
+
+  &--Selected .HashTag__Flag {
+    background-image: url('./checkmark.png');
+  }
+}
