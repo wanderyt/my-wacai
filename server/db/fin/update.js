@@ -12,6 +12,10 @@ const UPDATE_COLUMN_NAME_LIST = [
   'city',
 ];
 
+const ALLOW_EMPTY_VALUE_FIELD = [
+  'tags'
+];
+
 /**
  * Update existing fin item
  * @param {object} db
@@ -25,6 +29,7 @@ const UPDATE_COLUMN_NAME_LIST = [
  * @param {string} data.place target fin item place
  * @param {string} data.city target fin item city
  * @param {number} data.userId target user id
+ * @param {string} data.tags target fin item tags
  * @param {function} callback
  */
 const updateFinItem = (db, data, callback) => {
@@ -34,6 +39,10 @@ const updateFinItem = (db, data, callback) => {
       const value = data[key];
       // Remove null object value, but need to allow empty string
       if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1 && value) {
+        updateOptions += `${key}="${value}", `;
+      }
+      // Allow empty string
+      if (value === '' && ALLOW_EMPTY_VALUE_FIELD.indexOf(key.toLowerCase()) > -1) {
         updateOptions += `${key}="${value}", `;
       }
     }
@@ -74,6 +83,7 @@ const updateFinItem = (db, data, callback) => {
  * @param {number} options.month query specific month
  * @param {number} options.day query specific day
  * @param {number} options.userId query user id
+ * @param {string} data.tags target fin item tags
  * @param {function} callback
  */
 const updateScheduledFinItem = (db, data, options, callback) => {

@@ -94,6 +94,33 @@ const getAllComments = (db, options, callback) => {
 }
 
 /**
+ * Get all valid tags
+ * @param {object} db
+ * @param {object} options target query data
+ * @param {number} options.userId target query user id
+ * @param {function} callback
+ */
+const getAllTags = (db, options, callback) => {
+  let promise = new Promise((resolve, reject) => {
+    let sql = `select distinct tags from ${FIN_TABLE_NAME} where tags != '' and userId = ? order by date desc;`;
+    let searchParams = [options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch all non empty tags in fin table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`Fetch all non empty tags in fin table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      err ? reject({err}) : resolve({rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
  * Get all category groups
  * @param {Object} db DB connection object
  * @param {Object} options queries
@@ -394,7 +421,7 @@ const getMonthlyTotal = (db, options, callback) => {
  */
 const getFinItemsBySearchString = (db, searchString, options = {}, callback) => {
   let promise = new Promise((resolve, reject) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%') and userId = ? {{dateSearchString}} order by date desc;`;
+    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%' or tags like '%${searchString}%') and userId = ? {{dateSearchString}} order by date desc;`;
     let dateSearchString = '';
     if (options.month && options.year) {
       dateSearchString = ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
@@ -423,6 +450,7 @@ module.exports = {
   getFinItemsBySearchOptions,
   getAllCities,
   getAllComments,
+  getAllTags,
   getCategoryGroup,
   getDailyTotal,
   getFinItemsByMonth,

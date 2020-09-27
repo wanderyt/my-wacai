@@ -14,14 +14,15 @@ const {logDBError, logDBSuccess, uuid} = require('../util');
  * @param {string} data.place target fin item place
  * @param {string} data.city target fin item city
  * @param {number} data.userId target user id
+ * @param {string} data.tags target fin item tags
  * @param {function} callback
  */
 const createFinItem = (db, data, callback) => {
   let promise = new Promise((resolve, reject) => {
     let sql =
-      `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, place, city, userid)
-      values (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
-    let searchParams = [data.id, data.category, data.subcategory, data.date, data.comment || '', data.amount, data.place || '', data.city || '', data.userId || 1];
+      `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, place, city, userid, tags)
+      values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+    let searchParams = [data.id, data.category, data.subcategory, data.date, data.comment || '', data.amount, data.place || '', data.city || '', data.userId || 1, data.tags || ''];
     db.all(sql, searchParams, (err) => {
       if (err) {
         logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table with params: ${searchParams}`, sql, err);
@@ -84,14 +85,15 @@ const formatSchedule = (sqlTemplate, datetime, scheduleMode) => {
  * @param {string} data.place target fin item place
  * @param {string} data.city target fin item city
  * @param {number} data.userId target user id
+ * @param {string} data.tags target fin item tags
  * @param {function} callback
  */
 const createScheduledFinItem = (db, data, callback) => {
   let promise = new Promise((resolve, reject) => {
     const SCHEDULE_NONE = 0;
     let scheduleMode = data.isScheduled || SCHEDULE_NONE;
-    let insertHeaderSQL = `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, isScheduled, scheduleId, place, city, userId) `;
-    let insertRowSQL = `select "{{id}}", "${data.category}", "${data.subcategory}", {{datetimeFn}}, "${data.comment || ''}", ${data.amount}, ${scheduleMode}, '{{scheduleId}}', "${data.place || ''}", "${data.city || ''}", ${data.userId || 1}`;
+    let insertHeaderSQL = `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, isScheduled, scheduleId, place, city, userId, tags) `;
+    let insertRowSQL = `select "{{id}}", "${data.category}", "${data.subcategory}", {{datetimeFn}}, "${data.comment || ''}", ${data.amount}, ${scheduleMode}, '{{scheduleId}}', "${data.place || ''}", "${data.city || ''}", ${data.userId || 1}, "${data.tags || ''}"`;
     let sqlList = formatSchedule(insertHeaderSQL + insertRowSQL + ';', data.date, scheduleMode);
     db.exec(sqlList.join(''), (err) => {
       if (err) {
