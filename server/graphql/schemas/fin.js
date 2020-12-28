@@ -1,6 +1,6 @@
 const {makeExecutableSchema, PubSub} = require('apollo-server');
 const {finDBOperationWrapper} = require('../utils/db-helper');
-const {getFinList} = require('../../db/fin/get');
+const {getFinList, getSumByDay, getSumByWeek, getSumByYearMonth} = require('../../db/fin/get');
 const pubsub = new PubSub();
 
 const mockUsers = [{
@@ -34,7 +34,10 @@ const typeDefs = `
   }
 
   type Query {
-    finTopList(top: Int, userId: Int, year: Int, month: Int): [Fin!]
+    finTopList(top: Int, userId: Int, year: Int, month: Int): [Fin!],
+    sumByMonth(userId: Int, year: Int, month: Int): Float!,
+    sumByWeek(userId: Int, year: Int, month: Int, day: Int, dayOfWeek: Int): Float!,
+    sumByDay(userId: Int, year: Int, month: Int, day: Int): Float!,
   }
 `;
 
@@ -51,6 +54,52 @@ const resolvers = {
         const finList = finListResp.rows || [];
         pubsub.publish(FIN_QUERIED, {finList});
         return finList;
+      }
+    },
+    sumByMonth: async (parent, {userId, year, month}, context) => {
+      const {user: currentUser, logger} = context;
+      const {userId: currentUserId} = currentUser || {};
+      const sumByMonthResp = await finDBOperationWrapper(getSumByYearMonth, {userId: userId || currentUserId, month: month || now.getMonth() + 1, year: year || now.getFullYear()});
+      if (sumByMonthResp.rows && sumByMonthResp.rows.length > 0) {
+        const sumByMonth = sumByMonthResp.rows[0].total || 0;
+        return toFixed(sumByMonth);
+      } else {
+        logger.error({error: sumByMonthResp.err});
+      }
+    },
+    sumByWeek: async (parent, {userId, year, month, day, dayOfWeek}, context) => {
+      const {user: currentUser, logger} = context;
+      const {userId: currentUserId} = currentUser || {};
+      const data = {
+        userId: userId || currentUserId,
+        month: month || now.getMonth() + 1,
+        year: year || now.getFullYear(),
+        day: day || now.getDate(),
+        dayOfWeek: dayOfWeek || now.getDay()
+      };
+      const sumByWeekResp = await finDBOperationWrapper(getSumByWeek, data);
+      if (sumByWeekResp.rows && sumByWeekResp.rows.length > 0) {
+        const sumByWeek = sumByWeekResp.rows[0].total || 0;
+        return toFixed(sumByWeek);
+      } else {
+        logger.error({error: sumByWeekResp.err});
+      }
+    },
+    sumByDay: async (parent, {userId, year, month, day}, context) => {
+      const {user: currentUser, logger} = context;
+      const {userId: currentUserId} = currentUser || {};
+      const data = {
+        userId: userId || currentUserId,
+        month: month || now.getMonth() + 1,
+        year: year || now.getFullYear(),
+        day: day || now.getDate()
+      };
+      const sumByDayResp = await finDBOperationWrapper(getSumByDay, data);
+      if (sumByDayResp.rows && sumByDayResp.rows.length > 0) {
+        const sumByDay = sumByDayResp.rows[0].total || 0;
+        return toFixed(sumByDay);
+      } else {
+        logger.error({error: sumByDayResp.err});
       }
     }
   },
@@ -75,6 +124,10 @@ const resolvers = {
       }
     }
   }
+};
+
+const toFixed = (value = 0, fractionDigits = 2) => {
+  return Number(parseFloat(value).toFixed(2));
 };
 
 module.exports = makeExecutableSchema({

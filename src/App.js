@@ -30,11 +30,34 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
     if (!selectedItem) {
       let now = new Date();
       Axios.get(`/api/wacai/getFinList?year=${now.getFullYear()}&month=${now.getMonth() + 1}&day=${now.getDate()}&dayOfWeek=${now.getDay()}&top=${DEFAULT_FIN_ITEMS}`)
+      // Axios.post('/api/graphql', {
+      //   query: `
+      //     {
+      //       finTopList(top: 15) {
+      //         id
+      //         category
+      //         subcategory
+      //         comment
+      //         date
+      //         amount
+      //         isScheduled
+      //         scheduleId
+      //         place
+      //         city
+      //         userId
+      //       }
+      //       sumByMonth(year: 2020, month: 8)
+      //       sumByWeek(year: 2020, month: 8, day: 4, dayOfWeek: 2)
+      //       sumByDay(year: 2020, month: 8, day: 4)
+      //     }
+      //   `
+      // })
         .then(({data}) => {
           setIsLoading(false);
 
           let {monthTotal = 0, weekTotal = 0, dayTotal = 0} = data;
           let finList = data.data || [];
+          // let {finTopList: finList, sumByDay: dayTotal, sumByMonth: monthTotal, sumByWeek: weekTotal} = data.data;
           setFinList(finList);
           setMonthTotal(monthTotal);
           setWeekTotal(weekTotal);
