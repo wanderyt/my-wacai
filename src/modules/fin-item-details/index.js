@@ -33,8 +33,8 @@ const scheduleModeItems = [{
 
 const DEFAULT_CITY = '上海';
 
-const FinItemDetails = ({item = {amount: 0}, updatedCatGroup, dispatch}) => {
-  const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup, city: DEFAULT_CITY});
+const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup, dispatch}) => {
+  const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
   const [commentOptions, setCommentOptions] = useState([]);
   const [tagList, setTagList] = useState([]);
   const [filteredTagList, setFilteredTagList] = useState([]);

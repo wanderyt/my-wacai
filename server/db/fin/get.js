@@ -289,21 +289,22 @@ const getSumByYearMonth = (db, options, callback) => {
 const getSumByWeek = (db, options, callback) => {
   const {month, year, day, dayOfWeek, userId} = options;
   let promise = new Promise((resolve, reject) => {
-    let validDayOfWeek = dayOfWeek - 1;
     let startDay = 0, endDay = 0;
     // Start day logic and End day logic
-    if (validDayOfWeek < 0) {
-      startDay = (validDayOfWeek + 7) * -1;
+    if (dayOfWeek === 0) {
+      startDay = 7;
       endDay = 0;
     } else {
-      startDay = validDayOfWeek;
-      endDay = 6 - validDayOfWeek;
+      startDay = dayOfWeek - 1;
+      endDay = 7 - dayOfWeek;
     }
 
-    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date(?, "${startDay >= 0 ? '+' + startDay : startDay} days") and date <= date(?, "+${endDay} days") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
     const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
+    // let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date(?, "${startDay >= 0 ? '-' + startDay : startDay} days") and date <= date(?, "+${endDay} days") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date('${currentDay}', "-${startDay} days") and date <= date('${currentDay}', "+${endDay} days") and (isScheduled = 0 or isScheduled is null) and userId = '${userId}');`;
     let searchParams = [currentDay, currentDay, userId];
-    db.all(sql, searchParams, (err, rows) => {
+    // db.all(sql, searchParams, (err, rows) => {
+    db.all(sql, (err, rows) => {
       if (err) {
         logDBError('getSumByWeek - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '), err);
       } else {
@@ -331,10 +332,12 @@ const getSumByWeek = (db, options, callback) => {
 const getSumByDay = (db, options, callback) => {
   const {month, year, day, userId} = options;
   let promise = new Promise((resolve, reject) => {
-    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date(?) and date < date(?, "+1 day") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
     const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
+    // let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date('?') and date < date('?', "+1 day") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date('${currentDay}') and date < date('${currentDay}', "+1 day") and (isScheduled = 0 or isScheduled is null) and userId = '${userId}');`;
     let searchParams = [currentDay, currentDay, userId];
-    db.all(sql, searchParams, (err, rows) => {
+    // db.all(sql, searchParams, (err, rows) => {
+    db.all(sql, (err, rows) => {
       if (err) {
         logDBError('getSumByDay - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '), err);
       } else {
