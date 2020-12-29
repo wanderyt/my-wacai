@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/static/media/geo-icon.c8d3ba55.svg"
   },
   {
-    "revision": "c1735b6d835971d07614",
+    "revision": "f5d1300dd47c33df71be",
     "url": "/static/css/main.59c34d76.chunk.css"
   },
   {
@@ -28,8 +28,8 @@ self.__precacheManifest = [
     "url": "/static/media/search.35b579ad.svg"
   },
   {
-    "revision": "c1735b6d835971d07614",
-    "url": "/static/js/main.729711ba.chunk.js"
+    "revision": "f5d1300dd47c33df71be",
+    "url": "/static/js/main.e88d876d.chunk.js"
   },
   {
     "revision": "2858daac3211e824b74e4ab24ec93602",
@@ -44,19 +44,19 @@ self.__precacheManifest = [
     "url": "/static/media/digital-7(italic).7c6e146f.ttf"
   },
   {
-    "revision": "f6e67539e25adbf860808313c8e75ce5",
-    "url": "/static/media/digital-7(mono+italic).f6e67539.ttf"
-  },
-  {
     "revision": "58045dabdc3a361cb9bb9faf2f1dd1f3",
     "url": "/static/media/digital-7(mono).58045dab.ttf"
+  },
+  {
+    "revision": "f6e67539e25adbf860808313c8e75ce5",
+    "url": "/static/media/digital-7(mono+italic).f6e67539.ttf"
   },
   {
     "revision": "43cd35d3b1b269d3a81f",
     "url": "/static/css/2.78c4eeee.chunk.css"
   },
   {
-    "revision": "f35b596f5c86a25e21d9c223aa17a373",
+    "revision": "83aed2ac9a896be04b6d8fb46fec4148",
     "url": "/index.html"
   }
 ];
