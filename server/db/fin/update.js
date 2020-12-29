@@ -10,6 +10,7 @@ const UPDATE_COLUMN_NAME_LIST = [
   'place',
   // 'date', date should be handled separately
   'city',
+  'tags'
 ];
 
 const ALLOW_EMPTY_VALUE_FIELD = [

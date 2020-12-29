@@ -21,7 +21,6 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
   let [dayTotal, setDayTotal] = useState(0);
   let [finList, setFinList] = useState(new Array(5).fill({}));
   let [isLoading, setIsLoading] = useState(true);
-  let [helloMsg, setHelloMsg] = useState('');
 
   // Set monthly total amount
   useEffect(() => {
@@ -139,7 +138,7 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
                   total={weekTotal}
                   duration={100} />
               </div>
-              <div className='Caption'>今日总计: {helloMsg}</div>
+              <div className='Caption'>今日总计</div>
               <div className='Amount'>
                 <AutoUpdateNumber
                   total={dayTotal}
