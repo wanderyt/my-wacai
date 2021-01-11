@@ -20,7 +20,7 @@ router.get('/createScheduleBackup', (req, res) => {
   try {
     const dailyJob = schedule.scheduleJob('my-daily-job', rule, function () {
       const now = new Date();
-      const newFileNameSuffix = `${now.getFullYear()}-${padZero(now.getMonth() + 1)}-${padZero(now.getDate())}T${padZero(now.getHours())}:${padZero(now.getMinutes())}:${padZero(now.getSeconds())}`;
+      const newFileNameSuffix = `${now.getFullYear()}-${padZero(now.getMonth() + 1)}-${padZero(now.getDate())}T${padZero(now.getHours())}-${padZero(now.getMinutes())}-${padZero(now.getSeconds())}`;
       fs.copyFileSync(`./${dbFileName}.db`, `./${backupDataFolder}/${dbFileName}-${newFileNameSuffix}.db`);
     });
 
