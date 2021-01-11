@@ -1,6 +1,6 @@
 {
   "name": "my-wacai",
-  "version": "4.5.3",
+  "version": "4.6.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.2.2",
@@ -78,16 +78,16 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "dev": "DEV_MODE=development node scripts/start.js",
-    "prod": "DEV_MODE=production node index.js",
+    "dev": "cross-env DEV_MODE=development node scripts/start.js",
+    "prod": "cross-env DEV_MODE=production node index.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "server": "node server/index.js",
-    "test:server": "DB_TEST=TEST npm run server",
+    "test:server": "cross-env DB_TEST=TEST npm run server",
     "test:dev": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run dev\"",
     "test:prod": "concurrently --kill-others-on-fail \"npm run test:server\" \"npm run prod\"",
     "sync": "node server/job/sync.js",
-    "test:sync": "DB_TEST=TEST node server/job/sync.js",
+    "test:sync": "cross-env DB_TEST=TEST node server/job/sync.js",
     "storybook": "node .story/index.js"
   },
   "eslintConfig": {
@@ -153,6 +153,7 @@
   "devDependencies": {
     "@storybook/addon-actions": "^5.2.5",
     "@storybook/react": "^5.2.5",
+    "cross-env": "^7.0.3",
     "gulp": "^4.0.2",
     "gulp-nodemon": "^2.4.2",
     "node-sass": "^4.14.1",
