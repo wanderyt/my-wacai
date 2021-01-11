@@ -4,7 +4,7 @@ import {options} from './mockOptions.json';
 
 import './index.scss';
 
-const SearchDropdown = ({optionList = options, placeholder = '', onChangeCallback, defaultValue = '', searchOptions = 5}) => {
+const SearchDropdown = ({optionList = options, filterFunction, placeholder = '', onChangeCallback, defaultValue = '', searchOptions = 5}) => {
   const [value, setValue] = useState(defaultValue);
   const [validOptions, setValidOptions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
@@ -26,7 +26,8 @@ const SearchDropdown = ({optionList = options, placeholder = '', onChangeCallbac
 
   const handleInputChange = (evt) => {
     const curValue = evt.target.value;
-    const newOptions = optionList.filter((option) => option.toLowerCase().indexOf(curValue.toLowerCase()) > -1);
+    // const newOptions = optionList.filter((option) => option.toLowerCase().indexOf(curValue.toLowerCase()) > -1);
+    const newOptions = filterFunction(optionList, curValue) || [];
     setIsFocused(true);
     setValue(curValue);
     setValidOptions(curValue ? newOptions.slice(0, searchOptions) : []);
@@ -72,10 +73,15 @@ const SearchDropdown = ({optionList = options, placeholder = '', onChangeCallbac
 
 SearchDropdown.propTypes = {
   optionList: PropTypes.array,
+  filterFunction: PropTypes.func,
   placeholder: PropTypes.string,
   onChangeCallback: PropTypes.func,
   defaultValue: PropTypes.string,
   searchOptions: PropTypes.number,
+};
+
+SearchDropdown.defaultProps = {
+  filterFunction: () => void 0
 };
 
 export default SearchDropdown;

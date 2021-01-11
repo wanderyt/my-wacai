@@ -75,13 +75,72 @@ const getAllCities = (db, options, callback) => {
  */
 const getAllComments = (db, options, callback) => {
   let promise = new Promise((resolve, reject) => {
-    let sql = `select distinct comment from (select distinct comment from ${FIN_TABLE_NAME} where comment != '' and userId = ? order by date desc) union select distinct comment from (select distinct place as comment from ${FIN_TABLE_NAME} where place != '' and userId = ? order by date desc);`;
-    let searchParams = [options.userId, options.userId];
-    db.all(sql, searchParams, (err, rows) => {
+    // let sql = `select distinct comment from (select distinct comment from ${FIN_TABLE_NAME} where comment != '' and userId = ? order by date desc) union select distinct comment from (select distinct place as comment from ${FIN_TABLE_NAME} where place != '' and userId = ? order by date desc);`;
+    const userId = options.userId;
+    let sql = `
+      select
+        comment,
+        date
+      from (
+        select
+          comment,
+          date,
+          (
+            select count(*)
+            from (select distinct * from (select distinct comment, date from ${FIN_TABLE_NAME} where comment != '' and userId = ${userId} and date <= date('now') union select distinct place as comment, date from ${FIN_TABLE_NAME} where place != '' and userId = ${userId} and date <= date('now') order by date desc)) as mainA
+            where mainA.date > mainB.date and mainA.comment = mainB.comment
+          ) as row_number
+          from (select distinct * from (select distinct comment, date from ${FIN_TABLE_NAME} where comment != '' and userId = ${userId} and date <= date('now') union select distinct place as comment, date from ${FIN_TABLE_NAME} where place != '' and userId = ${userId} and date <= date('now') order by date desc)) as mainB
+          order by comment
+      ) as main
+      where main.row_number = 0
+      order by comment;
+    `;
+    let searchParams = [userId, userId];
+    db.all(sql, (err, rows) => {
       if (err) {
         logDBError(`Fetch all non empty comments in fin table with params: ${searchParams}`, sql, err);
       } else {
         logDBSuccess(`Fetch all non empty comments in fin table with params: ${searchParams}`, sql);
+      }
+
+      callback && callback(err, rows);
+
+      err ? reject({err}) : resolve({rows});
+    });
+  });
+
+  return promise;
+}
+
+/**
+ * Get all valid comments with related info
+ * @param {object} db
+ * @param {object} options target query data
+ * @param {number} options.userId target query user id
+ * @param {function} callback
+ */
+const getCommentsOptions = (db, options, callback) => {
+  let promise = new Promise((resolve, reject) => {
+    // let sql = `select distinct comment, category, subcategory, place from ${FIN_TABLE_NAME} where comment != '' and userId = ? order by date desc;`;
+    const userId = options.userId;
+    let sql = `
+      select
+        distinct
+        comment,
+        category,
+        subcategory,
+        place
+      from fin
+      where comment <> '' and place <> '' and userId = ${userId}
+      order by comment;
+    `;
+    let searchParams = [userId];
+    db.all(sql, (err, rows) => {
+      if (err) {
+        logDBError(`Fetch all non empty comments options in fin table with params: ${searchParams}`, sql, err);
+      } else {
+        logDBSuccess(`Fetch all non empty comments options in fin table with params: ${searchParams}`, sql);
       }
 
       callback && callback(err, rows);
@@ -453,6 +512,7 @@ module.exports = {
   getFinItemsBySearchOptions,
   getAllCities,
   getAllComments,
+  getCommentsOptions,
   getAllTags,
   getCategoryGroup,
   getDailyTotal,

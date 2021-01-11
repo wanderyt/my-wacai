@@ -3,7 +3,7 @@ const router = express.Router();
 const log4js = require('log4js');
 const logger = log4js.getLogger('wacai');
 const {createDBConnection, closeDB} = require('../../db/dbops');
-const {getAllComments} = require('../../db/fin/get');
+const {getAllComments, getCommentsOptions} = require('../../db/fin/get');
 const {requestProxy} = require('../../modules/request');
 
 router.get('/getAllComment', (req, res) => {
@@ -27,6 +27,41 @@ router.get('/getAllComment', (req, res) => {
     }, (err) => {
       closeDB(db);
       logger.error('api /getAllComment failed with error');
+      logger.error(err.err);
+      res.statusCode = 500;
+      res.send({
+        status: false,
+        error: err.err
+      });
+    });
+});
+
+router.get('/getAllCommentWithOptions', (req, res) => {
+  logger.info('api /getAllCommentWithOptions');
+
+  // Get user info
+  let user = req._userInfo;
+
+  let db = createDBConnection();
+  let getAllCommentPromise = getAllComments(db, user);
+  let getCommentOptionsPromise = getCommentsOptions(db, user);
+
+  requestProxy(req, res, getAllCommentPromise, getCommentOptionsPromise)
+    .then((data) => {
+      closeDB(db);
+      logger.info('api /getAllCommentWithOptions success');
+      let [commentsResponse, commentsWithOptionsResponse] = data;
+      res.statusCode = 200;
+      res.send({
+        status: true,
+        data: {
+          comments: commentsResponse.rows,
+          options: commentsWithOptionsResponse.rows
+        }
+      });
+    }, (err) => {
+      closeDB(db);
+      logger.error('api /getAllCommentWithOptions failed with error');
       logger.error(err.err);
       res.statusCode = 500;
       res.send({
