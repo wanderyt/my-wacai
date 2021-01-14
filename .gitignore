@@ -24,25 +24,25 @@ yarn-debug.log*
 yarn-error.log*
 
 # db
-wacai.db
-test.db
+# wacai.db
+# test.db
 /backupData
 
 # log
 /log
 
 # wacai
-/server/token.txt
+# /server/token.txt
 
 # env
-.env
-.env.test
+# .env
+# .env.test
 
 # IDE
 .vscode/
 
 # storybook
-.story
+# .story
 
 # test comps
 # *test*
