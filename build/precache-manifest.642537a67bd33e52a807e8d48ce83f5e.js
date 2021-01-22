@@ -1,19 +1,19 @@
 self.__precacheManifest = [
   {
-    "revision": "d7ce1995bfa8d0233338",
-    "url": "/static/css/main.ce40d3c6.chunk.css"
+    "revision": "c8d3ba552b0341df71f6bdd9cd007f72",
+    "url": "/static/media/geo-icon.c8d3ba55.svg"
   },
   {
-    "revision": "d7ce1995bfa8d0233338",
-    "url": "/static/js/main.fedfc86c.chunk.js"
+    "revision": "ceb0609db246b4952f3c",
+    "url": "/static/css/main.2ba8bb1a.chunk.css"
   },
   {
     "revision": "42ac5946195a7306e2a5",
     "url": "/static/js/runtime~main.a8a9905a.js"
   },
   {
-    "revision": "e237bd5d9a4144042f5d",
-    "url": "/static/css/2.d98f31d0.chunk.css"
+    "revision": "f6e67539e25adbf860808313c8e75ce5",
+    "url": "/static/media/digital-7(mono+italic).f6e67539.ttf"
   },
   {
     "revision": "e237bd5d9a4144042f5d",
@@ -28,8 +28,8 @@ self.__precacheManifest = [
     "url": "/static/media/search.35b579ad.svg"
   },
   {
-    "revision": "c8d3ba552b0341df71f6bdd9cd007f72",
-    "url": "/static/media/geo-icon.c8d3ba55.svg"
+    "revision": "ceb0609db246b4952f3c",
+    "url": "/static/js/main.fedfc86c.chunk.js"
   },
   {
     "revision": "2858daac3211e824b74e4ab24ec93602",
@@ -48,15 +48,15 @@ self.__precacheManifest = [
     "url": "/static/media/digital-7.1e670d88.ttf"
   },
   {
-    "revision": "f6e67539e25adbf860808313c8e75ce5",
-    "url": "/static/media/digital-7(mono+italic).f6e67539.ttf"
-  },
-  {
     "revision": "58045dabdc3a361cb9bb9faf2f1dd1f3",
     "url": "/static/media/digital-7(mono).58045dab.ttf"
   },
   {
-    "revision": "03bb6355e71f3c92c5496f062da8f29a",
+    "revision": "e237bd5d9a4144042f5d",
+    "url": "/static/css/2.d98f31d0.chunk.css"
+  },
+  {
+    "revision": "b2f16372bc58a78782e597dbf557157c",
     "url": "/index.html"
   }
 ];
