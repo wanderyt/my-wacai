@@ -1,5 +1,5 @@
 {
-  "main.css": "/static/css/main.ce40d3c6.chunk.css",
+  "main.css": "/static/css/main.2ba8bb1a.chunk.css",
   "main.js": "/static/js/main.fedfc86c.chunk.js",
   "main.js.map": "/static/js/main.fedfc86c.chunk.js.map",
   "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
@@ -8,10 +8,10 @@
   "static/js/2.cba811ca.chunk.js": "/static/js/2.cba811ca.chunk.js",
   "static/js/2.cba811ca.chunk.js.map": "/static/js/2.cba811ca.chunk.js.map",
   "index.html": "/index.html",
-  "precache-manifest.cb5ba28a97825ccadd1d63b33b26338f.js": "/precache-manifest.cb5ba28a97825ccadd1d63b33b26338f.js",
+  "precache-manifest.642537a67bd33e52a807e8d48ce83f5e.js": "/precache-manifest.642537a67bd33e52a807e8d48ce83f5e.js",
   "service-worker.js": "/service-worker.js",
   "static/css/2.d98f31d0.chunk.css.map": "/static/css/2.d98f31d0.chunk.css.map",
-  "static/css/main.ce40d3c6.chunk.css.map": "/static/css/main.ce40d3c6.chunk.css.map",
+  "static/css/main.2ba8bb1a.chunk.css.map": "/static/css/main.2ba8bb1a.chunk.css.map",
   "static/media/month-expense.scss": "/static/media/arrow.373e5005.svg",
   "static/media/index.scss": "/static/media/search.35b579ad.svg",
   "static/media/App.scss": "/static/media/fin-l.8846e8d0.jpg"
