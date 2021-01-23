@@ -28,13 +28,13 @@ router.get('/cleanupBackupData', (req, res) => {
       .filter((fileName) => dateRegex.test(fileName))
       .filter((fileName) => {
         let dateMark = dateRegex.exec(fileName)[1];
-        let currDate = new Date(dateMark);
+        let currDate = new Date(dateMark.replace(/_/g, ':'));
         return currDate > startDate && currDate < endDate;
       });
 
     needToDeleteFiles.map((fileName) => {
       let dateMark = dateRegex.exec(fileName)[1];
-      let currDate = new Date(dateMark);
+      let currDate = new Date(dateMark.replace(/_/g, ':'));
       if (currDate > startDate && currDate < endDate) {
         fs.unlinkSync('./backupData/' + fileName);
       }
