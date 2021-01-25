@@ -22,6 +22,9 @@ router.get('/createScheduleBackup', (req, res) => {
       const now = new Date();
       const newFileNameSuffix = `${now.getFullYear()}-${padZero(now.getMonth() + 1)}-${padZero(now.getDate())}T${padZero(now.getHours())}_${padZero(now.getMinutes())}_${padZero(now.getSeconds())}`;
       fs.copyFileSync(`./${dbFileName}.db`, `./${backupDataFolder}/${dbFileName}-${newFileNameSuffix}.db`);
+
+      // Also backup data with original data file name for the sync convenience.
+      fs.copyFileSync(`./${dbFileName}.db`, `./${backupDataFolder}/${dbFileName}.db`);
     });
 
     logger.info('Created backup database job!');
