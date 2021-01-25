@@ -12,7 +12,7 @@ git(dataFileGitPath)
   .pull()
   .then(() => {
     console.info('Copy file to local...');
-    console.log(process.cwd());
+    console.info(`Copy ./${backupDataFolder}/${dbFileName}.db file to ./${dbFileName}.db`);
     fs.copyFileSync(`./${backupDataFolder}/${dbFileName}.db`, `./${dbFileName}.db`);
     console.info('Copy file to local done.');
   });
