@@ -6,6 +6,7 @@ import DateTime from 'react-datetime';
 import DropdownList from '../dropdown-list';
 import Calculator from '../calculator';
 import HashTagManagement from '../hash-tag';
+import CommentHintDialog from '../comment-hint-dialog';
 import {connect} from 'react-redux';
 import Axios from 'axios';
 
@@ -61,7 +62,8 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
         });
         setCommentOptions(commentsResponse);
         setPlaceOptions(placeOptions);
-        setCommentFullInfoOptions(restructureCommentOptions(data.data.options || []));
+        setCommentFullInfoOptions(data.data.options || []);
+        // setCommentFullInfoOptions(restructureCommentOptions(data.data.options || []));
       });
 
     Axios.get('/api/wacai/getAllTags')
@@ -87,11 +89,21 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
   }
 
   const handleCommentChange = (newValue) => {
-    if (commentFullInfoOptions[newValue]) {
+    const isCommentValid = commentFullInfoOptions.filter(({comment}) => comment === newValue).length > 0;
+    if (isCommentValid) {
       setCommentHintDialogStatus(true);
     }
     setLatestItem(Object.assign({}, latestItem, {comment: newValue}));
   }
+
+  const toggleCommentHintDialogStatus = () => {
+    setCommentHintDialogStatus(!commentHintDialogStatus);
+  };
+
+  const saveCommentHintResult = (place, category, subcategory) => {
+    setLatestItem(Object.assign({}, latestItem, {place, category, subcategory}));
+    setCommentHintDialogStatus(false);
+  };
 
   const handleDateTimeChange = (newDate) => {
     let newDateString = newDate.format('YYYY-MM-DD hh:mm:ss');
@@ -588,6 +600,12 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
           <PopupButtons
             buttons={updateScheduledPopupButtons}
             cancelHandler={popupButtonsCancelHandler} />
+        </div>
+      }
+      {
+        commentHintDialogStatus &&
+        <div className="FinDetails__CommentHintDialog">
+          <CommentHintDialog closeCallback={toggleCommentHintDialogStatus} successCallback={saveCommentHintResult} optionList={commentFullInfoOptions} commentKeyWord={latestItem.comment} />
         </div>
       }
     </div>
