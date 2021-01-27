@@ -26,7 +26,7 @@ class ModalMask extends React.Component {
       modalMaskCls += ' ' + this.props.extraCls;
     }
 
-    return <div className={modalMaskCls} onClick={this.onClick}>{this.props.children}</div>;
+    return <div className={modalMaskCls} onClick={this.onClick}><div className='ModalMask__content'>{this.props.children}</div></div>;
   }
 }
 

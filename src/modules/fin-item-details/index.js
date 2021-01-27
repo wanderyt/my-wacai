@@ -6,11 +6,13 @@ import DateTime from 'react-datetime';
 import DropdownList from '../dropdown-list';
 import Calculator from '../calculator';
 import HashTagManagement from '../hash-tag';
+import CommentHintDialog from '../comment-hint-dialog';
 import {connect} from 'react-redux';
 import Axios from 'axios';
 
 import {comCatItems} from './config';
 import {uuid} from '../../utils/helper';
+import {commentFilterFn, placeFilterFn, restructureCommentOptions} from './util';
 
 import './index.scss';
 
@@ -36,25 +38,32 @@ const DEFAULT_CITY = '上海';
 const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup, dispatch}) => {
   const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
   const [commentOptions, setCommentOptions] = useState([]);
+  const [placeOptions, setPlaceOptions] = useState([]);
+  const [commentFullInfoOptions, setCommentFullInfoOptions] = useState([]);
   const [tagList, setTagList] = useState([]);
   const [filteredTagList, setFilteredTagList] = useState([]);
   const [selectedTags, setSelectedTags] = useState(item.tags ? item.tags.split(',') : []);
   const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
   const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] = useState(false);
   const [calculatorStatus, setCalculatorStatus] = useState(false);
+  const [commentHintDialogStatus, setCommentHintDialogStatus] = useState(false);
   const isUpdate = !!item.id;
   const amountInputRef = useRef(null);
   const tagInputRef = useRef(null);
 
   useEffect(() => {
-    Axios.get('/api/wacai/getAllComment')
+    Axios.get('/api/wacai/getAllCommentWithOptions')
       .then(({data}) => {
-        let responseData = data.data || [];
-        let options = [];
-        responseData.forEach((option) => {
-          options.push(option.comment);
+        console.log('comments data: ', data.data);
+        let commentsResponse = data.data.comments || [];
+        let placeOptions = [];
+        commentsResponse.forEach((option) => {
+          placeOptions.push(option.comment);
         });
-        setCommentOptions(options);
+        setCommentOptions(commentsResponse);
+        setPlaceOptions(placeOptions);
+        setCommentFullInfoOptions(data.data.options || []);
+        // setCommentFullInfoOptions(restructureCommentOptions(data.data.options || []));
       });
 
     Axios.get('/api/wacai/getAllTags')
@@ -80,8 +89,21 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
   }
 
   const handleCommentChange = (newValue) => {
+    const isCommentValid = commentFullInfoOptions.filter(({comment}) => comment === newValue).length > 0;
+    if (isCommentValid) {
+      setCommentHintDialogStatus(true);
+    }
     setLatestItem(Object.assign({}, latestItem, {comment: newValue}));
   }
+
+  const toggleCommentHintDialogStatus = () => {
+    setCommentHintDialogStatus(!commentHintDialogStatus);
+  };
+
+  const saveCommentHintResult = (place, category, subcategory) => {
+    setLatestItem(Object.assign({}, latestItem, {place, category, subcategory}));
+    setCommentHintDialogStatus(false);
+  };
 
   const handleDateTimeChange = (newDate) => {
     let newDateString = newDate.format('YYYY-MM-DD hh:mm:ss');
@@ -500,6 +522,7 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
       <div className='Fin-Comment Fin-WhiteBack'>
         <SearchDropdown
           optionList={commentOptions}
+          filterFunction={commentFilterFn}
           placeholder='备注'
           onChangeCallback={handleCommentChange}
           defaultValue={latestItem.comment} />
@@ -507,7 +530,8 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
       <div className='Fin-FullDetails Fin-WhiteBack'>
         <div className='Fin-Place'>
           <SearchDropdown
-            optionList={commentOptions}
+            optionList={placeOptions}
+            filterFunction={placeFilterFn}
             placeholder='商场'
             onChangeCallback={handlePlaceChange}
             defaultValue={latestItem.place} />
@@ -576,6 +600,12 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
           <PopupButtons
             buttons={updateScheduledPopupButtons}
             cancelHandler={popupButtonsCancelHandler} />
+        </div>
+      }
+      {
+        commentHintDialogStatus &&
+        <div className="FinDetails__CommentHintDialog">
+          <CommentHintDialog closeCallback={toggleCommentHintDialogStatus} successCallback={saveCommentHintResult} optionList={commentFullInfoOptions} commentKeyWord={latestItem.comment} />
         </div>
       }
     </div>

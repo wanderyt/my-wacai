@@ -7,12 +7,19 @@ const DropdownList = ({defaultSelectedValue = '', items = [], customizeItemClick
   const [selectedValue, setSelectedValue] = useState(defaultSelectedValue);
 
   const toggleClickDropdownHeader = () => {
+    if (items.length === 1) {
+      return null;
+    }
     setIsOpen(!isOpen && !isDisabled);
   }
 
   const handleItemClick = (item) => {
     setIsOpen(false);
-    setSelectedValue(item.value);
+    if (typeof item === 'string') {
+      setSelectedValue(item);
+    } else {
+      setSelectedValue(item.value);
+    }
     customizeItemClickHandler(item);
   }
 
@@ -41,12 +48,12 @@ const DropdownList = ({defaultSelectedValue = '', items = [], customizeItemClick
         isOpen &&
         <div className='DropdownPanel DropdownList-Element'>
           {
-            items.map((item) => (
+            items.map((item, index) => (
               <div
                 className='DropdownList__Item DropdownList-Element'
-                key={item.key}
+                key={item.key || index}
                 onClick={() => handleItemClick(item)}>
-                {item.value}
+                {item.value || item}
               </div>
             ))
           }

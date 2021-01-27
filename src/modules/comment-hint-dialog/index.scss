@@ -1,0 +1,85 @@
+@import '../../colors.scss';
+
+.CommentHintDialog {
+  position: absolute;
+  width: 400px;
+  border-radius: 10px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: height .5s ease-in;
+  @media screen and (max-width: 500px) {
+    bottom: 0;
+    left: unset;
+    top: unset;
+    width: 100%;
+    transform: unset;
+  }
+  .CommentHintDialog__Content {
+    position: relative;
+    background-color: white;
+    padding: 0 30px 10px 30px;
+    border-radius: 10px;
+    @media screen and (max-width: 500px) {
+      bottom: 0;
+      left: unset;
+      top: unset;
+      border-radius: 10px 10px 0 0;
+      transform: unset;
+    }
+
+    .CommentHintDialog-Close {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 30px;
+      height: 30px;
+      background-image: url('./close.png');
+      background-repeat: no-repeat;
+      background-size: 30px;
+    }
+
+    .CommentHint__Title {
+      height: 50px;
+      @media screen and (max-width: 500px) {
+        text-align: center;
+      }
+      .Title {
+        line-height: 45px;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: 'HelveticaNeue', 'Monaco';
+        border-top: 5px solid $BUTTON-MAIN;
+        display: inline-block;
+      }
+    }
+    .CommentHint__Content {
+      .CommentHint__Dropdown {
+        width: 100%;
+        margin-bottom: 10px;
+        .DropdownList {
+          max-width: 100%;
+          @media screen and (max-width: 500px) {
+            .DropdownPanel {
+              max-height: 60px;
+              overflow-y: scroll;
+            }
+          }
+        }
+      }
+    }
+    .CommentHint__Footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .ConfirmBtn {
+        background-color: $BUTTON-MAIN;
+        color: #FFF;
+      }
+      .CancelBtn {
+        background-color: $BUTTON-MAIN;
+        color: #FFF;
+      }
+    }
+  }
+}
