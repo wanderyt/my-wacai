@@ -10,6 +10,7 @@ const SearchDropdown = ({optionList = options, filterFunction, placeholder = '',
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
+    setValue(defaultValue);
     const dropdownClickHandler = (evt) => {
       const classes = evt.target.getAttribute('class') || '';
       if (classes.indexOf('InputField') < 0 && classes.indexOf('OptionContainer') < 0) {
@@ -22,7 +23,7 @@ const SearchDropdown = ({optionList = options, filterFunction, placeholder = '',
     return () => {
       document.removeEventListener('click', dropdownClickHandler);
     }
-  }, []);
+  }, [defaultValue]);
 
   const handleInputChange = (evt) => {
     const curValue = evt.target.value;
