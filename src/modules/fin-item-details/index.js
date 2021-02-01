@@ -544,20 +544,6 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
             defaultValue={latestItem.city || DEFAULT_CITY} />
         </div>
       </div>
-      <div className='Fin-Tags Fin-WhiteBack'>
-        <div className='Fin-Tags-Add'>
-          <input
-            type='input'
-            ref={tagInputRef}
-            placeholder='新加标签'
-            onChange={handleTagInputChange}
-            defaultValue='' />
-          <div className='Fin-Tags-Add-Btn' onClick={handleTagAdd} />
-        </div>
-        <div className='Fin-TagsManagement'>
-          <HashTagManagement tags={filteredTagList} selectedTags={selectedTags} toggleTagSelection={toggleTagSelection} />
-        </div>
-      </div>
       <div className='Fin-Toolbar Fin-WhiteBack'>
         <div className='Fin-Btns'>
           <div
@@ -584,6 +570,20 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
             onClick={handleSaveButton}>
             保存
           </div>
+        </div>
+      </div>
+      <div className='Fin-Tags Fin-WhiteBack'>
+        <div className='Fin-Tags-Add'>
+          <input
+            type='input'
+            ref={tagInputRef}
+            placeholder='新加标签'
+            onChange={handleTagInputChange}
+            defaultValue='' />
+          <div className='Fin-Tags-Add-Btn' onClick={handleTagAdd} />
+        </div>
+        <div className='Fin-TagsManagement'>
+          <HashTagManagement tags={filteredTagList} selectedTags={selectedTags} toggleTagSelection={toggleTagSelection} />
         </div>
       </div>
       {
