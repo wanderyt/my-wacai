@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import './index.scss';
 
-const DropdownList = ({defaultSelectedValue = '', items = [], customizeItemClickHandler = () => void 0, isDisabled = false}) => {
+const DropdownList = ({defaultSelectedValue = '', items = [], customizeItemClickHandler = (item) => void 0, isDisabled = false}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(defaultSelectedValue);
 
