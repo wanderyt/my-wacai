@@ -100,7 +100,7 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
     setCommentHintDialogStatus(!commentHintDialogStatus);
   };
 
-  const saveCommentHintResult = (place, category, subcategory) => {
+  const saveCommentHintResult = ({place, category, subcategory}) => {
     setLatestItem(Object.assign({}, latestItem, {place, category, subcategory}));
     setCommentHintDialogStatus(false);
   };

@@ -32,7 +32,6 @@ const SearchDropdown = ({optionList = options, filterFunction, placeholder = '',
     setIsFocused(true);
     setValue(curValue);
     setValidOptions(curValue ? newOptions.slice(0, searchOptions) : []);
-    onChangeCallback && onChangeCallback(curValue);
   }
 
   const handleOptionSelection = (evt) => {

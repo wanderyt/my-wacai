@@ -57,8 +57,13 @@
       .CommentHint__Dropdown {
         width: 100%;
         margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         .DropdownList {
           max-width: 100%;
+          flex-grow: 1;
+          margin-right: 10px;
           @media screen and (max-width: 500px) {
             .DropdownPanel {
               max-height: 60px;
