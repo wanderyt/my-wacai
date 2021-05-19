@@ -205,13 +205,13 @@ ALTER TABLE CATEGORY ADD USERID NUMBER;
 ALTER TABLE FIN ADD tags VARCHAR(500);
 
 -- Add Social category
-INSERT INTO CATEGORY(category, subcategory, is_common)
-VALUES('社交', '交通', 0);
-INSERT INTO CATEGORY(category, subcategory, is_common)
-VALUES('社交', '红包', 0);
-INSERT INTO CATEGORY(category, subcategory, is_common)
-VALUES('社交', '礼物', 0);
-INSERT INTO CATEGORY(category, subcategory, is_common)
-VALUES('社交', '住宿', 0);
-INSERT INTO CATEGORY(category, subcategory, is_common)
-VALUES('社交', '杂项', 0);
+INSERT INTO CATEGORY(category, subcategory, is_common, userid)
+VALUES('社交', '交通', 0, 1);
+INSERT INTO CATEGORY(category, subcategory, is_common, userid)
+VALUES('社交', '红包', 0, 1);
+INSERT INTO CATEGORY(category, subcategory, is_common, userid)
+VALUES('社交', '礼物', 0, 1);
+INSERT INTO CATEGORY(category, subcategory, is_common, userid)
+VALUES('社交', '住宿', 0, 1);
+INSERT INTO CATEGORY(category, subcategory, is_common, userid)
+VALUES('社交', '杂项', 0, 1);

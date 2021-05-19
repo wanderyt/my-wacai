@@ -88,9 +88,9 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
     setLatestItem(Object.assign({}, latestItem, {category, subcategory}));
   }
 
-  const handleCommentChange = (newValue) => {
+  const handleCommentChange = (newValue, triggerHint) => {
     const isCommentValid = commentFullInfoOptions.filter(({comment}) => comment === newValue).length > 0;
-    if (isCommentValid) {
+    if (isCommentValid && triggerHint) {
       setCommentHintDialogStatus(true);
     }
     setLatestItem(Object.assign({}, latestItem, {comment: newValue}));
