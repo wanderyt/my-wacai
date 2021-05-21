@@ -10,9 +10,12 @@ import CommentHintDialog from '../comment-hint-dialog';
 import {connect} from 'react-redux';
 import Axios from 'axios';
 
+import {CommentProvider, useCommentContext} from '../../context/CommentContext';
+import {TagProvider, useTagContext} from '../../context/TagContext';
+
 import {comCatItems} from './config';
 import {uuid} from '../../utils/helper';
-import {commentFilterFn, placeFilterFn, restructureCommentOptions} from './util';
+import {commentFilterFn, placeFilterFn} from './util';
 
 import './index.scss';
 
@@ -35,13 +38,8 @@ const scheduleModeItems = [{
 
 const DEFAULT_CITY = '上海';
 
-const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup, dispatch}) => {
+const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup = {}, dispatch}) => {
   const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
-  const [commentOptions, setCommentOptions] = useState([]);
-  const [placeOptions, setPlaceOptions] = useState([]);
-  const [commentFullInfoOptions, setCommentFullInfoOptions] = useState([]);
-  const [tagList, setTagList] = useState([]);
-  const [filteredTagList, setFilteredTagList] = useState([]);
   const [selectedTags, setSelectedTags] = useState(item.tags ? item.tags.split(',') : []);
   const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
   const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] = useState(false);
@@ -51,32 +49,10 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
   const amountInputRef = useRef(null);
   const tagInputRef = useRef(null);
 
-  useEffect(() => {
-    Axios.get('/api/wacai/getAllCommentWithOptions')
-      .then(({data}) => {
-        console.log('comments data: ', data.data);
-        let commentsResponse = data.data.comments || [];
-        let placeOptions = [];
-        commentsResponse.forEach((option) => {
-          placeOptions.push(option.comment);
-        });
-        setCommentOptions(commentsResponse);
-        setPlaceOptions(placeOptions);
-        setCommentFullInfoOptions(data.data.options || []);
-        // setCommentFullInfoOptions(restructureCommentOptions(data.data.options || []));
-      });
-
-    Axios.get('/api/wacai/getAllTags')
-      .then(({data}) => {
-        let responseData = data.data || [];
-        setTagList(responseData);
-        setFilteredTagList(responseData);
-      });
-
-    dispatch({
-      type: 'RESET_UPDATED_CAT_GROUP'
-    });
-  }, []);
+  const {commentOptions, placeOptions, commentFullInfoOptions} = useCommentContext();
+  const basicTagList = useTagContext();
+  const [tagList, setTagList] = useState(basicTagList);
+  const [filteredTagList, setFilteredTagList] = useState(basicTagList);
 
   const handleBackBtn = () => {
     dispatch({
@@ -137,6 +113,7 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
   const handleCatSelection = () => {
     dispatch({
       type: 'CHANGE_TO_CATEGORY_SELECTION',
+      currentItem: latestItem,
       selectedCatGroup: {
         category: latestItem.category,
         subcategory: latestItem.subcategory
@@ -630,4 +607,14 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(FinItemDetails);
+const WrappedFinItemDetails = (props) => {
+  return (
+    <CommentProvider>
+      <TagProvider>
+        <FinItemDetails {...props} />
+      </TagProvider>
+    </CommentProvider>
+  );
+};
+
+export default connect(mapStateToProps)(WrappedFinItemDetails);

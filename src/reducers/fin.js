@@ -30,6 +30,7 @@ const fin = (state = {}, action) => {
     case 'CHANGE_TO_CATEGORY_SELECTION':
       return {
         ...state,
+        selectedItem: action.currentItem || {},
         pageIndex: 'CATEGORY_SELECTION',
         selectedCatGroup: action.selectedCatGroup || {}
       };
