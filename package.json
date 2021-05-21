@@ -1,6 +1,6 @@
 {
   "name": "my-wacai",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.2.2",
