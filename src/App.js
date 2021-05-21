@@ -24,6 +24,11 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
 
   // Set monthly total amount
   useEffect(() => {
+    // If go to create / update fin item panel, do not fetch data.
+    if (selectedItem && (selectedItem.amount === 0 || selectedItem.id)) {
+      return;
+    }
+
     setIsLoading(true);
 
     if (!selectedItem) {
@@ -147,15 +152,14 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
             </div>
           </div>
           {
-            selectedItem ?
+            selectedItem &&
             <div className='App-FinDetails'>
               <FinItemDetails item={selectedItem} />
             </div>
-            :
-            <div className='App-Main'>
-              <FinMain isLoading={isLoading} items={finList} />
-            </div>
           }
+          <div className='App-Main'>
+            <FinMain isLoading={isLoading} items={finList} />
+          </div>
         </div>
       }
     </div>

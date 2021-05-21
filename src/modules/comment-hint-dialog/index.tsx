@@ -47,8 +47,8 @@ const CommentHintDialog : FC<Props> = ({closeCallback, successCallback, optionLi
   const [placeList, categoryGroupList] = useMemo(buildList, [optionList, commentKeyWord]);
   const [selectedPlace, setSelectedPlace] = useState(placeList[0]);
   const [selectedCategory, setSelectedCategory] = useState(categoryGroupList[0]);
-  const [isPlaceConfirmed, setIsPlaceConfirmed] = useState<boolean>(false);
-  const [isCategoryConfirmed, setIsCategoryConfirmed] = useState<boolean>(false);
+  const [isPlaceConfirmed, setIsPlaceConfirmed] = useState<boolean>(true);
+  const [isCategoryConfirmed, setIsCategoryConfirmed] = useState<boolean>(true);
 
   const placeSelectionHandler = (place) => {
     setSelectedPlace(place);
@@ -92,14 +92,14 @@ const CommentHintDialog : FC<Props> = ({closeCallback, successCallback, optionLi
                 defaultSelectedValue={placeList[0]}
                 items={placeList}
                 customizeItemClickHandler={placeSelectionHandler} />
-              <Checkbox onChange={checkPlaceChange} />
+              <Checkbox onChange={checkPlaceChange} defaultChecked={isPlaceConfirmed} />
             </div>
             <div className='CommentHint__Dropdown Category-DropdownList'>
               <DropdownList
                 defaultSelectedValue={categoryGroupList[0]}
                 items={categoryGroupList}
                 customizeItemClickHandler={categorySelectionHandler} />
-              <Checkbox onChange={checkCategoryChange} />
+              <Checkbox onChange={checkCategoryChange} defaultChecked={isCategoryConfirmed} />
             </div>
           </div>
           <div className='CommentHint__Footer'>
