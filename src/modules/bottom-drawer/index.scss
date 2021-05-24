@@ -18,9 +18,5 @@
   .Content {
     position: relative;
     transition: height .2s linear;
-    height: 400px;
-  }
-  &--Fold .Content {
-    height: 0;
   }
 }
