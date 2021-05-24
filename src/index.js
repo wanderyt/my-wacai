@@ -13,8 +13,10 @@ import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import reducer from './reducers';
 
-// Login Provider
+// Provider
 import LoginProvider from './modules/login/login-provider';
+import {CommentProvider} from './context/CommentContext';
+import {TagProvider} from './context/TagContext';
 
 // import './index.scss';
 
@@ -57,10 +59,14 @@ const Routers = () => {
 ReactDOM.render(
   <Provider store={store}>
     <LoginProvider>
-      <Router>
-        {/* <InnerCompWithRouter /> */}
-        <Routers />
-      </Router>
+      <CommentProvider>
+        <TagProvider>
+          <Router>
+            {/* <InnerCompWithRouter /> */}
+            <Routers />
+          </Router>
+        </TagProvider>
+      </CommentProvider>
     </LoginProvider>
     {/* <Loading /> */}
   </Provider>,

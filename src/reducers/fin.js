@@ -90,6 +90,20 @@ const fin = (state = {}, action) => {
         ...state,
         isAppLoading: false
       };
+    case 'COMMENT_LOADED':
+      return {
+        ...state,
+        comment: {
+          commentOptions: action.commentOptions,
+          placeOptions: action.placeOptions,
+          commentFullInfoOptions: action.commentFullInfoOptions,
+        }
+      };
+    case 'TAG_LOADED':
+      return {
+        ...state,
+        tag: action.tag
+      };
     default:
       return state;
   }
