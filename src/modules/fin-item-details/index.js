@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import FinComCatItem from '../fin-com-cat-item';
 import SearchDropdown from '../search-dropdown';
 import PopupButtons from '../popup-buttons';
@@ -7,11 +7,8 @@ import DropdownList from '../dropdown-list';
 import Calculator from '../calculator';
 import HashTagManagement from '../hash-tag';
 import CommentHintDialog from '../comment-hint-dialog';
-import {connect} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import Axios from 'axios';
-
-import {CommentProvider, useCommentContext} from '../../context/CommentContext';
-import {TagProvider, useTagContext} from '../../context/TagContext';
 
 import {comCatItems} from './config';
 import {uuid} from '../../utils/helper';
@@ -38,7 +35,16 @@ const scheduleModeItems = [{
 
 const DEFAULT_CITY = '上海';
 
-const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup = {}, dispatch}) => {
+const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
+  const updatedCatGroup = useSelector(state => {
+    try {
+      return state.fin.updatedCatGroup || {};
+    } catch (e) {
+      return {};
+    }
+  });
+  const dispatch = useDispatch();
+
   const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
   const [selectedTags, setSelectedTags] = useState(item.tags ? item.tags.split(',') : []);
   const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
@@ -49,8 +55,10 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
   const amountInputRef = useRef(null);
   const tagInputRef = useRef(null);
 
-  const {commentOptions, placeOptions, commentFullInfoOptions} = useCommentContext();
-  const basicTagList = useTagContext();
+  // const {commentOptions, placeOptions, commentFullInfoOptions} = useCommentContext();
+  // const basicTagList = useTagContext();
+  const {commentOptions, placeOptions, commentFullInfoOptions} = useSelector(state => state.fin.comment || {});
+  const basicTagList = useSelector(state => state.fin.tag || []);
   const [tagList, setTagList] = useState(basicTagList);
   const [filteredTagList, setFilteredTagList] = useState(basicTagList);
 
@@ -599,22 +607,4 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}, updatedCatGroup
   )
 };
 
-const mapStateToProps = (state) => {
-  let fin = state.fin || {};
-  let updatedCatGroup = fin.updatedCatGroup || {};
-  return {
-    updatedCatGroup
-  }
-};
-
-const WrappedFinItemDetails = (props) => {
-  return (
-    <CommentProvider>
-      <TagProvider>
-        <FinItemDetails {...props} />
-      </TagProvider>
-    </CommentProvider>
-  );
-};
-
-export default connect(mapStateToProps)(WrappedFinItemDetails);
+export default FinItemDetails;

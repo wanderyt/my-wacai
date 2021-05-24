@@ -152,14 +152,15 @@ const App = ({pageIndex, notificationType, notificationMsg, selectedItem, isAppL
             </div>
           </div>
           {
-            selectedItem &&
-            <div className='App-FinDetails'>
-              <FinItemDetails item={selectedItem} />
-            </div>
+            selectedItem ?
+              <div className='App-FinDetails'>
+                <FinItemDetails item={selectedItem} />
+              </div>
+              :
+              <div className='App-Main'>
+                <FinMain isLoading={isLoading} items={finList} />
+              </div>
           }
-          <div className='App-Main'>
-            <FinMain isLoading={isLoading} items={finList} />
-          </div>
         </div>
       }
     </div>

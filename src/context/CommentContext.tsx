@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import Axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 
 interface ICommentOption {
   comment: string;
@@ -23,14 +24,14 @@ const CommentContext = React.createContext<ICommentContext>(null);
 
 const useCommentContext = () => {
   const context = React.useContext(CommentContext);
+  const dispatch = useDispatch();
 
   if (!context) {
-    // dispatch({
-    //   type: 'SET_MESSAGE',
-    //   notificationType: 'error',
-    //   message: '评论未成功获取'
-    // });
-    console.log('comments are not fetched!');
+    dispatch({
+      type: 'SET_MESSAGE',
+      notificationType: 'error',
+      message: '评论未成功获取'
+    });
   }
 
   return context || {};
@@ -41,8 +42,14 @@ const CommentProvider: FC<{}> = ({children}) => {
   const [commentOptions, setCommentOptions] = useState<Array<ICommentOption>>(null);
   const [placeOptions, setPlaceOptions] = useState<Array<string>>();
   const [commentFullInfoOptions, setCommentFullInfoOptions] = useState<Array<ICommentFullInfoOption>>();
+  const commentStoreValue = useSelector(state => state.fin.comment || {});
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    if (commentStoreValue.commentOptions) {
+      return;
+    }
+
     Axios.get('/api/wacai/getAllCommentWithOptions')
       .then(({data}) => {
         let commentsResponse = data.data.comments || [];
@@ -53,6 +60,12 @@ const CommentProvider: FC<{}> = ({children}) => {
         setCommentOptions(commentsResponse);
         setPlaceOptions(placeOptions);
         setCommentFullInfoOptions(data.data.options || []);
+        dispatch({
+          type: 'COMMENT_LOADED',
+          commentOptions: commentsResponse,
+          placeOptions,
+          commentFullInfoOptions: data.data.options || [],
+        });
         setIsLoading(false);
       });
   }, []);
