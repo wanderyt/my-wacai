@@ -87,6 +87,7 @@
   .App-Page-Main {
     $LOGOUT-BUTTON-SIZE: 30px;
     max-height: 100%;
+    position: relative;
     .App-Logout {
       background-image: url('./logout-red.png');
       width: $LOGOUT-BUTTON-SIZE;
@@ -141,8 +142,8 @@
       }
     }
     .App-FinDetails {
-      position: relative;
-      top: -240px;
+      position: absolute;
+      top: 240px;
       z-index: 10;
 
       opacity: 1;
@@ -152,29 +153,29 @@
       animation-duration: 0.2s;
 
       @media screen and (max-height: 800px) {
-        top: -210px;
+        top: 210px;
         animation-name: fadeInUpOpacityBig;
       }
 
       @keyframes fadeInUpOpacity {
         0% {
           opacity: 0;
-          top: 0px;
+          top: 100%;
         }
         100% {
           opacity: 1;
-          top: -240px;
+          top: 240px;
         }
       }
 
       @keyframes fadeInUpOpacityBig {
         0% {
           opacity: 0;
-          top: 0px;
+          top: 100%;
         }
         100% {
           opacity: 1;
-          top: -210px;
+          top: 210px;
         }
       }
     }

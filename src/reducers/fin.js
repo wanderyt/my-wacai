@@ -14,7 +14,8 @@ const fin = (state = {}, action) => {
     case 'RESET_SELECTED_ITEM':
       return {
         ...state,
-        selectedItem: null
+        selectedItem: null,
+        updatedCatGroup: {}
       };
     case 'CREATE_ITEM':
       let {category, subcategory} = getPreselectedCategories();
@@ -52,6 +53,7 @@ const fin = (state = {}, action) => {
       return {
         ...state,
         pageIndex: targetPage,
+        selectedCatGroup: {},
         updatedCatGroup: action.updatedCatGroup || {}
       };
     case 'CHANGE_TO_FIN_HISTORY':
