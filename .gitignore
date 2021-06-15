@@ -35,8 +35,8 @@ test.db
 /server/token.txt
 
 # env
-.env
-.env.test
+# .env
+# .env.test
 
 # IDE
 .vscode/
