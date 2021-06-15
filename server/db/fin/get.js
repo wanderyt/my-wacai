@@ -277,7 +277,7 @@ const getFinItemsByMonth = (db, options, callback) => {
  */
 const getFinList = (db, options, callback) => {
   let promise = new Promise((resolve, reject) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where userId = ?`;
+    let sql = `select * from ${FIN_TABLE_NAME} as A left join RATING as B on A.id = B.fin_id where A.userId = ?`;
     if (options) {
       if (options.month && options.year) {
         sql += ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
@@ -483,7 +483,7 @@ const getMonthlyTotal = (db, options, callback) => {
  */
 const getFinItemsBySearchString = (db, searchString, options = {}, callback) => {
   let promise = new Promise((resolve, reject) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%' or tags like '%${searchString}%') and userId = ? {{dateSearchString}} order by date desc;`;
+    let sql = `select * from ${FIN_TABLE_NAME} A left join RATING B on A.id = B.fin_id where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%' or tags like '%${searchString}%') and A.userId = ? {{dateSearchString}} order by date desc;`;
     let dateSearchString = '';
     if (options.month && options.year) {
       dateSearchString = ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;

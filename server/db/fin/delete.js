@@ -13,8 +13,9 @@ const {padZero} = require('../../helper');
 const deleteFinItem = (db, options, callback) => {
   let promise = new Promise((resolve, reject) => {
     let {id, userId} = options;
-    let sql = `delete from ${FIN_TABLE_NAME} where id = ? and userId = ?;`;
-    let searchParams = [id, userId];
+    let sql = `delete from ${FIN_TABLE_NAME} where id = ? and userId = ?;
+      delete from RATING where fin_id = ? and userid = ?`;
+    let searchParams = [id, userId, id, userId];
     db.run(sql, searchParams, (err) => {
       if (err) {
         logDBError(`Delete fin data in FIN table with params: ${searchParams}`, sql, err);

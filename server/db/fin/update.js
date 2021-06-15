@@ -2,7 +2,7 @@ const {FIN_TABLE_NAME} = require('../config');
 const {logDBError, logDBSuccess} = require('../util');
 const {padZero} = require('../../helper');
 
-const UPDATE_COLUMN_NAME_LIST = [
+const UPDATE_FIN_COLUMN_NAME_LIST = [
   'category',
   'subcategory',
   'comment',
@@ -13,9 +13,20 @@ const UPDATE_COLUMN_NAME_LIST = [
   'tags'
 ];
 
+const UPDATE_RATING_COLUMN_NAME_LIST = [
+  'rating',
+  'positivecomment',
+  'negativecomment'
+];
+
 const ALLOW_EMPTY_VALUE_FIELD = [
   'tags'
 ];
+
+const columnNameMapping = {
+  positivecomment: 'positive_comment',
+  negativecomment: 'negative_comment',
+};
 
 /**
  * Update existing fin item
@@ -35,22 +46,29 @@ const ALLOW_EMPTY_VALUE_FIELD = [
  */
 const updateFinItem = (db, data, callback) => {
   let promise = new Promise((resolve, reject) => {
-    let updateOptions = '';
+    let updateFinOptions = '', updateRatingOptions = '';
     for (const key in data) {
       const value = data[key];
       // Remove null object value, but need to allow empty string
-      if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1 && value) {
-        updateOptions += `${key}="${value}", `;
+      if (UPDATE_FIN_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1 && value) {
+        updateFinOptions += `${key}="${value}", `;
       }
       // Allow empty string
       if (value === '' && ALLOW_EMPTY_VALUE_FIELD.indexOf(key.toLowerCase()) > -1) {
-        updateOptions += `${key}="${value}", `;
+        updateFinOptions += `${key}="${value}", `;
+      }
+      // Rating string
+      if (UPDATE_RATING_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1) {
+        updateRatingOptions += `${columnNameMapping[key] || key}="${value}", `;
       }
     }
-    updateOptions = updateOptions.slice(0, updateOptions.length - 2);
+    updateFinOptions = updateFinOptions.slice(0, updateFinOptions.length - 2);
+    updateRatingOptions = updateRatingOptions.slice(0, updateRatingOptions.length - 2);
 
-    let sql = `update ${FIN_TABLE_NAME} set ${updateOptions} where id = ? and userId = ?;`;
-    let searchParams = [data.id, data.userId];
+    let sql =
+      `update ${FIN_TABLE_NAME} set ${updateOptions} where id = ? and userId = ?;
+       update RATING set ${updateRatingOptions} where rating_id = ? and fin_id = ?;`;
+    let searchParams = [data.id, data.userId, data.rating_id, data.id];
     db.run(sql, searchParams, (err) => {
       if (err) {
         logDBError(`updateFinItem - Update fin data in ${FIN_TABLE_NAME} table with params: ${searchParams}`, sql, err);
@@ -91,7 +109,7 @@ const updateScheduledFinItem = (db, data, options, callback) => {
   let promise = new Promise((resolve, reject) => {
     let updateOptions = '';
     for (const key in data) {
-      if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1) {
+      if (UPDATE_FIN_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1) {
         const value = data[key];
         if (value) {
           updateOptions += `${key}="${value}", `;

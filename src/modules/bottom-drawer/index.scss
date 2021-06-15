@@ -1,12 +1,13 @@
 @import "../../colors.scss";
 
 .BottomDrawer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
   width: 100%;
   border-radius: 5px 5px 0 0;
   box-shadow: 0 -10px 10px $GREY-REGULAR;
+  background-color: $WHITE;
   .Handle {
     width: 120px;
     height: 6px;

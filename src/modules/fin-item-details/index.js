@@ -13,6 +13,8 @@ import Axios from 'axios';
 import {comCatItems} from './config';
 import {uuid} from '../../utils/helper';
 import {commentFilterFn, placeFilterFn} from './util';
+import BottomDrawer from '../bottom-drawer';
+import Rating from '../rating';
 
 import './index.scss';
 
@@ -189,7 +191,7 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
         data = {...latestItem, tags: selectedTags.join(',')};
       } else {
         requestUrl = '/api/wacai/createFinItem';
-        data = {...latestItem, tags: selectedTags.join(','), id: uuid()};
+        data = {...latestItem, tags: selectedTags.join(','), id: uuid(), ratingId: uuid()};
       }
     }
 
@@ -443,6 +445,18 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
     }
   }
 
+  const onNegativeCommentChange = (comment) => {
+    setLatestItem(Object.assign({}, latestItem, {negativeComment: comment}));
+  }
+
+  const onPositiveCommentChange = (comment) => {
+    setLatestItem(Object.assign({}, latestItem, {positiveComment: comment}));
+  }
+
+  const onRatingFaceSelected = (rating) => {
+    setLatestItem(Object.assign({}, latestItem, {rating}));
+  }
+
   /*
     Format change from '2019-04-20 19:20:00' to '2019/04/20 19:20:00'
     Required on mobile browser difference
@@ -603,6 +617,15 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
           <CommentHintDialog closeCallback={toggleCommentHintDialogStatus} successCallback={saveCommentHintResult} optionList={commentFullInfoOptions} commentKeyWord={latestItem.comment} />
         </div>
       }
+      <BottomDrawer autoExpand={!!latestItem.id}>
+        <Rating
+          rating={latestItem.rating}
+          defaultPositiveComment={latestItem.positiveComment}
+          defaultNegativeComment={latestItem.negativeComment}
+          onNegativeCommentChange={onNegativeCommentChange}
+          onPositiveCommentChange={onPositiveCommentChange}
+          onRatingFaceSelected={onRatingFaceSelected} />
+      </BottomDrawer>
     </div>
   )
 };

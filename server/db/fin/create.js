@@ -18,16 +18,26 @@ const {logDBError, logDBSuccess, uuid} = require('../util');
  * @param {function} callback
  */
 const createFinItem = (db, data, callback) => {
-  let promise = new Promise((resolve, reject) => {
-    let sql =
-      `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, place, city, userid, tags)
+  let finPromise = new Promise((resolve, reject) => {
+    let finSql = `insert into ${FIN_TABLE_NAME}(id, category, subcategory, date, comment, amount, place, city, userid, tags)
       values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
-    let searchParams = [data.id, data.category, data.subcategory, data.date, data.comment || '', data.amount, data.place || '', data.city || '', data.userId || 1, data.tags || ''];
-    db.all(sql, searchParams, (err) => {
+    let finSearchParams = [
+      data.id,
+      data.category,
+      data.subcategory,
+      data.date,
+      data.comment || '',
+      data.amount,
+      data.place || '',
+      data.city || '',
+      data.userId || 1,
+      data.tags || '',
+    ];
+    db.all(finSql, finSearchParams, (err) => {
       if (err) {
-        logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table with params: ${searchParams}`, sql, err);
+        logDBError(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table with params: ${finSearchParams}`, finSql, err);
       } else {
-        logDBSuccess(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table with params: ${searchParams}`, sql);
+        logDBSuccess(`createFinItem - Create fin data in ${FIN_TABLE_NAME} table with params: ${finSearchParams}`, finSql);
       }
 
       callback && callback(err);
@@ -36,7 +46,31 @@ const createFinItem = (db, data, callback) => {
     });
   });
 
-  return promise;
+  let ratingPromise = new Promise((resolve, reject) => {
+    let ratingSql = `insert into RATING(rating_id, rating, positive_comment, negative_comment, fin_id, userid)
+      values (?, ?, ?, ?, ?, ?);`;
+    let ratingSearchParams = [
+      data.ratingId,
+      data.rating,
+      data.positiveComment || '',
+      data.negativeComment || '',
+      data.id,
+      data.userId || 1,
+    ];
+    db.all(ratingSql, ratingSearchParams, (err) => {
+      if (err) {
+        logDBError(`createFinItemRating - Create fin rating data in RATING table with params: ${ratingSearchParams}`, ratingSql, err);
+      } else {
+        logDBSuccess(`createFinItemRating - Create fin rating data in RATING table with params: ${ratingSearchParams}`, ratingSql);
+      }
+
+      callback && callback(err);
+
+      err ? reject({err}) : resolve({status: true});
+    });
+  });
+
+  return Promise.all([finPromise, ratingPromise]);
 }
 
 /**

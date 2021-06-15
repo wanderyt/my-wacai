@@ -215,3 +215,13 @@ INSERT INTO CATEGORY(category, subcategory, is_common, userid)
 VALUES('社交', '住宿', 0, 1);
 INSERT INTO CATEGORY(category, subcategory, is_common, userid)
 VALUES('社交', '杂项', 0, 1);
+
+-- Add Rating table
+CREATE TABLE RATING (
+  rating_id VARCHAR(100) PRIMARY KEY,
+  rating number,
+  positive_comment VARCHAR(1000),
+  negative_comment VARCHAR(1000),
+  fin_id VARCHAR(100),
+  userid number
+);
