@@ -6,16 +6,23 @@ const {padZero} = require('../../helper');
 /**
  * Delete specific fin item based on fin item id
  * @param {object} data target fin item data
- * @param {string} data.id target fin item data id
+ * @param {array | string} data.id target fin item data id or list
  * @param {number} data.userId target fin item user id
  */
 const deleteFinItemById = (data) => {
   const db = createDBConnection();
   let promise = new Promise((resolve, reject) => {
-    let {id, userId} = data;
-    let sql = `delete from ${FIN_TABLE_NAME} where id = ? and userId = ?;`;
-    let searchParams = [id, userId];
-    db.run(sql, searchParams, (err) => {
+    let {id: finIdList, userId} = data;
+    if (!Array.isArray(finIdList)) {
+      finIdList = [finIdList];
+    }
+    let sqlTemplate = `delete from ${FIN_TABLE_NAME} where id = ? and userId = ?;`;
+    let sql = "", searchParams = [];
+    finIdList.forEach((id) => {
+      sql += sqlTemplate;
+      searchParams.push(id, userId);
+    });
+    db.all(sql, searchParams, (err) => {
       if (err) {
         logDBError(`Delete fin data in FIN table with params: ${searchParams}`, sql, err);
       } else {
@@ -56,7 +63,7 @@ const deleteScheduledFinItemsByTime = (data) => {
       }
 
       closeDB(db);
-      err ? reject({err}) : resolve({id: data.id});
+      err ? reject({err}) : resolve({scheduleId: data.scheduleId});
     });
   });
 
@@ -66,16 +73,28 @@ const deleteScheduledFinItemsByTime = (data) => {
 /**
  * Delete rating record by fin id and user id
  * @param {object} data query data
- * @param {string} data.finId query fin id
+ * @param {array | string} data.finId query fin id or list
  * @param {number} data.userId query user id
  */
 const deleteRatingByFinId = (data) => {
   const db = createDBConnection();
   let promise = new Promise((resolve, reject) => {
-    let sql = `delete from RATING where fin_id = ? and userId = ?`;
-    let searchParams = [data.finId, data.userId];
+    console.log("deleteRatingByFinId - data: ", data);
+    let {finId: finIdList, userId} = data;
+    if (!Array.isArray(finIdList)) {
+      finIdList = [finIdList];
+    }
+    let sqlTemplate = `delete from RATING where fin_id = ? and userId = ?;`;
+    let sql = "", searchParams = [];
+    finIdList.forEach((id) => {
+      sql += sqlTemplate;
+      searchParams.push(id, userId);
+    });
+    console.log("deleteRatingByFinId - sql: ", sql);
+    console.log("deleteRatingByFinId - searchParams: ", searchParams);
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
+        console.log("deleteRatingByFinId - err: ", err);
         logDBError(`deleteRatingByFinId - Delete rating data in RATING table with params: ${searchParams}`, sql, err);
       } else {
         logDBSuccess(`deleteRatingByFinId - Delete rating data in RATING table with params: ${searchParams}`, sql);
@@ -93,4 +112,5 @@ module.exports = {
   deleteFinItemById,
   deleteScheduledFinItemsByTime,
   deleteRatingByFinId,
+  // deleteRatingByScheduleId,
 };

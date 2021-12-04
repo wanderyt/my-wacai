@@ -176,13 +176,14 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
       return;
     }
 
-    let requestUrl = '', data = {};
+    let requestUrl = '', requestQuery = '', data = {};
     if (latestItem.id) {
       if (latestItem.isScheduled > 0) {
         setUpdateScheduledPopupStatus(true);
         return;
       } else {
-        requestUrl = '/api/wacai/updateFinItem';
+        // requestUrl = '/api/wacai/updateFinItem';
+
         data = {...latestItem, tags: selectedTags.join(',')};
       }
     } else {
@@ -254,7 +255,7 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
     const now = new Date();
     options.scheduledId = data.scheduledId;
     options.year = now.getFullYear();
-    options.month = now.getMonth();
+    options.month = now.getMonth() + 1;
     options.day = now.getDate();
 
     // App Loading Status
@@ -354,7 +355,7 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
     });
 
     const now = new Date();
-    Axios.delete(`/api/wacai/deleteScheduledFinItem?scheduleId=${latestItem.scheduleId}&year=${now.getFullYear()}&month=${now.getMonth()}&day=${now.getDate()}`)
+    Axios.delete(`/api/wacai/deleteScheduledFinItem?scheduleId=${latestItem.scheduleId}&year=${now.getFullYear()}&month=${now.getMonth() + 1}&day=${now.getDate()}`)
       .then(() => {
         // App Loaded Status
         dispatch({

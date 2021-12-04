@@ -98,17 +98,24 @@ const getFinByScheduleId = (data) => {
  * @param {object} data
  * @param {string} data.scheduleId query schedule id
  * @param {number} data.userId query user id
+ * @param {number} data.year query starting year
+ * @param {number} data.month query starting month
+ * @param {number} data.day query starting day
  */
-const getFinByScheduleIdAndBaseDatetime = (data, options) => {
+const getFinByScheduleIdAndBaseDatetime = (data) => {
   const db = createDBConnection();
   let promise = new Promise((resolve, reject) => {
     let sql = `select * from ${FIN_TABLE_NAME} where userId = ? and scheduleId = ?`;
     let searchParams = [data.userId, data.scheduleId];
+    if (data.year && data.month && data.day && Number(data.year) && data.month < 13 && data.day < 35) {
+      sql += ' and date >= date(?, "+1 day")';
+      searchParams.push(`${data.year}-${padZero(data.month)}-${padZero(data.day)}`);
+    }
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`getFinByScheduleId - Fetch data in FIN table with params: ${searchParams}`, sql, err);
+        logDBError(`getFinByScheduleIdAndBaseDatetime - Fetch data in FIN table with params: ${searchParams}`, sql, err);
       } else {
-        logDBSuccess(`getFinByScheduleId - Fetch data in FIN table with params: ${searchParams}`, sql);
+        logDBSuccess(`getFinByScheduleIdAndBaseDatetime - Fetch data in FIN table with params: ${searchParams}`, sql);
       }
 
       closeDB(db);
@@ -150,4 +157,5 @@ module.exports = {
   getFinById,
   getRatingByFinId,
   getFinByScheduleId,
+  getFinByScheduleIdAndBaseDatetime,
 };

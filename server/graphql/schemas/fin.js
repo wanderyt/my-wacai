@@ -1,8 +1,9 @@
 const {makeExecutableSchema, PubSub} = require('apollo-server');
-const {getFinTopList, getFinById, getRatingByFinId} = require('../../db/fin/gql-get');
+const {getFinTopList, getFinById, getRatingByFinId, getFinByScheduleIdAndBaseDatetime} = require('../../db/fin/gql-get');
 const {createFinItem, createScheduledFinItem, createRatingByFinId} = require('../../db/fin/gql-create');
 const {updateFinItemById, updateScheduledFinItemByScheduleId, updateRatingByFinId} = require('../../db/fin/gql-update');
-const {deleteFinItemById, deleteRatingByFinId} = require('../../db/fin/gql-delete');
+const {deleteFinItemById, deleteScheduledFinItemsByTime, deleteRatingByFinId} = require('../../db/fin/gql-delete');
+const { uuid } = require('../../db/util');
 const pubsub = new PubSub();
 
 const mockUsers = [{
@@ -70,6 +71,7 @@ const typeDefs = `
   type Query {
     finTopList(top: Int, userId: Int, year: Int, month: Int): [Fin!],
     fin(id: String): Fin,
+    finByScheduleIdAndBaseDatetime(scheduleId: String, year: Int, month: Int, day: Int): [Fin!],
   }
 
   type Mutation {
@@ -78,7 +80,7 @@ const typeDefs = `
     updateFullFinItem(finInput: FinInput, ratingInput: RatingInput): Fin!
     updateScheduledFullFinItem(finInput: FinInput): Boolean
     deleteFullFinItemById(finId: ID): Fin!
-    deleteFullFinItemByScheduleId(scheduleId: ID): [ID]
+    deleteFullFinItemByScheduleId(scheduleId: ID, year: Int, month: Int, day: Int): [ID!]
   }
 `;
 
@@ -102,7 +104,7 @@ const resolvers = {
       const {user: currentUser, logger} = context;
       const {userId} = currentUser || {};
       try {
-        const {ids: finIds} = await createScheduledFinItem({...finInput, userId});
+        const {ids: finIds} = await createScheduledFinItem({...finInput, isScheduled: finInput.isScheduled || 4, scheduleId: uuid(), userId});
         if (finIds && finIds.length > 0) {
           finIds.map(async (finId) => {
             await createRatingByFinId({...ratingInput, finId, userId});
@@ -159,18 +161,27 @@ const resolvers = {
         return {id: ''};
       };
     },
-    deleteFullFinItemByScheduleId: async (parent, {scheduleId}, context) => {
+    deleteFullFinItemByScheduleId: async (parent, {scheduleId, year, month, day}, context) => {
       const {user: currentUser, logger} = context;
       const {userId} = currentUser || {};
+      console.log("deleteScheduledFinItemsByTime data - ", {scheduleId, year, month, day});
       try {
-        await deleteRatingByScheduleId({scheduleId, userId});
-        const {id} = await deleteFinItemById({id: finId, userId});
-        const result = {finId: id};
+        const {rows: fins} = await getFinByScheduleIdAndBaseDatetime({scheduleId, userId, year, month, day});
+        const finIds = fins.map((fin) => fin.id) || [];
+        console.log("finIds: ", finIds);
+        console.log("finIds length: ", finIds.length);
+        if (finIds.length > 0) {
+          finIds.forEach(async (id) => {
+            await deleteRatingByFinId({finId: id, userId});
+            await deleteFinItemById({id: id, userId});
+          });
+        }
+        const result = {ids: finIds};
         pubsub.publish('DELETE_FULL_FIN_ITEM_MUTATION', result);
-        return {id};
+        return finIds;
       } catch (e) {
         logger.error({error: e});
-        return {id: ''};
+        return [];
       };
     }
   },
@@ -195,6 +206,16 @@ const resolvers = {
         const fin = (finResp.rows || [])[0];
         pubsub.publish('FIN_ITEM_QUERIED', {fin});
         return fin;
+      }
+    },
+    finByScheduleIdAndBaseDatetime: async (parent, {scheduleId, year, month, day}, context) => {
+      const {user: currentUser, logger} = context;
+      const {userId} = currentUser || {};
+      const finResp = await getFinByScheduleIdAndBaseDatetime({scheduleId, userId, year, month, day});
+      if (!finResp.err) {
+        const fins = finResp.rows || [];
+        pubsub.publish('FIN_ITEM_QUERIED', {fins});
+        return fins;
       }
     }
   },
