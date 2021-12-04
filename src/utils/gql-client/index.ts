@@ -17,3 +17,7 @@ const updateFinItem = (data) => {
     })
   }`
 }
+
+export {
+  updateFinItem
+}
