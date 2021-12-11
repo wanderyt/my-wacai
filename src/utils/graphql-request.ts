@@ -1,23 +1,23 @@
-import Axios from "axios"
+import Axios from 'axios';
 
-type SendGraphqlRequestType<T> = (
-  options: object,
-  isQuery?: boolean
-) => Promise<T>;
+const buildRequestQuery = (query: string, isQuery: boolean): string => {
+  return isQuery ? `{${query}}` : `mutation {${query}}`;
+};
 
-const sendGraphqlRequest: <T> (
+const sendGraphqlRequest: <T>(
   options: string,
   isQuery?: boolean
-) => Promise<T> = (query = '{}', isQuery = true) => {
+) => Promise<T> = (query = '', isQuery = true) => {
   return Axios.post(`/api/graphql`, {
-    query,
-  }).then(({data}) => {
-    return data.data;
-  }, (err) => {
-    return err
-  });
+    query: buildRequestQuery(query, isQuery),
+  }).then(
+    ({ data }) => {
+      return data.data;
+    },
+    err => {
+      return err;
+    }
+  );
 };
 
-export {
-  sendGraphqlRequest,
-};
+export { sendGraphqlRequest };

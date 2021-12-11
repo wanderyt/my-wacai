@@ -42,7 +42,7 @@ const AdvanceSearchItem = ({type, name, Comp, defaultValue, formatter = (value) 
             className='ItemOption-Container'
             onClick={toggleSelectionDetailPanel}>
             <div className='ItemSelectedValue'>{searchParams[type] ? formatValue(searchParams[type]) : defaultValue}</div>
-            <div className='ItemSelectionButton'>></div>
+            <div className='ItemSelectionButton'>&gt;</div>
           </div>
         </div>
       </div>

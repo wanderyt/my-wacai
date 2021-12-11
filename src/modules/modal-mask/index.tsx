@@ -1,6 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './index.scss';
+
+interface IModalMaskProps {
+  extraCls?: string;
+  onClick?: () => void;
+}
 
 /**
  * A component that shows a modal mask over the entire screen. It uses RGBA as background color
@@ -11,12 +15,12 @@ import './index.scss';
  * Developers can modify this component to expose more things to be customized as needed.
  */
 
-class ModalMask extends React.Component {
+class ModalMask extends React.Component<IModalMaskProps> {
   onClick = () => {
     if (this.props.onClick) {
       this.props.onClick();
     }
-  }
+  };
 
   render() {
     let modalMaskCls = 'ModalMask__container';
@@ -26,17 +30,12 @@ class ModalMask extends React.Component {
       modalMaskCls += ' ' + this.props.extraCls;
     }
 
-    return <div className={modalMaskCls} onClick={this.onClick}><div className='ModalMask__content'>{this.props.children}</div></div>;
+    return (
+      <div className={modalMaskCls} onClick={this.onClick}>
+        <div className="ModalMask__content">{this.props.children}</div>
+      </div>
+    );
   }
 }
-
-ModalMask.propTypes = {
-  extraCls: PropTypes.string,
-  onClick: PropTypes.func
-};
-
-ModalMask.defaultProps = {
-  extraCls: ''
-};
 
 export default ModalMask;

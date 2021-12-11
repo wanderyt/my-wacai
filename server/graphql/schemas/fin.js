@@ -1,5 +1,5 @@
 const {makeExecutableSchema, PubSub} = require('apollo-server');
-const {getFinTopList, getFinById, getRatingByFinId, getFinByScheduleIdAndBaseDatetime} = require('../../db/fin/gql-get');
+const {getFinTopList, getFinById, getRatingByFinId, getFinByScheduleIdAndBaseDatetime, getSumByYearMonth, getSumByWeek, getSumByDay} = require('../../db/fin/gql-get');
 const {createFinItem, createScheduledFinItem, createRatingByFinId} = require('../../db/fin/gql-create');
 const {updateFinItemById, updateScheduledFinItemByScheduleId, updateRatingByFinId} = require('../../db/fin/gql-update');
 const {deleteFinItemById, deleteScheduledFinItemsByTime, deleteRatingByFinId} = require('../../db/fin/gql-delete');
@@ -72,6 +72,9 @@ const typeDefs = `
     finTopList(top: Int, userId: Int, year: Int, month: Int): [Fin!],
     fin(id: String): Fin,
     finByScheduleIdAndBaseDatetime(scheduleId: String, year: Int, month: Int, day: Int): [Fin!],
+    sumByYearMonth(year: Int, month: Int): Float,
+    sumByWeek(year: Int, month: Int, day: Int, dayOfWeek: Int): Float,
+    sumByDay(year: Int, month: Int, day: Int): Float,
   }
 
   type Mutation {
@@ -216,6 +219,37 @@ const resolvers = {
         const fins = finResp.rows || [];
         pubsub.publish('FIN_ITEM_QUERIED', {fins});
         return fins;
+      }
+    },
+    sumByYearMonth: async (parent, {year, month}, context) => {
+      const {user: currentUser, logger} = context;
+      const {userId} = currentUser || {};
+      const sumResponse = await getSumByYearMonth({month, year, userId});
+      if (!sumResponse.err) {
+        const sumResult = sumResponse.rows || [];
+        pubsub.publish('SUM_BY_YEAR_MONTH', {sumResult});
+        return sumResult.length > 0 ? sumResult[0].total : 0;
+      }
+    },
+    sumByWeek: async (parent, {year, month, day, dayOfWeek}, context) => {
+      const {user: currentUser, logger} = context;
+      const {userId} = currentUser || {};
+      const sumResponse = await getSumByWeek({year, month, day, dayOfWeek, userId});
+      if (!sumResponse.err) {
+        const sumResult = sumResponse.rows || [];
+        pubsub.publish('SUM_BY_WEEK', {sumResult});
+        return sumResult.length > 0 ? sumResult[0].total : 0;
+      }
+    },
+    // SumByDay(year: Int, month: Int, day: Int): Float,
+    sumByDay: async (parent, {year, month, day}, context) => {
+      const {user: currentUser, logger} = context;
+      const {userId} = currentUser || {};
+      const sumResponse = await getSumByDay({year, month, day, userId});
+      if (!sumResponse.err) {
+        const sumResult = sumResponse.rows || [];
+        pubsub.publish('SUM_BY_DAY', {sumResult});
+        return sumResult.length > 0 ? sumResult[0].total : 0;
       }
     }
   },

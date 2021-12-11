@@ -1,5 +1,35 @@
-const updateFinItem = (data) => {
-  return `{
+export const finTopList = (
+  year: number,
+  month: number,
+  top: number
+): string => `
+  finTopList(
+    year: ${year}
+    month: ${month}
+    top: ${top}
+  ) {
+    id
+    category
+    subcategory
+    comment
+    date
+    amount
+    isScheduled
+    scheduleId
+    place
+    city
+    userId
+    rating {
+      id
+      rating
+      positiveComment
+      negativeComment
+    }
+  }
+`;
+
+export const updateFinItem = data => {
+  return `
     updateFullFinItem(finInput: {
       id: "${data.id}"
       category: "${data.category}"
@@ -15,9 +45,5 @@ const updateFinItem = (data) => {
       city: String
       tags: String
     })
-  }`
-}
-
-export {
-  updateFinItem
-}
+  `;
+};

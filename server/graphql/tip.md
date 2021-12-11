@@ -33,6 +33,21 @@
 # }
 ```
 
+## Queries
+
+### finByScheduleIdAndBaseDatetime
+
+```
+finByScheduleIdAndBaseDatetime(
+  scheduleId: "7783B6F6-62E8-44CD-8E54-ABAF6664C6B9"
+  year: 2100
+  month: 8
+  day: 6
+) {
+  id
+}
+```
+
 ## Mutations
 
 ### createFullFinItem
@@ -83,19 +98,6 @@ createScheduledFullFinItem(finInput: {
   positiveComment: ""
   negativeComment: "bad"
 })s
-```
-
-### finByScheduleIdAndBaseDatetime
-
-```
-finByScheduleIdAndBaseDatetime(
-  scheduleId: "7783B6F6-62E8-44CD-8E54-ABAF6664C6B9"
-  year: 2100
-  month: 8
-  day: 6
-) {
-  id
-}
 ```
 
 ### deleteFullFinItemByScheduleId
