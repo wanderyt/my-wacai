@@ -3,10 +3,6 @@ const { FIN_TABLE_NAME } = require('../config');
 const { logDBError, logDBSuccess } = require('../util');
 const { padZero } = require('../../helper');
 
-interface QueryResult<T> {
-  rows: Array<T>;
-}
-
 /**
  * Get fin list data
  * @param {object} options query options
@@ -209,17 +205,9 @@ const getRatingByFinId = data => {
  * @param {string} data.year query year details, need to be formatted as 'YYYY'
  * @param {number} data.userId query user id
  */
-const getSumByYearMonth = (options: {
-  month: number;
-  year: number;
-  userId: number;
-}): Promise<QueryResult<{ total: number }>> => {
+const getSumByYearMonth = (options) => {
   const db = createDBConnection();
-  let promise = new Promise<{
-    rows: Array<{
-      total: number;
-    }>;
-  }>((resolve, reject) => {
+  let promise = new Promise((resolve, reject) => {
     let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date like '${
       options.year
     }-${padZero(options.month)}-%' and userId = ?);`;
@@ -258,11 +246,7 @@ const getSumByWeek = options => {
   const db = createDBConnection();
   const { month, year, day, dayOfWeek, userId } = options;
 
-  let promise = new Promise<{
-    rows: Array<{
-      total: number;
-    }>;
-  }>((resolve, reject) => {
+  let promise = new Promise((resolve, reject) => {
     let startDay = 0,
       endDay = 0;
     // Start day logic and End day logic
@@ -311,11 +295,7 @@ const getSumByWeek = options => {
 const getSumByDay = options => {
   const db = createDBConnection();
   const { month, year, day, userId } = options;
-  let promise = new Promise<{
-    rows: Array<{
-      total: number;
-    }>;
-  }>((resolve, reject) => {
+  let promise = new Promise((resolve, reject) => {
     const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
     // let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date('?') and date < date('?', "+1 day") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
     let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date('${currentDay}') and date < date('${currentDay}', "+1 day") and (isScheduled = 0 or isScheduled is null) and userId = '${userId}');`;
@@ -342,7 +322,7 @@ const getSumByDay = options => {
   return promise;
 };
 
-export {
+module.exports = {
   getFinTopList,
   getFinById,
   getRatingByFinId,

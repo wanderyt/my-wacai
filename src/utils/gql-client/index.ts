@@ -47,3 +47,5 @@ export const updateFinItem = data => {
     })
   `;
 };
+
+export * from './initialLoad';

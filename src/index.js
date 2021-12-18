@@ -62,7 +62,7 @@ ReactDOM.render(
       <CommentProvider>
         <TagProvider>
           <Router>
-            <InnerCompWithRouter />
+            {/* <InnerCompWithRouter /> */}
             <Routers />
           </Router>
         </TagProvider>

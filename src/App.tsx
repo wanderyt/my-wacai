@@ -11,9 +11,10 @@ import Notification from './modules/notification';
 import SearchFinItem from './modules/search-fin-item';
 import Loading from './modules/loading';
 import { sendGraphqlRequest } from './utils/graphql-request';
-import { finTopList } from './utils/gql-client';
+import { initialLoadQuery } from './utils/gql-client';
 
 import './App.scss';
+import { IFinItem } from './utils/gql-client/props';
 
 const DEFAULT_FIN_ITEMS = 15;
 
@@ -25,13 +26,12 @@ const App = ({
   isAppLoading,
   dispatch,
 }) => {
-  let [monthTotal, setMonthTotal] = useState(0);
-  let [weekTotal, setWeekTotal] = useState(0);
-  let [dayTotal, setDayTotal] = useState(0);
-  let [finList, setFinList] = useState(new Array(5).fill({}));
-  let [isLoading, setIsLoading] = useState(true);
+  let [monthTotal, setMonthTotal] = useState<number>(0);
+  let [weekTotal, setWeekTotal] = useState<number>(0);
+  let [dayTotal, setDayTotal] = useState<number>(0);
+  let [finList, setFinList] = useState<IFinItem[]>([]);
+  let [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Set monthly total amount
   useEffect(() => {
     // If go to create / update fin item panel, do not fetch data.
     if (selectedItem && (selectedItem.amount === 0 || selectedItem.id)) {
@@ -44,25 +44,29 @@ const App = ({
       let now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
+      const day = now.getDate();
+      const dayOfWeek = now.getDay();
       const top = DEFAULT_FIN_ITEMS;
       // Axios.get(`/api/wacai/getFinList?year=${now.getFullYear()}&month=${now.getMonth() + 1}&day=${now.getDate()}&dayOfWeek=${now.getDay()}&top=${DEFAULT_FIN_ITEMS}`)
-      sendGraphqlRequest(finTopList(year, month, top)).then(
-        ({ data }) => {
+      sendGraphqlRequest<{
+        sumByDay: number;
+        sumByWeek: number;
+        sumByYearMonth: number;
+        finTopList: IFinItem[];
+      }>(initialLoadQuery(year, month, day, dayOfWeek, top)).then(
+        response => {
           setIsLoading(false);
 
-          let { monthTotal = 0, weekTotal = 0, dayTotal = 0 } = data;
-          let finList = data.data || [];
-          setFinList(finList);
-          setMonthTotal(monthTotal);
-          setWeekTotal(weekTotal);
-          setDayTotal(dayTotal);
-
-          // Axios.post(`/api/graphql`, {
-          //   query: "{hello}"
-          // }).then(({data}) => {
-          //   console.log('graphql data: ', data);
-          //   setHelloMsg(data.data.hello);
-          // });
+          let {
+            sumByDay = 0,
+            sumByWeek = 0,
+            sumByYearMonth = 0,
+            finTopList = [],
+          } = response;
+          setFinList(finTopList);
+          setMonthTotal(sumByYearMonth || 0);
+          setWeekTotal(sumByWeek || 0);
+          setDayTotal(sumByDay || 0);
         },
         ({ response }) => {
           setIsLoading(false);

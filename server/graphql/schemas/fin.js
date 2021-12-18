@@ -241,9 +241,12 @@ const resolvers = {
         return sumResult.length > 0 ? sumResult[0].total : 0;
       }
     },
-    // SumByDay(year: Int, month: Int, day: Int): Float,
     sumByDay: async (parent, {year, month, day}, context) => {
       const {user: currentUser, logger} = context;
+      logger.info({
+        message: 'sumByDay gql query',
+        params: {year, month, day}
+      });
       const {userId} = currentUser || {};
       const sumResponse = await getSumByDay({year, month, day, userId});
       if (!sumResponse.err) {

@@ -182,7 +182,7 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
         setUpdateScheduledPopupStatus(true);
         return;
       } else {
-        // requestUrl = '/api/wacai/updateFinItem';
+        requestUrl = '/api/wacai/updateFinItem';
 
         data = {...latestItem, tags: selectedTags.join(',')};
       }

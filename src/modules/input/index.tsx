@@ -1,4 +1,4 @@
-import React, {FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 
 import './index.scss';
 
@@ -6,11 +6,15 @@ interface IInputProps {
   defaultValue?: string;
   placeholder?: string;
   onInputChange?: (value: string) => void;
-};
+}
 
-const Input: FC<IInputProps> = ({defaultValue, onInputChange, placeholder}) => {
-  const [value, setValue] = useState<string>(defaultValue || '');
-  const inputValueChanged = (evt) => {
+const Input: FC<IInputProps> = ({
+  defaultValue,
+  onInputChange,
+  placeholder,
+}) => {
+  const [value, setValue] = useState<string>('');
+  const inputValueChanged = evt => {
     const currValue = evt.target.value;
     setValue(currValue);
 
@@ -22,14 +26,15 @@ const Input: FC<IInputProps> = ({defaultValue, onInputChange, placeholder}) => {
   }, [defaultValue]);
 
   return (
-    <div className='InputContainer'>
+    <div className="InputContainer">
       <input
-        type='input'
+        type="input"
         placeholder={placeholder}
         onChange={inputValueChanged}
-        value={value} />
+        value={value}
+      />
     </div>
-  )
+  );
 };
 
 export default Input;
