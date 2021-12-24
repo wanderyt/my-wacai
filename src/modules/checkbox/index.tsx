@@ -1,19 +1,24 @@
-import React, {ChangeEvent, FC, useEffect, useState} from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import './index.scss';
 
 interface Props {
   disabled?: boolean;
   onChange?: (evt: ChangeEvent) => void;
   defaultChecked?: boolean;
-  className?: string
-};
+  className?: string;
+}
 
-const Checkbox: FC<Props> = ({disabled, onChange, className = '', defaultChecked = false}) => {
+const Checkbox: FC<Props> = ({
+  disabled,
+  onChange,
+  className = '',
+  defaultChecked = false,
+}) => {
   const [checked, setChecked] = useState<boolean>(defaultChecked);
 
   useEffect(() => {
     setChecked(defaultChecked);
-  }, [defaultChecked])
+  }, [defaultChecked]);
 
   return (
     <input

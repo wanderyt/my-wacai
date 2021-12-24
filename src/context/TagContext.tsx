@@ -12,14 +12,14 @@ const useTagContext = () => {
     dispatch({
       type: 'SET_MESSAGE',
       notificationType: 'error',
-      message: '标签未成功获取'
+      message: '标签未成功获取',
     });
   }
 
   return context || {};
 };
 
-const TagProvider: FC<{}> = ({children}) => {
+const TagProvider: FC<{}> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tags, setTags] = useState<Array<string>>(null);
   const tagStoreValue = useSelector(state => state.fin.tag || undefined);
@@ -30,27 +30,20 @@ const TagProvider: FC<{}> = ({children}) => {
       return;
     }
 
-    Axios.get('/api/wacai/getAllTags')
-      .then(({data}) => {
-        let responseData = data.data || [];
-        setTags(responseData);
-        dispatch({
-          type: 'TAG_LOADED',
-          tag: responseData,
-        })
-        setIsLoading(false);
+    Axios.get('/api/wacai/getAllTags').then(({ data }) => {
+      let responseData = data.data || [];
+      setTags(responseData);
+      dispatch({
+        type: 'TAG_LOADED',
+        tag: responseData,
       });
+      setIsLoading(false);
+    });
   }, []);
 
-  return (
-    !isLoading ?
-      <TagContext.Provider value={tags}>{children}</TagContext.Provider>
-      :
-      null
-  );
+  return !isLoading ? (
+    <TagContext.Provider value={tags}>{children}</TagContext.Provider>
+  ) : null;
 };
 
-export {
-  TagProvider,
-  useTagContext,
-};
+export { TagProvider, useTagContext };

@@ -90,7 +90,7 @@ const App = ({
   const handleLogout = () => {
     Axios.post(`/api/user/logout`).then(() => {
       setTimeout(() => {
-        window.location.reload(true);
+        window.location.reload();
       }, 0);
     });
   };

@@ -1,11 +1,11 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import './faces.scss';
 
 interface IFaceProps {
   isActive?: boolean;
   callbackHandler?: (activeStatus: boolean) => void;
-};
+}
 
 const useFaceHook = (isActive, callbackHandler) => {
   const [active, setActive] = useState<boolean>(isActive);
@@ -25,10 +25,13 @@ const useFaceHook = (isActive, callbackHandler) => {
   };
 };
 
-const AngryFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
-  const {active, faceClickHandler} = useFaceHook(isActive, callbackHandler);
+const AngryFace: FC<IFaceProps> = ({ isActive, callbackHandler }) => {
+  const { active, faceClickHandler } = useFaceHook(isActive, callbackHandler);
   return (
-    <div className={`Face AngryFace ${active ? 'active' : ''}`} onClick={faceClickHandler}>
+    <div
+      className={`Face AngryFace ${active ? 'active' : ''}`}
+      onClick={faceClickHandler}
+    >
       <div>
         <svg className="eye left">
           <Eye />
@@ -44,7 +47,7 @@ const AngryFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
   );
 };
 
-const SadFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
+const SadFace: FC<IFaceProps> = ({ isActive, callbackHandler }) => {
   const [active, setActive] = useState<boolean>(isActive);
   const faceClickHandler = () => {
     const currStatus = !active;
@@ -52,7 +55,10 @@ const SadFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
     callbackHandler && callbackHandler(currStatus);
   };
   return (
-    <div className={`Face SadFace ${active ? 'active' : ''}`} onClick={faceClickHandler}>
+    <div
+      className={`Face SadFace ${active ? 'active' : ''}`}
+      onClick={faceClickHandler}
+    >
       <div>
         <svg className="eye left">
           <Eye />
@@ -68,16 +74,19 @@ const SadFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
   );
 };
 
-const OKFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
-  const {active, faceClickHandler} = useFaceHook(isActive, callbackHandler);
+const OKFace: FC<IFaceProps> = ({ isActive, callbackHandler }) => {
+  const { active, faceClickHandler } = useFaceHook(isActive, callbackHandler);
   return (
-    <div className={`Face OKFace ${active ? 'active' : ''}`} onClick={faceClickHandler}>
+    <div
+      className={`Face OKFace ${active ? 'active' : ''}`}
+      onClick={faceClickHandler}
+    >
       <div></div>
     </div>
   );
 };
 
-const GoodFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
+const GoodFace: FC<IFaceProps> = ({ isActive, callbackHandler }) => {
   const [active, setActive] = useState<boolean>(isActive);
   const faceClickHandler = () => {
     const currStatus = !active;
@@ -85,7 +94,10 @@ const GoodFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
     callbackHandler && callbackHandler(currStatus);
   };
   return (
-    <div className={`Face GoodFace ${active ? 'active' : ''}`} onClick={faceClickHandler}>
+    <div
+      className={`Face GoodFace ${active ? 'active' : ''}`}
+      onClick={faceClickHandler}
+    >
       <div>
         <svg className="eye left">
           <Eye />
@@ -101,10 +113,13 @@ const GoodFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
   );
 };
 
-const HappyFace: FC<IFaceProps> = ({isActive, callbackHandler}) => {
-  const {active, faceClickHandler} = useFaceHook(isActive, callbackHandler);
+const HappyFace: FC<IFaceProps> = ({ isActive, callbackHandler }) => {
+  const { active, faceClickHandler } = useFaceHook(isActive, callbackHandler);
   return (
-    <div className={`Face HappyFace ${active ? 'active' : ''}`} onClick={faceClickHandler}>
+    <div
+      className={`Face HappyFace ${active ? 'active' : ''}`}
+      onClick={faceClickHandler}
+    >
       <div>
         <svg className="eye left">
           <Eye />
@@ -133,10 +148,4 @@ const Mouth = () => {
   );
 };
 
-export {
-  AngryFace,
-  SadFace,
-  OKFace,
-  GoodFace,
-  HappyFace,
-};
+export { AngryFace, SadFace, OKFace, GoodFace, HappyFace };

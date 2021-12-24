@@ -28,6 +28,7 @@ const DayExpense = ({ date = '2019-04-22', amount = 1203, items = [] }) => {
             {items.map((item, index) => (
               <div key={item.id}>
                 <FinItem
+                  isLoading={false}
                   dayMode={true}
                   isLast={index === items.length - 1}
                   item={item}

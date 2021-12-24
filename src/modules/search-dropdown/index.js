@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {options} from './mockOptions.json';
+import mockOptions from './mockOptions.json';
 
 import './index.scss';
 
-const SearchDropdown = ({optionList = options, filterFunction, placeholder = '', onChangeCallback, defaultValue = '', searchOptions = 5}) => {
+const SearchDropdown = ({optionList = mockOptions.options, filterFunction, placeholder = '', onChangeCallback, defaultValue = '', searchOptions = 5}) => {
   const [value, setValue] = useState(defaultValue);
   const [validOptions, setValidOptions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);

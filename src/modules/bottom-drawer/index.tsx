@@ -1,15 +1,23 @@
-import React, {useState, useRef, useEffect, FC, cloneElement, isValidElement} from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  FC,
+  cloneElement,
+  isValidElement,
+} from 'react';
 
 import './index.scss';
 
 interface IBottomDrawer {
   autoExpand?: boolean;
-};
+}
 
-const BottomDrawer: FC<IBottomDrawer> = ({children, autoExpand = false}) => {
-  const [contentRectHeight, setContentRectHeight] = useState<number>(0)
+const BottomDrawer: FC<IBottomDrawer> = ({ children, autoExpand = false }) => {
+  const [contentRectHeight, setContentRectHeight] = useState<number>(0);
   const [drawerHeight, setDrawerHeight] = useState<number>(0);
-  const [recalculateContentTrigger, setRecalculateContentTrigger] = useState<boolean>(false);
+  const [recalculateContentTrigger, setRecalculateContentTrigger] =
+    useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const [isExpanded, setIsExpanded] = useState<boolean>(autoExpand);
   const childrenRef = useRef(null);
@@ -33,7 +41,9 @@ const BottomDrawer: FC<IBottomDrawer> = ({children, autoExpand = false}) => {
       boundingClientRect = childrenRef.current.getBoundingClientRect();
     }
 
-    setDrawerHeight(autoExpand ? contentRectHeight || boundingClientRect.height : 0);
+    setDrawerHeight(
+      autoExpand ? contentRectHeight || boundingClientRect.height : 0
+    );
   }, [autoExpand]);
 
   // Recalculate content height
@@ -42,7 +52,9 @@ const BottomDrawer: FC<IBottomDrawer> = ({children, autoExpand = false}) => {
     setContentRectHeight(boundingClientRect.height);
 
     if (isInitialLoad) {
-      setDrawerHeight(autoExpand ? contentRectHeight || boundingClientRect.height : 0);
+      setDrawerHeight(
+        autoExpand ? contentRectHeight || boundingClientRect.height : 0
+      );
     } else {
       setDrawerHeight(contentRectHeight);
     }
@@ -50,21 +62,20 @@ const BottomDrawer: FC<IBottomDrawer> = ({children, autoExpand = false}) => {
   }, [recalculateContentTrigger]);
 
   const childrenElement = cloneElement(
-    isValidElement(children) ? children : <span>{children}</span>, {
+    isValidElement(children) ? children : <span>{children}</span>,
+    {
       handleContentChange: () => {
         setRecalculateContentTrigger(!recalculateContentTrigger);
-      }
+      },
     }
   );
 
   return (
-    <div className='BottomDrawer'>
-      <div className='Handle' onClick={toggleDrawer} />
-        <div className='Content' style={{height: `${drawerHeight}px`}}>
-          <div ref={childrenRef}>
-            {isExpanded && childrenElement}
-          </div>
-        </div>
+    <div className="BottomDrawer">
+      <div className="Handle" onClick={toggleDrawer} />
+      <div className="Content" style={{ height: `${drawerHeight}px` }}>
+        <div ref={childrenRef}>{isExpanded && childrenElement}</div>
+      </div>
     </div>
   );
 };
