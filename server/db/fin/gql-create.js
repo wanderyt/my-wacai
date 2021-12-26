@@ -131,7 +131,6 @@ const formatSchedule = (sqlTemplate, datetime, scheduleMode) => {
  * Create scheduled fin item record
  * [TODO]: change sql statement to params
  * @param {object} data target fin item
- * @param {string} data.id target fin item id
  * @param {string} data.category target fin item category
  * @param {string} data.subcategory target fin item subcategory
  * @param {string} data.date target fin item date

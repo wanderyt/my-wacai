@@ -1,12 +1,14 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { useAppDispatch } from '../../store';
+import { buildDraftFinItem } from '../../store/fin';
 import FinItem from '../fin-item';
 
 import './index.scss';
 
-const FinMain = ({isLoading, items, dispatch}) => {
+const FinMain = ({isLoading, items}) => {
+  const dispatch = useAppDispatch();
   const handleCreateItem = () => {
-    dispatch({type: 'CREATE_ITEM'});
+    dispatch(buildDraftFinItem());
   }
   const handleCreateByTemplate = () => {
     dispatch({type: 'CHANGE_TO_FIN_TEMPLATE_LIST'});
@@ -46,4 +48,4 @@ const FinMain = ({isLoading, items, dispatch}) => {
   );
 };
 
-export default connect()(FinMain);
+export default FinMain;

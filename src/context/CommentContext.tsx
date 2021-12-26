@@ -53,6 +53,19 @@ const CommentProvider: FC<{}> = ({ children }) => {
     }
 
     Axios.get('/api/wacai/getAllCommentWithOptions').then(({ data }) => {
+      /**
+       * Data Sample:
+       * comments: [{
+       *   comment: "1886汽车主题德国餐厅"
+       *   date: "2018-01-06 22:41:21"
+       * }]
+       * options: [{
+       *   category: "周中"
+       *   comment: "1度手工凉皮"
+       *   place: "饿了么"
+       *   subcategory: "午餐"
+       * }]
+       */
       let commentsResponse = data.data.comments || [];
       let placeOptions = [];
       commentsResponse.forEach(option => {

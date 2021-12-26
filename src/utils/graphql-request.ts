@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import Axios, { AxiosError, AxiosResponse } from 'axios';
 
 const buildRequestQuery = (query: string, isQuery: boolean): string => {
   return isQuery ? `{${query}}` : `mutation {${query}}`;
@@ -14,8 +14,9 @@ const sendGraphqlRequest: <T>(
     ({ data }) => {
       return data.data;
     },
-    err => {
-      return err;
+    (err: AxiosError) => {
+      console.log('sendGraphqlRequest error: ', err);
+      throw err.response;
     }
   );
 };

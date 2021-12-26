@@ -1,8 +1,9 @@
 import { formatDateTime, getPreselectedCategories } from '../../utils/helper';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IFinItem } from '../../utils/gql-client/props';
+import { ICategoryGroup, IFinItem } from '../../utils/gql-client/props';
+import { RootState } from '..';
 
-type PageType =
+export type PageType =
   | 'MAIN'
   | 'CATEGORY_SELECTION'
   | 'FIN_TEMPLATE_LIST'
@@ -10,13 +11,28 @@ type PageType =
   | 'SEARCH_FIN_ITEM'
   | 'FIN_TEMPLATE_LIST';
 
+export interface ICommentListDetails {
+  commentOptions: Array<Pick<IFinItem, 'comment' | 'date'>>;
+  placeOptions: string[];
+  commentFullInfoOptions: Array<
+    Pick<IFinItem, 'category' | 'comment' | 'place' | 'subcategory'>
+  >;
+}
+
 export interface FinState {
   pageIndex: PageType;
-  selectedItem?: IFinItem;
+  selectedItem?: Partial<IFinItem>;
+  updatedCatGroup: ICategoryGroup | {};
+  selectedCatGroup: ICategoryGroup | {};
+  commentList?: ICommentListDetails;
+  tagList?: string[];
 }
 
 const initialState: FinState = {
   pageIndex: 'MAIN',
+  selectedItem: null,
+  updatedCatGroup: {},
+  selectedCatGroup: {},
 };
 
 export const finSlice = createSlice({
@@ -24,17 +40,10 @@ export const finSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    // increment: state => {
-    //   state.value += 1;
-    // },
-    // decrement: state => {
-    //   state.value -= 1;
-    // },
-    // // Use the PayloadAction type to declare the contents of `action.payload`
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload;
-    // },
-    selectItem: (state, action: PayloadAction<{ item: IFinItem }>) => {
+    setSelectedItem: (
+      state,
+      action: PayloadAction<{ item: Partial<IFinItem> }>
+    ) => {
       if (!action.payload.item.date) {
         action.payload.item.date = formatDateTime();
       }
@@ -42,44 +51,46 @@ export const finSlice = createSlice({
       state.pageIndex = 'MAIN';
       state.selectedItem = action.payload.item;
     },
+    resetSelectedItem: state => {
+      state.selectedItem = null;
+      state.updatedCatGroup = {};
+    },
+    buildDraftFinItem: state => {
+      let { category, subcategory } = getPreselectedCategories();
+      state.selectedItem = {
+        category,
+        subcategory,
+        date: formatDateTime(),
+        amount: 0,
+      };
+    },
+    switchToCategorySelection: (
+      state,
+      action: PayloadAction<{
+        currentItem: Partial<IFinItem>;
+        selectedCatGroup: ICategoryGroup;
+      }>
+    ) => {
+      state.selectedItem = action.payload.currentItem;
+      state.pageIndex = 'CATEGORY_SELECTION';
+      state.selectedCatGroup = action.payload.selectedCatGroup;
+    },
   },
 });
 
-export const { selectItem } = finSlice.actions;
+export const {
+  setSelectedItem,
+  resetSelectedItem,
+  buildDraftFinItem,
+  switchToCategorySelection,
+} = finSlice.actions;
 
-// Other code such as selectors can use the imported `RootState` type
-// export const selectCount = (state: RootState) => state.fin;
+export const selectFin = (state: RootState): FinState => state.fin;
 
 export default finSlice.reducer;
 
 // const fin = (state = {}, action) => {
 //   switch (action.type) {
-//     case 'SELECT_ITEM':
-//       if (!action.item.date) {
-//         action.item.date = formatDateTime();
-//       }
-//       return {
-//         ...state,
-//         pageIndex: 'MAIN',
-//         selectedItem: action.item,
-//       };
-//     case 'RESET_SELECTED_ITEM':
-//       return {
-//         ...state,
-//         selectedItem: null,
-//         updatedCatGroup: {},
-//       };
-//     case 'CREATE_ITEM':
-//       let { category, subcategory } = getPreselectedCategories();
-//       return {
-//         ...state,
-//         selectedItem: {
-//           category,
-//           subcategory,
-//           date: formatDateTime(),
-//           amount: 0,
-//         },
-//       };
 //     case 'CHANGE_TO_CATEGORY_SELECTION':
 //       return {
 //         ...state,

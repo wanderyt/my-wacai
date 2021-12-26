@@ -1,34 +1,32 @@
-export const finTopList = (
-  year: number,
-  month: number,
-  top: number
-): string => `
-  finTopList(
-    year: ${year}
-    month: ${month}
-    top: ${top}
-  ) {
-    id
-    category
-    subcategory
-    comment
-    date
-    amount
-    isScheduled
-    scheduleId
-    place
-    city
-    userId
-    rating {
-      id
-      rating
-      positiveComment
-      negativeComment
-    }
-  }
-`;
+import { IFinItem, IRating } from './props';
 
-export const updateFinItem = data => {
+export const DEFAULT_CITY = '上海';
+
+export const createFinItem = (data: Partial<IFinItem>) => {
+  return `
+    ${
+      data.isScheduled > 0 ? 'createScheduledFullFinItem' : 'createFullFinItem'
+    }(finInput: {
+      category: "${data.category}"
+      subcategory: "${data.subcategory}"
+      comment: "${data.comment}"
+      date: "${data.date}"
+      amount: ${data.amount}
+      isScheduled: ${data.isScheduled || 0}
+      place: "${data.place || ''}"
+      city: "${data.city || DEFAULT_CITY}"
+      tags: "${data.tags}"
+    }, ratingInput: {
+      rating: ${data.rating.rating || 1}
+      positiveComment: "${data.rating.positiveComment || ''}"
+      negativeComment: "${data.rating.negativeComment || ''}"
+    }) {
+      id
+    }
+  `;
+};
+
+export const updateFinItem = (data: Partial<IFinItem>) => {
   return `
     updateFullFinItem(finInput: {
       id: "${data.id}"

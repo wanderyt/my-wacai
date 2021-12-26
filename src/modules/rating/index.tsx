@@ -3,71 +3,57 @@ import { AngryFace, OKFace, HappyFace } from './faces';
 import Input from '../input';
 
 import './index.scss';
-
-const RATING_STATUS_MAPPING = {
-  0: 'ANGRY',
-  1: 'OK',
-  2: 'HAPPY',
-};
-
-type IRatingStatus = keyof typeof RATING_STATUS_MAPPING;
+import { IRating, IRatingStatus } from '../../utils/gql-client/props';
 
 interface IRatingProps {
-  rating?: IRatingStatus;
-  defaultPositiveComment?: string;
-  defaultNegativeComment?: string;
-  handleContentChange?: () => void;
+  rating?: IRating | undefined;
   onRatingFaceSelected?: (rating: IRatingStatus) => void;
   onPositiveCommentChange?: (comment: string) => void;
   onNegativeCommentChange?: (comment: string) => void;
 }
 
-const DEFAULT_RATING = 1;
+const DEFAULT_RATING_LEVEL = 1;
 
 const Rating: FC<IRatingProps> = ({
-  rating = DEFAULT_RATING,
-  defaultPositiveComment,
-  defaultNegativeComment,
+  rating,
   onRatingFaceSelected,
   onPositiveCommentChange,
   onNegativeCommentChange,
 }) => {
-  const [selectedRating, setSelectedRating] = useState<number>(rating);
+  const [selectedRating, setSelectedRating] = useState<number>(
+    rating ? rating.rating : DEFAULT_RATING_LEVEL
+  );
   const [positiveComment, setPositiveComment] = useState<string>(
-    defaultPositiveComment
+    (rating && rating.positiveComment) || ''
   );
   const [negativeComment, setNegativeComment] = useState<string>(
-    defaultNegativeComment
+    (rating && rating.negativeComment) || ''
   );
   const toggleAngryFace = status => {
-    const selectedStatus = status ? 0 : DEFAULT_RATING;
-    setSelectedRating(selectedStatus);
+    const selectedStatus = status ? 0 : DEFAULT_RATING_LEVEL;
     onRatingFaceSelected && onRatingFaceSelected(selectedStatus);
   };
   const toggleOKFace = () => {
-    setSelectedRating(DEFAULT_RATING);
-    onRatingFaceSelected && onRatingFaceSelected(DEFAULT_RATING);
+    onRatingFaceSelected && onRatingFaceSelected(DEFAULT_RATING_LEVEL);
   };
   const toggleHappyFace = status => {
-    const selectedStatus = status ? 2 : DEFAULT_RATING;
-    setSelectedRating(selectedStatus);
+    const selectedStatus = status ? 2 : DEFAULT_RATING_LEVEL;
     onRatingFaceSelected && onRatingFaceSelected(selectedStatus);
   };
   const positiveCommentChange = comment => {
-    setPositiveComment(comment);
     onPositiveCommentChange && onPositiveCommentChange(comment);
   };
   const negativeCommentChange = comment => {
-    setNegativeComment(comment);
     onNegativeCommentChange && onNegativeCommentChange(comment);
   };
 
   useEffect(() => {
-    setPositiveComment(defaultPositiveComment);
-  }, [defaultPositiveComment]);
-  useEffect(() => {
-    setNegativeComment(defaultNegativeComment);
-  }, [defaultNegativeComment]);
+    if (rating) {
+      setPositiveComment(rating.positiveComment);
+      setNegativeComment(rating.negativeComment);
+      setSelectedRating(rating.rating);
+    }
+  }, [rating]);
 
   return (
     <div className="Rating">

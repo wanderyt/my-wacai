@@ -14,7 +14,6 @@ const mockUsers = [{
 
 const typeDefs = `
   input FinInput {
-    id: ID
     category: String!
     subcategory: String!
     comment: String!
@@ -30,11 +29,9 @@ const typeDefs = `
   }
 
   input RatingInput {
-    id: ID
     rating: Int
     positiveComment: String
     negativeComment: String
-    finId: ID
   }
 
   type Rating {
