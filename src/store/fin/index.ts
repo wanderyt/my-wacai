@@ -26,6 +26,8 @@ export interface FinState {
   selectedCatGroup: ICategoryGroup | {};
   commentList?: ICommentListDetails;
   tagList?: string[];
+  isAppLoading: boolean;
+  isCreatingTemplate: boolean;
 }
 
 const initialState: FinState = {
@@ -33,6 +35,8 @@ const initialState: FinState = {
   selectedItem: null,
   updatedCatGroup: {},
   selectedCatGroup: {},
+  isAppLoading: false,
+  isCreatingTemplate: false,
 };
 
 export const finSlice = createSlice({
@@ -67,13 +71,79 @@ export const finSlice = createSlice({
     switchToCategorySelection: (
       state,
       action: PayloadAction<{
-        currentItem: Partial<IFinItem>;
+        currentItem?: Partial<IFinItem>;
         selectedCatGroup: ICategoryGroup;
       }>
     ) => {
-      state.selectedItem = action.payload.currentItem;
+      if (action.payload.currentItem) {
+        state.selectedItem = action.payload.currentItem;
+      }
+
       state.pageIndex = 'CATEGORY_SELECTION';
       state.selectedCatGroup = action.payload.selectedCatGroup;
+    },
+    switchToMain: (
+      state,
+      action: PayloadAction<{
+        updatedCatGroup: ICategoryGroup;
+      }>
+    ) => {
+      state.pageIndex = 'MAIN';
+      state.updatedCatGroup = action.payload.updatedCatGroup;
+    },
+    completeCategorySelection: (
+      state,
+      action: PayloadAction<{
+        updatedCatGroup: ICategoryGroup;
+      }>
+    ) => {
+      // Handle category group selection done case
+      // Need to return to template page when there is no selected item.
+      let targetPage: PageType;
+      if (state.selectedItem) {
+        targetPage = 'MAIN';
+      } else {
+        targetPage = 'FIN_TEMPLATE_LIST';
+      }
+
+      state.pageIndex = targetPage;
+      state.selectedCatGroup = {};
+      state.updatedCatGroup = action.payload.updatedCatGroup || {};
+    },
+    switchToFinHistory: state => {
+      state.pageIndex = 'FIN_HISTORY';
+    },
+    resetUpdatedCatGroup: state => {
+      state.updatedCatGroup = {};
+    },
+    switchToTemplateList: state => {
+      state.pageIndex = 'FIN_TEMPLATE_LIST';
+      state.isCreatingTemplate = false;
+    },
+    createTemplate: state => {
+      state.isCreatingTemplate = true;
+    },
+    switchToSearchFinMode: state => {
+      state.pageIndex = 'SEARCH_FIN_ITEM';
+    },
+    setAppLoading: state => {
+      state.isAppLoading = true;
+    },
+    setAppLoaded: state => {
+      state.isAppLoading = false;
+    },
+    setCommentLoaded: (
+      state,
+      action: PayloadAction<{
+        commentData: ICommentListDetails;
+      }>
+    ) => {
+      state.commentList = {
+        commentOptions: action.payload.commentData.commentOptions,
+        placeOptions: action.payload.commentData.placeOptions,
+        commentFullInfoOptions:
+          action.payload.commentData.commentFullInfoOptions,
+      };
     },
   },
 });
@@ -83,6 +153,16 @@ export const {
   resetSelectedItem,
   buildDraftFinItem,
   switchToCategorySelection,
+  switchToMain,
+  completeCategorySelection,
+  switchToFinHistory,
+  resetUpdatedCatGroup,
+  switchToTemplateList,
+  createTemplate,
+  switchToSearchFinMode,
+  setAppLoading,
+  setAppLoaded,
+  setCommentLoaded,
 } = finSlice.actions;
 
 export const selectFin = (state: RootState): FinState => state.fin;
@@ -91,70 +171,6 @@ export default finSlice.reducer;
 
 // const fin = (state = {}, action) => {
 //   switch (action.type) {
-//     case 'CHANGE_TO_CATEGORY_SELECTION':
-//       return {
-//         ...state,
-//         selectedItem: action.currentItem || {},
-//         pageIndex: 'CATEGORY_SELECTION',
-//         selectedCatGroup: action.selectedCatGroup || {},
-//       };
-//     case 'CHANGE_TO_MAIN':
-//       return {
-//         ...state,
-//         pageIndex: 'MAIN',
-//         updatedCatGroup: action.updatedCatGroup || {},
-//       };
-//     case 'CATEGORY_SELECTION_DONE':
-//       // Handle category group selection done case
-//       // Need to return to template page when there is no selected item.
-//       let targetPage = '';
-//       if (state.selectedItem) {
-//         targetPage = 'MAIN';
-//       } else {
-//         targetPage = 'FIN_TEMPLATE_LIST';
-//       }
-//       return {
-//         ...state,
-//         pageIndex: targetPage,
-//         selectedCatGroup: {},
-//         updatedCatGroup: action.updatedCatGroup || {},
-//       };
-//     case 'CHANGE_TO_FIN_HISTORY':
-//       return {
-//         ...state,
-//         pageIndex: 'FIN_HISTORY',
-//       };
-//     case 'RESET_UPDATED_CAT_GROUP':
-//       return {
-//         ...state,
-//         updatedCatGroup: {},
-//       };
-//     case 'CHANGE_TO_FIN_TEMPLATE_LIST':
-//       return {
-//         ...state,
-//         pageIndex: 'FIN_TEMPLATE_LIST',
-//         isCreatingTemplate: false,
-//       };
-//     case 'CREATE_TEMPLATE':
-//       return {
-//         ...state,
-//         isCreatingTemplate: true,
-//       };
-//     case 'OPEN_SEARCH_FIN_MODE':
-//       return {
-//         ...state,
-//         pageIndex: 'SEARCH_FIN_ITEM',
-//       };
-//     case 'APP_LOADING':
-//       return {
-//         ...state,
-//         isAppLoading: true,
-//       };
-//     case 'APP_LOADED':
-//       return {
-//         ...state,
-//         isAppLoading: false,
-//       };
 //     case 'COMMENT_LOADED':
 //       return {
 //         ...state,

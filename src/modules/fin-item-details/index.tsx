@@ -17,19 +17,24 @@ import BottomDrawer from '../bottom-drawer';
 import Rating from '../rating';
 
 import './index.scss';
-import {
-  sendGraphqlRequest,
-  sendGraphqlRequest,
-} from '../../utils/graphql-request';
+import { sendGraphqlRequest } from '../../utils/graphql-request';
 import { createFinItem } from '../../utils/gql-client';
 import { useAppDispatch } from '../../store';
-import { resetSelectedItem, switchToCategorySelection } from '../../store/fin';
 import {
-  useCommentList,
-  useTagList,
+  resetSelectedItem,
+  setAppLoaded,
+  setAppLoading,
+  switchToCategorySelection,
+} from '../../store/fin';
+import {
+  // useCommentList,
+  // useTagList,
   useUpdatedCatGroup,
 } from '../../store/fin/hooks';
 import { IFinItem } from '../../utils/gql-client/props';
+import { useCommentContext } from '../../context/CommentContext';
+import { useTagContext } from '../../context/TagContext';
+import { setLoginStatus } from '../../store/login';
 
 const scheduleModeItems = [
   {
@@ -78,11 +83,12 @@ const FinItemDetails = ({
   const amountInputRef = useRef(null);
   const tagInputRef = useRef(null);
 
-  // const {commentOptions, placeOptions, commentFullInfoOptions} = useCommentContext();
-  // const basicTagList = useTagContext();
   const { commentOptions, placeOptions, commentFullInfoOptions } =
-    useCommentList();
-  const basicTagList = useTagList();
+    useCommentContext();
+  const basicTagList = useTagContext();
+  // const { commentOptions, placeOptions, commentFullInfoOptions } =
+  //   useCommentList();
+  // const basicTagList = useTagList();
   const [tagList, setTagList] = useState(basicTagList);
   const [filteredTagList, setFilteredTagList] = useState(basicTagList);
 
@@ -149,14 +155,6 @@ const FinItemDetails = ({
   };
 
   const handleCatSelection = () => {
-    // dispatch({
-    //   type: 'CHANGE_TO_CATEGORY_SELECTION',
-    //   currentItem: latestItem,
-    //   selectedCatGroup: {
-    //     category: latestItem.category,
-    //     subcategory: latestItem.subcategory
-    //   }
-    // });
     dispatch(
       switchToCategorySelection({
         currentItem: latestItem,
@@ -250,16 +248,12 @@ const FinItemDetails = ({
     }
 
     // App Loading Status
-    dispatch({
-      type: 'APP_LOADING',
-    });
+    dispatch(setAppLoading());
 
     // Axios.post(requestUrl, {data})
     //   .then(() => {
     //     // App Loaded Status
-    //     dispatch({
-    //       type: 'APP_LOADED'
-    //     });
+    //     dispatch(setAppLoaded());
 
     //     dispatch({
     //       type: 'SET_MESSAGE',
@@ -277,9 +271,7 @@ const FinItemDetails = ({
     sendGraphqlRequest(createFinItem(data), false)
       .then(() => {
         // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED',
-        });
+        dispatch(setAppLoaded());
 
         dispatch({
           type: 'SET_MESSAGE',
@@ -296,9 +288,7 @@ const FinItemDetails = ({
       })
       .catch(e => {
         // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED',
-        });
+        dispatch(setAppLoaded());
 
         dispatch({
           type: 'SET_MESSAGE',
@@ -314,15 +304,11 @@ const FinItemDetails = ({
     const data = { ...latestItem };
 
     // App Loading Status
-    dispatch({
-      type: 'APP_LOADING',
-    });
+    dispatch(setAppLoading());
 
     Axios.post(requestUrl, { data }).then(() => {
       // App Loaded Status
-      dispatch({
-        type: 'APP_LOADED',
-      });
+      dispatch(setAppLoaded());
 
       dispatch(resetSelectedItem());
     });
@@ -331,7 +317,12 @@ const FinItemDetails = ({
   const updateSeriesScheduledItems = () => {
     const requestUrl = '/api/wacai/updateScheduledFinItem';
     const data = { ...latestItem };
-    const options = {};
+    const options: {
+      scheduledId?: string;
+      year?: number;
+      month?: number;
+      day?: number;
+    } = {};
     const now = new Date();
     options.scheduledId = data.scheduleId;
     options.year = now.getFullYear();
@@ -339,15 +330,11 @@ const FinItemDetails = ({
     options.day = now.getDate();
 
     // App Loading Status
-    dispatch({
-      type: 'APP_LOADING',
-    });
+    dispatch(setAppLoading());
 
     Axios.post(requestUrl, { data, options }).then(() => {
       // App Loaded Status
-      dispatch({
-        type: 'APP_LOADED',
-      });
+      dispatch(setAppLoaded());
 
       setUpdateScheduledPopupStatus(false);
       dispatch(resetSelectedItem());
@@ -359,29 +346,21 @@ const FinItemDetails = ({
       setDeleteScheduledPopupStatus(true);
     } else {
       // App Loading Status
-      dispatch({
-        type: 'APP_LOADING',
-      });
+      dispatch(setAppLoading());
 
       Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`).then(
         () => {
           // App Loaded Status
-          dispatch({
-            type: 'APP_LOADED',
-          });
+          dispatch(setAppLoaded());
 
           dispatch(resetSelectedItem());
         },
         ({ response }) => {
           // App Loaded Status
-          dispatch({
-            type: 'APP_LOADED',
-          });
+          dispatch(setAppLoaded());
 
           if (response.status === 401) {
-            dispatch({
-              type: 'TOKEN_INVALID',
-            });
+            dispatch(setLoginStatus(false));
           }
         }
       );
@@ -395,31 +374,23 @@ const FinItemDetails = ({
 
   const deleteSingleScheduledItem = () => {
     // App Loading Status
-    dispatch({
-      type: 'APP_LOADING',
-    });
+    dispatch(setAppLoading());
 
     Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`).then(
       () => {
         // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED',
-        });
+        dispatch(setAppLoaded());
 
         setDeleteScheduledPopupStatus(false);
         dispatch(resetSelectedItem());
       },
       ({ response }) => {
         // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED',
-        });
+        dispatch(setAppLoaded());
 
         setDeleteScheduledPopupStatus(false);
         if (response.status === 401) {
-          dispatch({
-            type: 'TOKEN_INVALID',
-          });
+          dispatch(setLoginStatus(false));
         }
       }
     );
@@ -427,9 +398,7 @@ const FinItemDetails = ({
 
   const deleteSeriesScheduledItems = () => {
     // App Loading Status
-    dispatch({
-      type: 'APP_LOADING',
-    });
+    dispatch(setAppLoading());
 
     const now = new Date();
     Axios.delete(
@@ -441,24 +410,18 @@ const FinItemDetails = ({
     ).then(
       () => {
         // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED',
-        });
+        dispatch(setAppLoaded());
 
         setDeleteScheduledPopupStatus(false);
         dispatch(resetSelectedItem());
       },
       ({ response }) => {
         // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED',
-        });
+        dispatch(setAppLoaded());
 
         setDeleteScheduledPopupStatus(false);
         if (response.status === 401) {
-          dispatch({
-            type: 'TOKEN_INVALID',
-          });
+          dispatch(setLoginStatus(false));
         }
       }
     );

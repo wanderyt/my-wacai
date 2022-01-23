@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import Axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+// import { useTagList } from '../store/fin/hooks';
 
 const TagContext = React.createContext<Array<string>>(null);
 
@@ -16,27 +17,27 @@ const useTagContext = () => {
     });
   }
 
-  return context || {};
+  return context;
 };
 
 const TagProvider: FC<{}> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tags, setTags] = useState<Array<string>>(null);
-  const tagStoreValue = useSelector(state => state.fin.tag || undefined);
-  const dispatch = useDispatch();
+  // const tagStoreValue = useTagList();
+  // const dispatch = useDispatch();
 
   useEffect(() => {
-    if (tagStoreValue) {
+    if (tags) {
       return;
     }
 
     Axios.get('/api/wacai/getAllTags').then(({ data }) => {
       let responseData = data.data || [];
       setTags(responseData);
-      dispatch({
-        type: 'TAG_LOADED',
-        tag: responseData,
-      });
+      // dispatch({
+      //   type: 'TAG_LOADED',
+      //   tag: responseData,
+      // });
       setIsLoading(false);
     });
   }, []);

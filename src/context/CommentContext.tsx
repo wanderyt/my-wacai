@@ -1,6 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import Axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+// import { useCommentList } from '../store/fin/hooks';
+import { setCommentLoaded } from '../store/fin';
 
 interface ICommentOption {
   comment: string;
@@ -34,7 +36,7 @@ const useCommentContext = () => {
     });
   }
 
-  return context || {};
+  return context;
 };
 
 const CommentProvider: FC<{}> = ({ children }) => {
@@ -44,11 +46,12 @@ const CommentProvider: FC<{}> = ({ children }) => {
   const [placeOptions, setPlaceOptions] = useState<Array<string>>();
   const [commentFullInfoOptions, setCommentFullInfoOptions] =
     useState<Array<ICommentFullInfoOption>>();
-  const commentStoreValue = useSelector(state => state.fin.comment || {});
-  const dispatch = useDispatch();
+  // const commentStoreValue = useCommentList();
+  // const dispatch = useDispatch();
 
   useEffect(() => {
-    if (commentStoreValue.commentOptions) {
+    // Chcek if data has been set
+    if (commentOptions) {
       return;
     }
 
@@ -74,12 +77,15 @@ const CommentProvider: FC<{}> = ({ children }) => {
       setCommentOptions(commentsResponse);
       setPlaceOptions(placeOptions);
       setCommentFullInfoOptions(data.data.options || []);
-      dispatch({
-        type: 'COMMENT_LOADED',
-        commentOptions: commentsResponse,
-        placeOptions,
-        commentFullInfoOptions: data.data.options || [],
-      });
+      // dispatch(
+      //   setCommentLoaded({
+      //     commentData: {
+      //       commentOptions: commentsResponse,
+      //       placeOptions,
+      //       commentFullInfoOptions: data.data.options || [],
+      //     },
+      //   })
+      // );
       setIsLoading(false);
     });
   }, []);

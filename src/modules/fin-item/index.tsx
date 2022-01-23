@@ -56,9 +56,9 @@ const FinItem = ({
   isLast = false,
 }: {
   item: IFinItem;
-  isLoading: boolean;
-  dayMode: boolean;
-  isLast: false;
+  isLoading?: boolean;
+  dayMode?: boolean;
+  isLast?: boolean;
 }) => {
   const { category, subcategory, date, amount, comment, isScheduled } = item;
   const dispatch = useAppDispatch();

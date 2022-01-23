@@ -1,9 +1,11 @@
 import { finSlice } from './fin/index';
+import { loginSlice } from './login/index';
 import { combineReducers, configureStore, Selector } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 const combinedReducer = combineReducers({
   fin: finSlice.reducer,
+  login: loginSlice.reducer,
 });
 
 const store = configureStore({

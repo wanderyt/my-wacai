@@ -5,7 +5,17 @@
    * Order for properties 'background-image', 'background-size' and
    * 'animation' is important for animation to work.
    */
-  background-image: linear-gradient(-60deg, $LOADING-STATE, $LOADING-STATE, $LOADING-STATE, #fdfdfd, $LOADING-STATE, $LOADING-STATE, $LOADING-STATE, #fdfdfd);
+  background-image: linear-gradient(
+    -60deg,
+    $LOADING-STATE,
+    $LOADING-STATE,
+    $LOADING-STATE,
+    #fdfdfd,
+    $LOADING-STATE,
+    $LOADING-STATE,
+    $LOADING-STATE,
+    #fdfdfd
+  );
   background-size: 400% 400%;
   animation: myImage 1.25s linear infinite;
 }
@@ -15,7 +25,17 @@
    * Order for properties 'background-image', 'background-size' and
    * 'animation' is important for animation to work.
    */
-  background-image: linear-gradient(-60deg, $LOADING-STATE, $LOADING-STATE, $LOADING-STATE, #fdfdfd, $LOADING-STATE, $LOADING-STATE, $LOADING-STATE, #fdfdfd);
+  background-image: linear-gradient(
+    -60deg,
+    $LOADING-STATE,
+    $LOADING-STATE,
+    $LOADING-STATE,
+    #fdfdfd,
+    $LOADING-STATE,
+    $LOADING-STATE,
+    $LOADING-STATE,
+    #fdfdfd
+  );
   background-size: 400% 400%;
   animation: myName 1.25s linear infinite;
 }

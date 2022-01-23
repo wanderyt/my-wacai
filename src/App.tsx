@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import Axios from 'axios';
 import FinMain from './modules/fin-main';
 import FinItemDetails from './modules/fin-item-details';
@@ -15,17 +14,37 @@ import { initialLoadQuery } from './utils/gql-client';
 
 import './App.scss';
 import { IFinItem } from './utils/gql-client/props';
+import {
+  useIsAppLoading,
+  usePageType,
+  useSelectedItem,
+} from './store/fin/hooks';
+import { useAppDispatch } from './store';
+import { switchToFinHistory } from './store/fin';
+import { setLoginStatus } from './store/login';
 
 const DEFAULT_FIN_ITEMS = 15;
 
 const App = ({
-  pageIndex,
+  // pageIndex,
   notificationType,
   notificationMsg,
-  selectedItem,
-  isAppLoading,
-  dispatch,
+  // selectedItem,
+  // isAppLoading,
+  // dispatch,
 }) => {
+  // selectedItem: state.fin ? state.fin.selectedItem : null,
+  // pageIndex: state.fin ? state.fin.pageIndex : 'MAIN',
+  // isAppLoading: state.fin && state.fin.isAppLoading,
+  // notificationType: state.notification
+  //   ? state.notification.notificationType
+  //   : '',
+  // notificationMsg: state.notification ? state.notification.notificationMsg : '',
+  const selectedItem = useSelectedItem();
+  const pageIndex = usePageType();
+  const isAppLoading = useIsAppLoading();
+  const dispatch = useAppDispatch();
+
   let [monthTotal, setMonthTotal] = useState<number>(0);
   let [weekTotal, setWeekTotal] = useState<number>(0);
   let [dayTotal, setDayTotal] = useState<number>(0);
@@ -72,9 +91,7 @@ const App = ({
           setIsLoading(false);
 
           if (response.status === 401) {
-            dispatch({
-              type: 'TOKEN_INVALID',
-            });
+            dispatch(setLoginStatus(false));
           }
         }
       );
@@ -82,9 +99,7 @@ const App = ({
   }, [selectedItem]);
 
   const handleTotalAmountClick = () => {
-    dispatch({
-      type: 'CHANGE_TO_FIN_HISTORY',
-    });
+    dispatch(switchToFinHistory());
   };
 
   const handleLogout = () => {
@@ -175,4 +190,5 @@ const mapStateToProps = state => ({
   notificationMsg: state.notification ? state.notification.notificationMsg : '',
 });
 
-export default connect(mapStateToProps)(App);
+// export default connect(mapStateToProps)(App);
+export default App;
