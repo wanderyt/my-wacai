@@ -1,42 +1,48 @@
-import React, {useState, useRef} from 'react';
-import FinComCatItem from '../fin-com-cat-item';
-import SearchDropdown from '../search-dropdown';
-import PopupButtons from '../popup-buttons';
-import DateTime from 'react-datetime';
-import DropdownList from '../dropdown-list';
-import Calculator from '../calculator';
-import HashTagManagement from '../hash-tag';
-import CommentHintDialog from '../comment-hint-dialog';
-import {useSelector, useDispatch} from 'react-redux';
-import Axios from 'axios';
+import React, { useState, useRef } from "react";
+import FinComCatItem from "../fin-com-cat-item";
+import SearchDropdown from "../search-dropdown";
+import PopupButtons from "../popup-buttons";
+import DateTime from "react-datetime";
+import DropdownList from "../dropdown-list";
+import Calculator from "../calculator";
+import HashTagManagement from "../hash-tag";
+import CommentHintDialog from "../comment-hint-dialog";
+import { useSelector, useDispatch } from "react-redux";
+import Axios from "axios";
 
-import {comCatItems} from './config';
-import {uuid} from '../../utils/helper';
-import {commentFilterFn, placeFilterFn} from './util';
+import { comCatItems } from "./config";
+import { uuid } from "../../utils/helper";
+import { commentFilterFn, placeFilterFn } from "./util";
 
-import './index.scss';
+import "./index.scss";
 
-const scheduleModeItems = [{
-  key: 0,
-  value: '非周期入账'
-}, {
-  key: 1,
-  value: '每天入账'
-}, {
-  key: 2,
-  value: '每周入账'
-}, {
-  key: 3,
-  value: '每月入账'
-}, {
-  key: 4,
-  value: '每年入账'
-}];
+const scheduleModeItems = [
+  {
+    key: 0,
+    value: "非周期入账",
+  },
+  {
+    key: 1,
+    value: "每天入账",
+  },
+  {
+    key: 2,
+    value: "每周入账",
+  },
+  {
+    key: 3,
+    value: "每月入账",
+  },
+  {
+    key: 4,
+    value: "每年入账",
+  },
+];
 
-const DEFAULT_CITY = '上海';
+const DEFAULT_CITY = "上海";
 
-const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
-  const updatedCatGroup = useSelector(state => {
+const FinItemDetails = ({ item = { amount: 0, city: DEFAULT_CITY } }) => {
+  const updatedCatGroup = useSelector((state) => {
     try {
       return state.fin.updatedCatGroup || {};
     } catch (e) {
@@ -45,10 +51,14 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
   });
   const dispatch = useDispatch();
 
-  const [latestItem, setLatestItem] = useState({...item, ...updatedCatGroup});
-  const [selectedTags, setSelectedTags] = useState(item.tags ? item.tags.split(',') : []);
-  const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] = useState(false);
-  const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] = useState(false);
+  const [latestItem, setLatestItem] = useState({ ...item, ...updatedCatGroup });
+  const [selectedTags, setSelectedTags] = useState(
+    item.tags ? item.tags.split(",") : []
+  );
+  const [deleteScheduledPopupStatus, setDeleteScheduledPopupStatus] =
+    useState(false);
+  const [updateScheduledPopupStatus, setUpdateScheduledPopupStatus] =
+    useState(false);
   const [calculatorStatus, setCalculatorStatus] = useState(false);
   const [commentHintDialogStatus, setCommentHintDialogStatus] = useState(false);
   const isUpdate = !!item.id;
@@ -57,37 +67,52 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
 
   // const {commentOptions, placeOptions, commentFullInfoOptions} = useCommentContext();
   // const basicTagList = useTagContext();
-  const {commentOptions, placeOptions, commentFullInfoOptions} = useSelector(state => state.fin.comment || {});
-  const basicTagList = useSelector(state => state.fin.tag || []);
+  const {
+    commentOptions,
+    detailsOptions,
+    placeOptions,
+    commentFullInfoOptions,
+  } = useSelector((state) => state.fin.comment || {});
+  const basicTagList = useSelector((state) => state.fin.tag || []);
   const [tagList, setTagList] = useState(basicTagList);
   const [filteredTagList, setFilteredTagList] = useState(basicTagList);
 
   const handleBackBtn = () => {
     dispatch({
-      type: 'RESET_SELECTED_ITEM',
+      type: "RESET_SELECTED_ITEM",
     });
-  }
+  };
 
   const handleCommonCatClick = (category, subcategory) => {
-    setLatestItem(Object.assign({}, latestItem, {category, subcategory}));
-  }
+    setLatestItem(Object.assign({}, latestItem, { category, subcategory }));
+  };
 
   const handleCommentChange = (newValue, triggerHint) => {
-    const isCommentValid = commentFullInfoOptions.filter(({comment}) => comment === newValue).length > 0;
+    const isCommentValid =
+      commentFullInfoOptions.filter(({ comment }) => comment === newValue)
+        .length > 0;
     if (isCommentValid && triggerHint) {
       setCommentHintDialogStatus(true);
     }
-    setLatestItem(Object.assign({}, latestItem, {comment: newValue}));
-  }
+    setLatestItem(Object.assign({}, latestItem, { comment: newValue }));
+  };
+
+  const handleDetailsChange = (details) => {
+    setLatestItem(Object.assign({}, latestItem, { details }));
+  };
 
   const toggleCommentHintDialogStatus = () => {
     setCommentHintDialogStatus(!commentHintDialogStatus);
   };
 
-  const saveCommentHintResult = ({place, category, subcategory}) => {
+  const saveCommentHintResult = ({ place, details, category, subcategory }) => {
     const result = {};
     if (place) {
       result.place = place;
+    }
+
+    if (details) {
+      result.details = details;
     }
 
     if (category && subcategory) {
@@ -100,154 +125,155 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
   };
 
   const handleDateTimeChange = (newDate) => {
-    let newDateString = newDate.format('YYYY-MM-DD hh:mm:ss');
-    setLatestItem(Object.assign({}, latestItem, {date: newDateString}));
-  }
+    let newDateString = newDate.format("YYYY-MM-DD hh:mm:ss");
+    setLatestItem(Object.assign({}, latestItem, { date: newDateString }));
+  };
 
   const handleScheduleModeChange = (newItem) => {
     let newScheduleMode = newItem.key;
-    setLatestItem(Object.assign({}, latestItem, {isScheduled: newScheduleMode}));
-  }
+    setLatestItem(
+      Object.assign({}, latestItem, { isScheduled: newScheduleMode })
+    );
+  };
 
   const handlePlaceChange = (place) => {
-    setLatestItem(Object.assign({}, latestItem, {place: place}));
-  }
+    setLatestItem(Object.assign({}, latestItem, { place: place }));
+  };
 
   const handleCityChange = (evt) => {
-    let city = evt.target.value || '';
-    setLatestItem(Object.assign({}, latestItem, {city: city}));
-  }
+    let city = evt.target.value || "";
+    setLatestItem(Object.assign({}, latestItem, { city: city }));
+  };
 
   const handleCatSelection = () => {
     dispatch({
-      type: 'CHANGE_TO_CATEGORY_SELECTION',
+      type: "CHANGE_TO_CATEGORY_SELECTION",
       currentItem: latestItem,
       selectedCatGroup: {
         category: latestItem.category,
-        subcategory: latestItem.subcategory
-      }
+        subcategory: latestItem.subcategory,
+      },
     });
-  }
+  };
 
   const handleAmountFocus = (evt) => {
     if (latestItem.amount) {
       evt.target.value = latestItem.amount;
     } else {
-      evt.target.value = '';
+      evt.target.value = "";
     }
-  }
+  };
 
   const handleAmountChange = (evt) => {
     let newAmount = parseFloat(evt.target.value);
     if (Number.isNaN(newAmount)) {
       newAmount = 0;
     }
-    setLatestItem(Object.assign({}, latestItem, {amount: newAmount}));
-  }
+    setLatestItem(Object.assign({}, latestItem, { amount: newAmount }));
+  };
 
   const handleAmountBlur = (evt) => {
     evt.target.value = parseFloat(latestItem.amount).toFixed(2);
-  }
+  };
 
-  const validateFinItem = ({category, subcategory, comment, amount}) => {
+  const validateFinItem = ({ category, subcategory, comment, amount }) => {
     if (!category || !subcategory) {
       return {
-        errorMsg: '请选择类别！'
-      }
+        errorMsg: "请选择类别！",
+      };
     } else if (!amount) {
       return {
-        errorMsg: '请输入有效金额！'
-      }
+        errorMsg: "请输入有效金额！",
+      };
     }
 
     return null;
-  }
+  };
 
-  const handleSaveButton = ({repeatRecord = false}) => {
+  const handleSaveButton = ({ repeatRecord = false }) => {
     let isInvalid = validateFinItem(latestItem);
     if (isInvalid) {
       dispatch({
-        type: 'SET_MESSAGE',
-        notificationType: 'error',
-        message: isInvalid.errorMsg
+        type: "SET_MESSAGE",
+        notificationType: "error",
+        message: isInvalid.errorMsg,
       });
       return;
     }
 
-    let requestUrl = '', data = {};
+    let requestUrl = "",
+      data = {};
     if (latestItem.id) {
       if (latestItem.isScheduled > 0) {
         setUpdateScheduledPopupStatus(true);
         return;
       } else {
-        requestUrl = '/api/wacai/updateFinItem';
-        data = {...latestItem, tags: selectedTags.join(',')};
+        requestUrl = "/api/wacai/updateFinItem";
+        data = { ...latestItem, tags: selectedTags.join(",") };
       }
     } else {
       if (latestItem.isScheduled > 0) {
-        requestUrl = '/api/wacai/createScheduledFinItem';
-        data = {...latestItem, tags: selectedTags.join(',')};
+        requestUrl = "/api/wacai/createScheduledFinItem";
+        data = { ...latestItem, tags: selectedTags.join(",") };
       } else {
-        requestUrl = '/api/wacai/createFinItem';
-        data = {...latestItem, tags: selectedTags.join(','), id: uuid()};
+        requestUrl = "/api/wacai/createFinItem";
+        data = { ...latestItem, tags: selectedTags.join(","), id: uuid() };
       }
     }
 
     // App Loading Status
     dispatch({
-      type: 'APP_LOADING'
+      type: "APP_LOADING",
     });
 
-    Axios.post(requestUrl, {data})
-      .then(() => {
-        // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED'
-        });
-
-        dispatch({
-          type: 'SET_MESSAGE',
-          notificationType: 'info',
-          message: '保存成功'
-        });
-
-        if (repeatRecord) {
-          setLatestItem(Object.assign({}, latestItem, {amount: 0}));
-          amountInputRef.current.value = '0.00';
-        } else {
-          dispatch({
-            type: 'RESET_SELECTED_ITEM'
-          });
-        }
+    Axios.post(requestUrl, { data }).then(() => {
+      // App Loaded Status
+      dispatch({
+        type: "APP_LOADED",
       });
-  }
+
+      dispatch({
+        type: "SET_MESSAGE",
+        notificationType: "info",
+        message: "保存成功",
+      });
+
+      if (repeatRecord) {
+        setLatestItem(Object.assign({}, latestItem, { amount: 0 }));
+        amountInputRef.current.value = "0.00";
+      } else {
+        dispatch({
+          type: "RESET_SELECTED_ITEM",
+        });
+      }
+    });
+  };
 
   const updateSingleScheduledItem = () => {
     setUpdateScheduledPopupStatus(false);
-    const requestUrl = '/api/wacai/updateFinItem';
-    const data = {...latestItem};
+    const requestUrl = "/api/wacai/updateFinItem";
+    const data = { ...latestItem };
 
     // App Loading Status
     dispatch({
-      type: 'APP_LOADING'
+      type: "APP_LOADING",
     });
 
-    Axios.post(requestUrl, {data})
-      .then(() => {
-        // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED'
-        });
-
-        dispatch({
-          type: 'RESET_SELECTED_ITEM'
-        });
+    Axios.post(requestUrl, { data }).then(() => {
+      // App Loaded Status
+      dispatch({
+        type: "APP_LOADED",
       });
-  }
+
+      dispatch({
+        type: "RESET_SELECTED_ITEM",
+      });
+    });
+  };
 
   const updateSeriesScheduledItems = () => {
-    const requestUrl = '/api/wacai/updateScheduledFinItem';
-    const data = {...latestItem};
+    const requestUrl = "/api/wacai/updateScheduledFinItem";
+    const data = { ...latestItem };
     const options = {};
     const now = new Date();
     options.scheduledId = data.scheduledId;
@@ -257,22 +283,21 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
 
     // App Loading Status
     dispatch({
-      type: 'APP_LOADING'
+      type: "APP_LOADING",
     });
 
-    Axios.post(requestUrl, {data, options})
-      .then(() => {
-        // App Loaded Status
-        dispatch({
-          type: 'APP_LOADED'
-        });
-
-        setUpdateScheduledPopupStatus(false);
-        dispatch({
-          type: 'RESET_SELECTED_ITEM'
-        });
+    Axios.post(requestUrl, { data, options }).then(() => {
+      // App Loaded Status
+      dispatch({
+        type: "APP_LOADED",
       });
-  }
+
+      setUpdateScheduledPopupStatus(false);
+      dispatch({
+        type: "RESET_SELECTED_ITEM",
+      });
+    });
+  };
 
   const handleDeleteButton = () => {
     if (latestItem.isScheduled > 0) {
@@ -280,141 +305,157 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
     } else {
       // App Loading Status
       dispatch({
-        type: 'APP_LOADING'
+        type: "APP_LOADING",
       });
 
-      Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`)
-        .then(() => {
+      Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`).then(
+        () => {
           // App Loaded Status
           dispatch({
-            type: 'APP_LOADED'
+            type: "APP_LOADED",
           });
 
           dispatch({
-            type: 'RESET_SELECTED_ITEM'
+            type: "RESET_SELECTED_ITEM",
           });
-        }, ({response}) => {
+        },
+        ({ response }) => {
           // App Loaded Status
           dispatch({
-            type: 'APP_LOADED'
+            type: "APP_LOADED",
           });
 
           if (response.status === 401) {
             dispatch({
-              type: 'TOKEN_INVALID'
+              type: "TOKEN_INVALID",
             });
           }
-        });
+        }
+      );
     }
-  }
+  };
 
   const popupButtonsCancelHandler = () => {
     setDeleteScheduledPopupStatus(false);
     setUpdateScheduledPopupStatus(false);
-  }
+  };
 
   const deleteSingleScheduledItem = () => {
     // App Loading Status
     dispatch({
-      type: 'APP_LOADING'
+      type: "APP_LOADING",
     });
 
-    Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`)
-      .then(() => {
+    Axios.delete(`/api/wacai/deleteFinItem?id=${latestItem.id}`).then(
+      () => {
         // App Loaded Status
         dispatch({
-          type: 'APP_LOADED'
+          type: "APP_LOADED",
         });
 
         setDeleteScheduledPopupStatus(false);
         dispatch({
-          type: 'RESET_SELECTED_ITEM'
+          type: "RESET_SELECTED_ITEM",
         });
-      }, ({response}) => {
+      },
+      ({ response }) => {
         // App Loaded Status
         dispatch({
-          type: 'APP_LOADED'
+          type: "APP_LOADED",
         });
 
         setDeleteScheduledPopupStatus(false);
         if (response.status === 401) {
           dispatch({
-            type: 'TOKEN_INVALID'
+            type: "TOKEN_INVALID",
           });
         }
-      });
-  }
+      }
+    );
+  };
 
   const deleteSeriesScheduledItems = () => {
     // App Loading Status
     dispatch({
-      type: 'APP_LOADING'
+      type: "APP_LOADING",
     });
 
     const now = new Date();
-    Axios.delete(`/api/wacai/deleteScheduledFinItem?scheduleId=${latestItem.scheduleId}&year=${now.getFullYear()}&month=${now.getMonth()}&day=${now.getDate()}`)
-      .then(() => {
+    Axios.delete(
+      `/api/wacai/deleteScheduledFinItem?scheduleId=${
+        latestItem.scheduleId
+      }&year=${now.getFullYear()}&month=${now.getMonth()}&day=${now.getDate()}`
+    ).then(
+      () => {
         // App Loaded Status
         dispatch({
-          type: 'APP_LOADED'
+          type: "APP_LOADED",
         });
 
         setDeleteScheduledPopupStatus(false);
         dispatch({
-          type: 'RESET_SELECTED_ITEM'
+          type: "RESET_SELECTED_ITEM",
         });
-      }, ({response}) => {
+      },
+      ({ response }) => {
         // App Loaded Status
         dispatch({
-          type: 'APP_LOADED'
+          type: "APP_LOADED",
         });
 
         setDeleteScheduledPopupStatus(false);
         if (response.status === 401) {
           dispatch({
-            type: 'TOKEN_INVALID'
+            type: "TOKEN_INVALID",
           });
         }
-      });
-  }
+      }
+    );
+  };
 
-  const deleteScheduledPopupButtons = [{
-    name: '只删除这一笔',
-    clickHandler: deleteSingleScheduledItem
-  }, {
-    name: '删除这一笔以及以后所有',
-    clickHandler: deleteSeriesScheduledItems
-  }];
+  const deleteScheduledPopupButtons = [
+    {
+      name: "只删除这一笔",
+      clickHandler: deleteSingleScheduledItem,
+    },
+    {
+      name: "删除这一笔以及以后所有",
+      clickHandler: deleteSeriesScheduledItems,
+    },
+  ];
 
-  const updateScheduledPopupButtons = [{
-    name: '只更新这一笔',
-    clickHandler: updateSingleScheduledItem
-  }, {
-    name: '更新这一笔以及以后所有',
-    clickHandler: updateSeriesScheduledItems
-  }];
+  const updateScheduledPopupButtons = [
+    {
+      name: "只更新这一笔",
+      clickHandler: updateSingleScheduledItem,
+    },
+    {
+      name: "更新这一笔以及以后所有",
+      clickHandler: updateSeriesScheduledItems,
+    },
+  ];
 
   const toggleCalculator = () => {
     setCalculatorStatus(!calculatorStatus);
-  }
+  };
 
   const handleCalculatorCallback = (result) => {
     let amount = +parseFloat(result).toFixed(2);
-    setLatestItem(Object.assign({}, latestItem, {amount}));
+    setLatestItem(Object.assign({}, latestItem, { amount }));
     setCalculatorStatus(false);
 
     // Set input value
     amountInputRef.current.value = parseFloat(result).toFixed(2);
-  }
+  };
 
   const handleRepeatButton = () => {
-    handleSaveButton({repeatRecord: true});
-  }
+    handleSaveButton({ repeatRecord: true });
+  };
 
   const handleTagInputChange = (evt) => {
     const currInput = evt.target.value;
     setFilteredTagList(tagList.filter((tag) => tag.indexOf(currInput) > -1));
-  }
+  };
 
   const handleTagAdd = () => {
     const newTag = tagInputRef.current.value;
@@ -426,11 +467,12 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
     }
 
     // Automatically add new tag to selected list
-    selectedTags.indexOf(newTag) < 0 && setSelectedTags([...selectedTags, newTag]);
+    selectedTags.indexOf(newTag) < 0 &&
+      setSelectedTags([...selectedTags, newTag]);
 
     // clear value once new tag is added
-    tagInputRef.current.value = '';
-  }
+    tagInputRef.current.value = "";
+  };
 
   const toggleTagSelection = (tag, isSelected) => {
     const index = selectedTags.indexOf(tag);
@@ -441,7 +483,7 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
     } else {
       setSelectedTags([...selectedTags, tag]);
     }
-  }
+  };
 
   /*
     Format change from '2019-04-20 19:20:00' to '2019/04/20 19:20:00'
@@ -449,162 +491,176 @@ const FinItemDetails = ({item = {amount: 0, city: DEFAULT_CITY}}) => {
     latestItem.date.replace(/-/g, '/')
   */
   return (
-    <div className='FinItemDetails'>
-      <div className='Fin-Nav'>
-        <div className='Fin-Nav-Out'>支出</div>
-        <div className='Fin-Nav-Arrow' />
+    <div className="FinItemDetails">
+      <div className="Fin-Nav">
+        <div className="Fin-Nav-Out">支出</div>
+        <div className="Fin-Nav-Arrow" />
       </div>
-      <div className='Fin-Date Fin-WhiteBack'>
+      <div className="Fin-Date Fin-WhiteBack">
         <DateTime
-          value={new Date(latestItem.date.replace(/-/g, '/'))}
+          value={new Date(latestItem.date.replace(/-/g, "/"))}
           defaultValue={new Date()}
           onChange={handleDateTimeChange}
-          inputProps={{disabled: isUpdate && latestItem.isScheduled > 0}} />
+          inputProps={{ disabled: isUpdate && latestItem.isScheduled > 0 }}
+        />
       </div>
-      <div className='Fin-Schedule Fin-WhiteBack'>
+      <div className="Fin-Schedule Fin-WhiteBack">
         <DropdownList
           isDisabled={isUpdate}
-          defaultSelectedValue={scheduleModeItems[latestItem.isScheduled || 0].value}
+          defaultSelectedValue={
+            scheduleModeItems[latestItem.isScheduled || 0].value
+          }
           items={scheduleModeItems}
-          customizeItemClickHandler={handleScheduleModeChange} />
+          customizeItemClickHandler={handleScheduleModeChange}
+        />
       </div>
-      <div className='Fin-Header Fin-WhiteBack'>
-        <div
-          className='Fin-SubCat'
-          onClick={handleCatSelection}>
-          <div className='Category'>
-            {latestItem.category}
-          </div>
-          <div className='SubCategory'>
-            {latestItem.subcategory}
-          </div>
+      <div className="Fin-Header Fin-WhiteBack">
+        <div className="Fin-SubCat" onClick={handleCatSelection}>
+          <div className="Category">{latestItem.category}</div>
+          <div className="SubCategory">{latestItem.subcategory}</div>
         </div>
-        <div className='Fin-Amount'>
+        <div className="Fin-Amount">
           <input
-            type='number'
+            type="number"
             ref={amountInputRef}
             onFocus={handleAmountFocus}
             onBlur={handleAmountBlur}
             onChange={handleAmountChange}
-            defaultValue={parseFloat(latestItem.amount).toFixed(2) || '0.00'} />
-            {/* value={latestItem.amount || 0} /> */}
-          <div className='CalculatorIcon' onClick={toggleCalculator}>
-            {
-              calculatorStatus &&
-              <div className='CalculatorPanel'>
-                <Calculator defaultValue={latestItem.amount + ''} confirmCallback={handleCalculatorCallback} />
+            defaultValue={parseFloat(latestItem.amount).toFixed(2) || "0.00"}
+          />
+          {/* value={latestItem.amount || 0} /> */}
+          <div className="CalculatorIcon" onClick={toggleCalculator}>
+            {calculatorStatus && (
+              <div className="CalculatorPanel">
+                <Calculator
+                  defaultValue={latestItem.amount + ""}
+                  confirmCallback={handleCalculatorCallback}
+                />
               </div>
-            }
+            )}
           </div>
         </div>
       </div>
-      <div className='Fin-ComCats Fin-WhiteBack'>
-        <div className='Fin-ComCat-Container'>
-          {
-            comCatItems.map((comItem, index) => (
-              <div
-                className='Fin-ComCat'
-                key={index}>
+      <div className="Fin-ComCats Fin-WhiteBack">
+        <div className="Fin-ComCat-Container">
+          {comCatItems
+            .filter(({ category, subcategory }) =>
+              ["生活用品", "晚餐", "午餐"].includes(subcategory)
+            )
+            .map((comItem, index) => (
+              <div className="Fin-ComCat" key={index}>
                 <FinComCatItem
                   category={comItem.category}
                   subcategory={comItem.subcategory}
-                  onClickHandler={handleCommonCatClick} />
+                  onClickHandler={handleCommonCatClick}
+                />
               </div>
-            ))
-          }
+            ))}
         </div>
       </div>
-      <div className='Fin-Comment Fin-WhiteBack'>
+      <div className="Fin-Comment Fin-WhiteBack">
         <SearchDropdown
           optionList={commentOptions}
           filterFunction={commentFilterFn}
-          placeholder='备注'
+          placeholder="品牌 / 商家"
           onChangeCallback={handleCommentChange}
-          defaultValue={latestItem.comment} />
+          defaultValue={latestItem.comment}
+        />
       </div>
-      <div className='Fin-FullDetails Fin-WhiteBack'>
-        <div className='Fin-Place'>
+      <div className="Fin-Details Fin-WhiteBack">
+        <SearchDropdown
+          optionList={detailsOptions}
+          filterFunction={placeFilterFn}
+          placeholder="明细"
+          onChangeCallback={handleDetailsChange}
+          defaultValue={latestItem.details}
+        />
+      </div>
+      <div className="Fin-FullDetails Fin-WhiteBack">
+        <div className="Fin-Place">
           <SearchDropdown
             optionList={placeOptions}
             filterFunction={placeFilterFn}
-            placeholder='商场'
+            placeholder="平台 / 商场"
             onChangeCallback={handlePlaceChange}
-            defaultValue={latestItem.place} />
+            defaultValue={latestItem.place}
+          />
         </div>
-        <div className='Fin-City'>
+        <div className="Fin-City">
           <input
-            type='input'
-            placeholder='城市'
+            type="input"
+            placeholder="城市"
             onChange={handleCityChange}
-            defaultValue={latestItem.city || DEFAULT_CITY} />
+            defaultValue={latestItem.city || DEFAULT_CITY}
+          />
         </div>
       </div>
-      <div className='Fin-Toolbar Fin-WhiteBack'>
-        <div className='Fin-Btns'>
-          <div
-            className='Fin-Btn Fin-BackBtn'
-            onClick={handleBackBtn}>
+      <div className="Fin-Toolbar Fin-WhiteBack">
+        <div className="Fin-Btns">
+          <div className="Fin-Btn Fin-BackBtn" onClick={handleBackBtn}>
             返回
           </div>
-          {
-            latestItem.id ?
-            <div
-              className='Fin-Btn Fin-DeleteBtn'
-              onClick={handleDeleteButton}>
+          {latestItem.id ? (
+            <div className="Fin-Btn Fin-DeleteBtn" onClick={handleDeleteButton}>
               删除
             </div>
-            :
-            <div
-              className='Fin-Btn Fin-RepeatBtn'
-              onClick={handleRepeatButton}>
+          ) : (
+            <div className="Fin-Btn Fin-RepeatBtn" onClick={handleRepeatButton}>
               保存再记
             </div>
-          }
-          <div
-            className='Fin-Btn Fin-SaveBtn'
-            onClick={handleSaveButton}>
+          )}
+          <div className="Fin-Btn Fin-SaveBtn" onClick={handleSaveButton}>
             保存
           </div>
         </div>
       </div>
-      <div className='Fin-Tags Fin-WhiteBack'>
-        <div className='Fin-Tags-Add'>
+      <div className="Fin-Tags Fin-WhiteBack">
+        <div className="Fin-Tags-Add">
           <input
-            type='input'
+            type="input"
             ref={tagInputRef}
-            placeholder='新加标签'
+            placeholder="新加标签"
             onChange={handleTagInputChange}
-            defaultValue='' />
-          <div className='Fin-Tags-Add-Btn' onClick={handleTagAdd} />
+            defaultValue=""
+          />
+          <div className="Fin-Tags-Add-Btn" onClick={handleTagAdd} />
         </div>
-        <div className='Fin-TagsManagement'>
-          <HashTagManagement tags={filteredTagList} selectedTags={selectedTags} toggleTagSelection={toggleTagSelection} />
+        <div className="Fin-TagsManagement">
+          <HashTagManagement
+            tags={filteredTagList}
+            selectedTags={selectedTags}
+            toggleTagSelection={toggleTagSelection}
+          />
         </div>
       </div>
-      {
-        deleteScheduledPopupStatus &&
+      {deleteScheduledPopupStatus && (
         <div className="PopupButtons--Container">
           <PopupButtons
             buttons={deleteScheduledPopupButtons}
-            cancelHandler={popupButtonsCancelHandler} />
+            cancelHandler={popupButtonsCancelHandler}
+          />
         </div>
-      }
-      {
-        updateScheduledPopupStatus &&
+      )}
+      {updateScheduledPopupStatus && (
         <div className="PopupButtons--Container">
           <PopupButtons
             buttons={updateScheduledPopupButtons}
-            cancelHandler={popupButtonsCancelHandler} />
+            cancelHandler={popupButtonsCancelHandler}
+          />
         </div>
-      }
-      {
-        commentHintDialogStatus &&
+      )}
+      {commentHintDialogStatus && (
         <div className="FinDetails__CommentHintDialog">
-          <CommentHintDialog closeCallback={toggleCommentHintDialogStatus} successCallback={saveCommentHintResult} optionList={commentFullInfoOptions} commentKeyWord={latestItem.comment} />
+          <CommentHintDialog
+            closeCallback={toggleCommentHintDialogStatus}
+            successCallback={saveCommentHintResult}
+            optionList={commentFullInfoOptions}
+            commentKeyWord={latestItem.comment}
+          />
         </div>
-      }
+      )}
     </div>
-  )
+  );
 };
 
 export default FinItemDetails;

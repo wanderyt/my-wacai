@@ -215,3 +215,6 @@ INSERT INTO CATEGORY(category, subcategory, is_common, userid)
 VALUES('社交', '住宿', 0, 1);
 INSERT INTO CATEGORY(category, subcategory, is_common, userid)
 VALUES('社交', '杂项', 0, 1);
+
+-- Update on brand feature change
+ALTER TABLE FIN ADD details VARCHAR(200);

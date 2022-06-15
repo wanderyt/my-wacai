@@ -1,21 +1,20 @@
-const {FIN_TABLE_NAME} = require('../config');
-const {logDBError, logDBSuccess} = require('../util');
-const {padZero} = require('../../helper');
+const { FIN_TABLE_NAME } = require("../config");
+const { logDBError, logDBSuccess } = require("../util");
+const { padZero } = require("../../helper");
 
 const UPDATE_COLUMN_NAME_LIST = [
-  'category',
-  'subcategory',
-  'comment',
-  'amount',
-  'place',
+  "category",
+  "subcategory",
+  "comment",
+  "details",
+  "amount",
+  "place",
   // 'date', date should be handled separately
-  'city',
-  'tags'
+  "city",
+  "tags",
 ];
 
-const ALLOW_EMPTY_VALUE_FIELD = [
-  'tags'
-];
+const ALLOW_EMPTY_VALUE_FIELD = ["tags"];
 
 /**
  * Update existing fin item
@@ -26,6 +25,7 @@ const ALLOW_EMPTY_VALUE_FIELD = [
  * @param {string} data.subcategory target fin item subcategory
  * @param {string} data.date target fin item date
  * @param {string} data.comment target fin item comment
+ * @param {string} data.details target fin item details
  * @param {number} data.amount target fin item amount
  * @param {string} data.place target fin item place
  * @param {string} data.city target fin item city
@@ -35,7 +35,7 @@ const ALLOW_EMPTY_VALUE_FIELD = [
  */
 const updateFinItem = (db, data, callback) => {
   let promise = new Promise((resolve, reject) => {
-    let updateOptions = '';
+    let updateOptions = "";
     for (const key in data) {
       const value = data[key];
       // Remove null object value, but need to allow empty string
@@ -43,7 +43,10 @@ const updateFinItem = (db, data, callback) => {
         updateOptions += `${key}="${value}", `;
       }
       // Allow empty string
-      if (value === '' && ALLOW_EMPTY_VALUE_FIELD.indexOf(key.toLowerCase()) > -1) {
+      if (
+        value === "" &&
+        ALLOW_EMPTY_VALUE_FIELD.indexOf(key.toLowerCase()) > -1
+      ) {
         updateOptions += `${key}="${value}", `;
       }
     }
@@ -53,19 +56,26 @@ const updateFinItem = (db, data, callback) => {
     let searchParams = [data.id, data.userId];
     db.run(sql, searchParams, (err) => {
       if (err) {
-        logDBError(`updateFinItem - Update fin data in ${FIN_TABLE_NAME} table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `updateFinItem - Update fin data in ${FIN_TABLE_NAME} table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`updateFinItem - Update fin data in ${FIN_TABLE_NAME} table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `updateFinItem - Update fin data in ${FIN_TABLE_NAME} table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err);
 
-      err ? reject({err}) : resolve({status: true});
+      err ? reject({ err }) : resolve({ status: true });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Update existing scheduled fin items
@@ -76,6 +86,7 @@ const updateFinItem = (db, data, callback) => {
  * @param {string} data.subcategory target fin item subcategory
  * @param {string} data.date target fin item date
  * @param {string} data.comment target fin item comment
+ * @param {string} data.details target fin item details
  * @param {string} data.scheduleId target fin item schedule id
  * @param {number} data.amount target fin item amount
  * @param {string} data.place target fin item place
@@ -89,7 +100,7 @@ const updateFinItem = (db, data, callback) => {
  */
 const updateScheduledFinItem = (db, data, options, callback) => {
   let promise = new Promise((resolve, reject) => {
-    let updateOptions = '';
+    let updateOptions = "";
     for (const key in data) {
       if (UPDATE_COLUMN_NAME_LIST.indexOf(key.toLowerCase()) > -1) {
         const value = data[key];
@@ -102,26 +113,42 @@ const updateScheduledFinItem = (db, data, options, callback) => {
 
     let sql = `update ${FIN_TABLE_NAME} set ${updateOptions} where scheduleId = ? and userId = ?`;
     let searchParams = [data.scheduleId, data.userId];
-    if (options.year && options.month && options.day && Number(options.year) && options.month < 13 && options.day < 35) {
+    if (
+      options.year &&
+      options.month &&
+      options.day &&
+      Number(options.year) &&
+      options.month < 13 &&
+      options.day < 35
+    ) {
       sql += ' and date >= date(?, "+1 day")';
-      searchParams.push(`${options.year}-${padZero(options.month)}-${padZero(options.day)}`);
+      searchParams.push(
+        `${options.year}-${padZero(options.month)}-${padZero(options.day)}`
+      );
     }
 
     db.run(sql, searchParams, (err) => {
       if (err) {
-        logDBError(`updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`, `${sql} - ${searchParams}`, err);
+        logDBError(
+          `updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`,
+          `${sql} - ${searchParams}`,
+          err
+        );
       } else {
-        logDBSuccess(`updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`, `${sql} - ${searchParams}`);
+        logDBSuccess(
+          `updateScheduledFinItem - Update fin data in ${FIN_TABLE_NAME} table`,
+          `${sql} - ${searchParams}`
+        );
       }
 
       callback && callback(err);
 
-      err ? reject({err}) : resolve({status: true});
+      err ? reject({ err }) : resolve({ status: true });
     });
   });
 
   return promise;
-}
+};
 
 module.exports = {
   updateFinItem,
