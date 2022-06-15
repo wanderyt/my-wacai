@@ -1,6 +1,14 @@
-const {FIN_TABLE_NAME, CATEGORY_TABLE_NAME, TEMPLATE_TABLE_NAME} = require('../config');
-const {logDBError, logDBSuccess, mapSearchParamsToDBSearch} = require('../util');
-const {padZero} = require('../../helper');
+const {
+  FIN_TABLE_NAME,
+  CATEGORY_TABLE_NAME,
+  TEMPLATE_TABLE_NAME,
+} = require("../config");
+const {
+  logDBError,
+  logDBSuccess,
+  mapSearchParamsToDBSearch,
+} = require("../util");
+const { padZero } = require("../../helper");
 
 /**
  * Search all fin items by search params
@@ -10,13 +18,13 @@ const {padZero} = require('../../helper');
  * @param {function} callback
  */
 const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
-  let searchString = '';
+  let searchString = "";
   try {
     searchString = mapSearchParamsToDBSearch(searchOptions);
   } catch (e) {
     return new Promise((res, rej) => {
       rej({
-        err: e
+        err: e,
       });
     });
   }
@@ -25,19 +33,26 @@ const getFinItemsBySearchOptions = (db, searchOptions, callback) => {
     let sql = `select * from ${FIN_TABLE_NAME} where ${searchString} order by date desc;`;
     db.all(sql, (err, rows) => {
       if (err) {
-        logDBError(`Search all fin items in fin table with search string: ${searchString}`, sql, err);
+        logDBError(
+          `Search all fin items in fin table with search string: ${searchString}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Search all fin items in fin table with search string: ${searchString}`, sql);
+        logDBSuccess(
+          `Search all fin items in fin table with search string: ${searchString}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get all valid cities
@@ -52,19 +67,26 @@ const getAllCities = (db, options, callback) => {
     let searchParam = [options.userId];
     db.all(sql, searchParam, (err, rows) => {
       if (err) {
-        logDBError(`Fetch all non empty cities in fin table with params: ${searchParam}`, sql, err);
+        logDBError(
+          `Fetch all non empty cities in fin table with params: ${searchParam}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Fetch all non empty cities in fin table with params: ${searchParam}`, sql);
+        logDBSuccess(
+          `Fetch all non empty cities in fin table with params: ${searchParam}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get all valid comments
@@ -99,19 +121,60 @@ const getAllComments = (db, options, callback) => {
     let searchParams = [userId, userId];
     db.all(sql, (err, rows) => {
       if (err) {
-        logDBError(`Fetch all non empty comments in fin table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `Fetch all non empty comments in fin table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Fetch all non empty comments in fin table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `Fetch all non empty comments in fin table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
+
+/**
+ * Get all valid details
+ * @param {object} db
+ * @param {object} options target query data
+ * @param {number} options.userId target query user id
+ * @param {function} callback
+ */
+const getAllDetails = (db, options, callback) => {
+  let promise = new Promise((resolve, reject) => {
+    let sql = `select distinct details from ${FIN_TABLE_NAME} where details != '' and userId = ? order by date desc;`;
+    let searchParams = [options.userId];
+    db.all(sql, searchParams, (err, rows) => {
+      if (err) {
+        logDBError(
+          `Fetch all non empty details in fin table with params: ${searchParams}`,
+          sql,
+          err
+        );
+      } else {
+        logDBSuccess(
+          `Fetch all non empty details in fin table with params: ${searchParams}`,
+          sql
+        );
+      }
+
+      callback && callback(err, rows);
+
+      err ? reject({ err }) : resolve({ rows });
+    });
+  });
+
+  return promise;
+};
 
 /**
  * Get all valid comments with related info
@@ -128,6 +191,7 @@ const getCommentsOptions = (db, options, callback) => {
       select
         distinct
         comment,
+        details,
         category,
         subcategory,
         place
@@ -138,19 +202,26 @@ const getCommentsOptions = (db, options, callback) => {
     let searchParams = [userId];
     db.all(sql, (err, rows) => {
       if (err) {
-        logDBError(`Fetch all non empty comments options in fin table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `Fetch all non empty comments options in fin table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Fetch all non empty comments options in fin table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `Fetch all non empty comments options in fin table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get all valid tags
@@ -165,19 +236,26 @@ const getAllTags = (db, options, callback) => {
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`Fetch all non empty tags in fin table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `Fetch all non empty tags in fin table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Fetch all non empty tags in fin table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `Fetch all non empty tags in fin table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get all category groups
@@ -192,19 +270,26 @@ const getCategoryGroup = (db, options, callback) => {
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`getCategoryGroup - Fetch data in CATEGORY table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `getCategoryGroup - Fetch data in CATEGORY table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`getCategoryGroup - Fetch data in CATEGORY table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `getCategoryGroup - Fetch data in CATEGORY table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get all daily total data.
@@ -222,19 +307,26 @@ const getDailyTotal = (db, options, callback) => {
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`Fetch monthly total data in FIN table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `Fetch monthly total data in FIN table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Fetch monthly total data in FIN table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `Fetch monthly total data in FIN table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get fin items by month
@@ -251,19 +343,26 @@ const getFinItemsByMonth = (db, options, callback) => {
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`Fetch month (${options.year}-${options.month}) details in FIN table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `Fetch month (${options.year}-${options.month}) details in FIN table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Fetch month (${options.year}-${options.month}) details in FIN table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `Fetch month (${options.year}-${options.month}) details in FIN table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get fin list data
@@ -280,27 +379,36 @@ const getFinList = (db, options, callback) => {
     let sql = `select * from ${FIN_TABLE_NAME} where userId = ?`;
     if (options) {
       if (options.month && options.year) {
-        sql += ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
+        sql += ` and date <= '${options.year}-${padZero(
+          parseInt(options.month) + 1
+        )}-%'`;
       }
-      sql += ' order by date desc';
+      sql += " order by date desc";
       if (options.top) {
-        sql += ' limit ' + options.top;
+        sql += " limit " + options.top;
       }
     }
 
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`getFinList - Fetch data in FIN table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `getFinList - Fetch data in FIN table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`getFinList - Fetch data in FIN table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `getFinList - Fetch data in FIN table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
-  })
+  });
 
   return promise;
 };
@@ -316,23 +424,32 @@ const getFinList = (db, options, callback) => {
  */
 const getSumByYearMonth = (db, options, callback) => {
   let promise = new Promise((resolve, reject) => {
-    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date like '${options.year}-${padZero(options.month)}-%' and userId = ?);`;
+    let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date like '${
+      options.year
+    }-${padZero(options.month)}-%' and userId = ?);`;
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`getFinListByMonth - Fetch data in FIN table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `getFinListByMonth - Fetch data in FIN table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`getFinListByMonth - Fetch data in FIN table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `getFinListByMonth - Fetch data in FIN table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get sum expense of whole current week in specific year month day, this will exclude those scheduled items.
@@ -346,9 +463,10 @@ const getSumByYearMonth = (db, options, callback) => {
  * @param {function} callback
  */
 const getSumByWeek = (db, options, callback) => {
-  const {month, year, day, dayOfWeek, userId} = options;
+  const { month, year, day, dayOfWeek, userId } = options;
   let promise = new Promise((resolve, reject) => {
-    let startDay = 0, endDay = 0;
+    let startDay = 0,
+      endDay = 0;
     // Start day logic and End day logic
     if (dayOfWeek === 0) {
       startDay = 7;
@@ -365,18 +483,25 @@ const getSumByWeek = (db, options, callback) => {
     // db.all(sql, searchParams, (err, rows) => {
     db.all(sql, (err, rows) => {
       if (err) {
-        logDBError('getSumByWeek - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '), err);
+        logDBError(
+          "getSumByWeek - Fetch data in FIN table",
+          sql + " with params: " + searchParams.join(", "),
+          err
+        );
       } else {
-        logDBSuccess('getSumByWeek - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '));
+        logDBSuccess(
+          "getSumByWeek - Fetch data in FIN table",
+          sql + " with params: " + searchParams.join(", ")
+        );
       }
 
       callback && callback(err, rows);
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get sum expense of current day in specific year month day, this will exclude those scheduled items.
@@ -389,7 +514,7 @@ const getSumByWeek = (db, options, callback) => {
  * @param {function} callback
  */
 const getSumByDay = (db, options, callback) => {
-  const {month, year, day, userId} = options;
+  const { month, year, day, userId } = options;
   let promise = new Promise((resolve, reject) => {
     const currentDay = `${year}-${padZero(month)}-${padZero(day)}`;
     // let sql = `select sum(amount) as total from (select * from ${FIN_TABLE_NAME} where date >= date('?') and date < date('?', "+1 day") and (isScheduled = 0 or isScheduled is null) and userId = ?);`;
@@ -398,18 +523,25 @@ const getSumByDay = (db, options, callback) => {
     // db.all(sql, searchParams, (err, rows) => {
     db.all(sql, (err, rows) => {
       if (err) {
-        logDBError('getSumByDay - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '), err);
+        logDBError(
+          "getSumByDay - Fetch data in FIN table",
+          sql + " with params: " + searchParams.join(", "),
+          err
+        );
       } else {
-        logDBSuccess('getSumByDay - Fetch data in FIN table', sql + ' with params: ' + searchParams.join(', '));
+        logDBSuccess(
+          "getSumByDay - Fetch data in FIN table",
+          sql + " with params: " + searchParams.join(", ")
+        );
       }
 
       callback && callback(err, rows);
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get all fin templates
@@ -422,22 +554,29 @@ const getFinTemplates = (db, options, callback) => {
   let promise = new Promise((resolve, reject) => {
     let sql = `select * from ${TEMPLATE_TABLE_NAME} where userId = ?;`;
     let searchParams = [options.userId];
-    console.log('get fin template: ', options.userId);
+    console.log("get fin template: ", options.userId);
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`Fetch fin templates in template table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `Fetch fin templates in template table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Fetch fin templates in template table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `Fetch fin templates in template table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Get all monthly total data.
@@ -452,24 +591,36 @@ const getMonthlyTotal = (db, options, callback) => {
   let promise = new Promise((resolve, reject) => {
     let sql = `select sum(amount) as total, year_month from (select amount, substr(date, 1, 7) as year_month from ${FIN_TABLE_NAME} {{queries}}) group by year_month order by year_month desc;`;
     if (options.month && options.year) {
-      sql = sql.replace("{{queries}}", `where date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%' and userId = ?`);
+      sql = sql.replace(
+        "{{queries}}",
+        `where date <= '${options.year}-${padZero(
+          parseInt(options.month) + 1
+        )}-%' and userId = ?`
+      );
     }
     let searchParams = [options.userId];
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`Fetch monthly total data in FIN table with params: ${searchParams}`, sql, err);
+        logDBError(
+          `Fetch monthly total data in FIN table with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Fetch monthly total data in FIN table with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `Fetch monthly total data in FIN table with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 /**
  * Search all fin items by specific search string
@@ -481,37 +632,52 @@ const getMonthlyTotal = (db, options, callback) => {
  * @param {number} options.userId
  * @param {function} callback
  */
-const getFinItemsBySearchString = (db, searchString, options = {}, callback) => {
+const getFinItemsBySearchString = (
+  db,
+  searchString,
+  options = {},
+  callback
+) => {
   let promise = new Promise((resolve, reject) => {
-    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%' or tags like '%${searchString}%') and userId = ? {{dateSearchString}} order by date desc;`;
-    let dateSearchString = '';
+    let sql = `select * from ${FIN_TABLE_NAME} where (category like '%${searchString}%' or subcategory like '%${searchString}%' or comment like '%${searchString}%' or details like '%${searchString}%' or place like '%${searchString}%' or city like '%${searchString}%' or tags like '%${searchString}%') and userId = ? {{dateSearchString}} order by date desc;`;
+    let dateSearchString = "";
     if (options.month && options.year) {
-      dateSearchString = ` and date <= '${options.year}-${padZero(parseInt(options.month) + 1)}-%'`;
+      dateSearchString = ` and date <= '${options.year}-${padZero(
+        parseInt(options.month) + 1
+      )}-%'`;
     }
-    sql = sql.replace('{{dateSearchString}}', dateSearchString);
+    sql = sql.replace("{{dateSearchString}}", dateSearchString);
 
     let searchParams = [options.userId];
     console.log(sql);
     db.all(sql, searchParams, (err, rows) => {
       if (err) {
-        logDBError(`Search all fin items in fin table with search string: ${searchString} with params: ${searchParams}`, sql, err);
+        logDBError(
+          `Search all fin items in fin table with search string: ${searchString} with params: ${searchParams}`,
+          sql,
+          err
+        );
       } else {
-        logDBSuccess(`Search all fin items in fin table with search string: ${searchString} with params: ${searchParams}`, sql);
+        logDBSuccess(
+          `Search all fin items in fin table with search string: ${searchString} with params: ${searchParams}`,
+          sql
+        );
       }
 
       callback && callback(err, rows);
 
-      err ? reject({err}) : resolve({rows});
+      err ? reject({ err }) : resolve({ rows });
     });
   });
 
   return promise;
-}
+};
 
 module.exports = {
   getFinItemsBySearchOptions,
   getAllCities,
   getAllComments,
+  getAllDetails,
   getCommentsOptions,
   getAllTags,
   getCategoryGroup,
