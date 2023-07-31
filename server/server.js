@@ -69,6 +69,10 @@ app.use('/api/file', fileRouters.router);
 const dbRouters = require('./router/dbRouter/index');
 app.use('/api/db', [validateTokenMiddleware, ...dbRouters.router]);
 
+// define slack operation request path
+const slackRouters = require('./router/slackRouter/index');
+app.use('/api/slack/', [validateTokenMiddleware, ...slackRouters.router]);
+
 // define my owner testing routers
 const workRouters = require('./router/workRouter/index');
 app.use('/api/work', workRouters.router);
